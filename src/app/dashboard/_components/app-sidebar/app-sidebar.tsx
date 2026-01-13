@@ -26,6 +26,7 @@ import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "App";
 // This is sample data.
 const data = {
   user: {
@@ -35,7 +36,7 @@ const data = {
   },
   teams: [
     {
-      name: "Caixa Fechada",
+      name: APP_NAME,
       logo: GalleryVerticalEnd,
       plan: "Distribuidora",
     },

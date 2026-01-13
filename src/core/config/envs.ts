@@ -5,7 +5,9 @@ const envsSchema = z.object({
     .string()
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().positive("PORT must be a positive number")),
-
+NEXT_PUBLIC_APP_NAME: z
+    .string()
+    .min(1, "NEXT_PUBLIC_APP_NAME is required"),
   // APP URLs - Variáveis públicas da aplicação
   NEXT_PUBLIC_APP_URL: z
     .string()
@@ -125,6 +127,7 @@ if (typeof window === "undefined") {
   // Estas variáveis NÃO deve ser acessadas no cliente!
   envVars = {
     PORT: 0,
+    NEXT_PUBLIC_APP_NAME: "",
     NEXT_PUBLIC_APP_URL: "",
     EXTERNAL_API_MAIN_URL: "",
     EXTERNAL_API_ASSETS_URL: "",
@@ -167,6 +170,7 @@ if (typeof window === "undefined") {
 
 export const envs = {
   PORT: envVars.PORT,
+  NEXT_PUBLIC_APP_NAME: envVars.NEXT_PUBLIC_APP_NAME,
   NEXT_PUBLIC_APP_URL: envVars.NEXT_PUBLIC_APP_URL,
   EXTERNAL_API_MAIN_URL: envVars.EXTERNAL_API_MAIN_URL,
   EXTERNAL_API_ASSETS_URL: envVars.EXTERNAL_API_ASSETS_URL,
