@@ -38,99 +38,19 @@ const data = {
     {
       name: APP_NAME,
       logo: GalleryVerticalEnd,
-      plan: "Distribuidora",
+      plan: "Grupo Comsuporte",
     },
     {
-      name: "Mundial Megastore",
+      name: "Mauro Rammalli",
+      logo: GalleryVerticalEnd,
+      plan: "Developer",
+    },
+    {
+      name: "Gilvan Costa",
       logo: AudioWaveform,
-      plan: "Enterprise",
-    },
-    {
-      name: "Atacadão Eletrônico",
-      logo: Command,
-      plan: "Revenda",
-    },
-  ],
-  navMain: [
-    {
-      title: "Consultor ",
-      url: "/dashboard",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Vendas",
-          url: "/dashboard",
-        },
-        {
-          title: "Orçamentos",
-          url: "#",
-        },
-        {
-          title: "Carrinho",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Produtos",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Catálogo",
-          url: "#",
-        },
-        {
-          title: "Novos Produtos",
-          url: "#",
-        },
-        {
-          title: "Mais vendidos",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Clientes",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Cadastros",
-          url: "#",
-        },
-
-        {
-          title: "Novo Cadastro",
-          url: "#",
-        },
-      ],
+      plan: "Developer",
     },
 
-    {
-      title: "Relatórios",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Resumo dos Pedidos",
-          url: "/dashboard/report/panel",
-        },
-        {
-          title: "Vendas",
-          url: "/dashboard/report/sales",
-        },
-        {
-          title: "Clientes",
-          url: "/dashboard/report/customers",
-        },
-        {
-          title: "Produtos",
-          url: "/dashboard/report/products",
-        },
-      ],
-    },
   ],
 
   projects: [
@@ -139,19 +59,10 @@ const data = {
       url: "/dashboard/organization",
       icon: Frame,
     },
-    {
-      name: "Organização 2",
-      url: "/dashboard/organization/caixa-fechada",
-      icon: Frame,
-    },
-    {
-      name: "Organização 3",
-      url: "/dashboard/admin/organization2",
-      icon: Frame,
-    },
+
     {
       name: "Usuários",
-      url: "/dashboard/admin/users",
+      url: "/dashboard/users",
       icon: PieChart,
     },
 
@@ -161,9 +72,51 @@ const data = {
       icon: PieChart,
     },
     {
-      name: "Regras",
+      name: "Plataformas",
       url: "#",
       icon: MapIcon,
+    },
+  ],
+
+  navMain: [
+    {
+      title: "Relatórios",
+      url: "#", 
+      icon: Settings2,
+      items: [
+        {
+          title: "Painel",
+          url: "/dashboard/report/panel",
+        },
+        {
+          title: "Relatórios de Organizações",
+          url: "/dashboard/report/organization",
+        },
+        {
+          title: "Relatórios de Usuários",
+          url: "/dashboard/report/users",
+        },
+        {
+          title: "Relatório de Sistema",
+          url: "/dashboard/report/system",
+        },
+      ],
+    },
+    {
+      title: "Configurações",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Configurações Gerais",
+          url: "#",
+        },
+
+        {
+          title: "Impressoras",
+          url: "#",
+        },
+      ],
     },
   ],
 };
