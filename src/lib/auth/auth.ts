@@ -152,7 +152,7 @@ export const auth = betterAuth({
       sendInvitationEmail: async (data) => {
         const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/api/accept-invitation/${data.id}`;
 
-        await resend.emails.send({
+        const result = await resend.emails.send({
           from: `${envs.EMAIL_SENDER_NAME} <${envs.EMAIL_SENDER_ADDRESS}>`,
           to: data.email,
           subject: "You've been invited to join our organization",
@@ -164,6 +164,10 @@ export const auth = betterAuth({
             inviteLink,
           }),
         });
+
+        if (result.error) {
+          console.error("Failed to send invitation email:", result.error);
+        }
       },
       roles: {
         owner,
