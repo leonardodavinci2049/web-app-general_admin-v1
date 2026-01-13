@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-base-project-v2",
-  "version": "0.1.0",
+  "name": "web-app-general_admin-v1",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "dotenv -e .env -- next dev",
