@@ -2,15 +2,12 @@
 
 import {
   AudioWaveform,
-  BookOpen,
   Bot,
-  Command,
   Frame,
   GalleryVerticalEnd,
   Map as MapIcon,
   PieChart,
   Settings2,
-  SquareTerminal,
 } from "lucide-react";
 import type * as React from "react";
 
@@ -50,7 +47,6 @@ const data = {
       logo: AudioWaveform,
       plan: "Developer",
     },
-
   ],
 
   projects: [
@@ -81,7 +77,7 @@ const data = {
   navMain: [
     {
       title: "Relatórios",
-      url: "#", 
+      url: "#",
       icon: Settings2,
       items: [
         {
