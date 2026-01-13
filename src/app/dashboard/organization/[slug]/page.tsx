@@ -34,7 +34,7 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           <h1 className="text-3xl font-bold tracking-tight">
             {organization.name}
           </h1>
-          <Link href="/dashboard/admin/organization1">
+          <Link href="/dashboard/organization">
             <Button variant="outline">Voltar</Button>
           </Link>
         </div>

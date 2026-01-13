@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Organization } from "@/db/schema";
-import { UpdateOrganizationForm } from "../organization1/_forms/update-organization/update-organization-form";
+import { UpdateOrganizationForm } from "../../organization/_forms/update-organization/update-organization-form";
 import { deleteOrganizationAction } from "./actions";
 
 interface OrganizationActionsProps {
