@@ -19,6 +19,21 @@ export async function getOrganizations() {
   return response.data;
 }
 
+/**
+ * Carrega todas as organizações do sistema
+ * Para uso em dashboards de administração global
+ */
+export async function getAllOrganizations() {
+  const response = await AuthService.findAllOrganizations();
+
+  if (!response.success || !response.data) {
+    console.error(response.error);
+    return [];
+  }
+
+  return response.data;
+}
+
 export async function getActiveOrganization(userId: string) {
   // Usando método otimizado que faz JOIN internamente
   const response = await AuthService.findActiveOrganization({ userId });
