@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { auth } from "@/lib/auth/auth";
-import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
+import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { UserRow } from "./_components/user-row";
 
 export default async function AdminPage() {

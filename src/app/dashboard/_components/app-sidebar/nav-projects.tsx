@@ -41,7 +41,7 @@ export function NavProjects({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Gerenciar</SidebarGroupLabel>
+      <SidebarGroupLabel>Database01</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => {
           const isActive = pathname === item.url;

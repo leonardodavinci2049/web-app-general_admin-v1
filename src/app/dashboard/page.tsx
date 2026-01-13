@@ -3,9 +3,8 @@ import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-
 import { CreateOrganizationDialog } from "./admin/_components/create-organization-dialog";
 import { OrganizationTable } from "./admin/_components/organization-table";
 
-
 export default async function DashboardPage() {
-    const organizations = await getOrganizations();
+  const organizations = await getOrganizations();
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Header fixo no topo */}
@@ -22,7 +21,9 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Empresas</h1>
-            <p className="text-muted-foreground">Gerencie suas Empresas Clientes.</p>
+            <p className="text-muted-foreground">
+              Gerencie suas Empresas Clientes.
+            </p>
           </div>
           <CreateOrganizationDialog />
         </div>
