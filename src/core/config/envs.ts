@@ -5,9 +5,7 @@ const envsSchema = z.object({
     .string()
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().positive("PORT must be a positive number")),
-NEXT_PUBLIC_APP_NAME: z
-    .string()
-    .min(1, "NEXT_PUBLIC_APP_NAME is required"),
+  NEXT_PUBLIC_APP_NAME: z.string().min(1, "NEXT_PUBLIC_APP_NAME is required"),
   // APP URLs - Variáveis públicas da aplicação
   NEXT_PUBLIC_APP_URL: z
     .string()
