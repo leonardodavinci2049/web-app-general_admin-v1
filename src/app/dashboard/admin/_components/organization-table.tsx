@@ -45,7 +45,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                 </TableCell>
                 <TableCell className="font-medium">
                   <Link
-                    href={`/dashboard/admin/organization1/${org.slug}`}
+                    href={`/dashboard/organization/${org.slug}`}
                     className="hover:underline text-blue-600 dark:text-blue-400"
                   >
                     {org.name}
@@ -94,7 +94,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <Link
-                    href={`/dashboard/admin/organization1/${org.slug}`}
+                    href={`/dashboard/organization/${org.slug}`}
                     className="font-medium hover:underline text-blue-600 dark:text-blue-400 block truncate"
                   >
                     {org.name}

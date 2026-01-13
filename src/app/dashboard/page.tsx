@@ -1,11 +1,11 @@
+import { getOrganizations } from "@/server/organizations";
 import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-breadcrumb";
-import { CustomerSection } from "./_components/pdv/customer-section";
-import { HeaderPDV } from "./_components/pdv/HeaderPDV";
+import { CreateOrganizationDialog } from "./admin/_components/create-organization-dialog";
+import { OrganizationTable } from "./admin/_components/organization-table";
 
-import { OrderItemsSection } from "./_components/pdv/order-items-section";
-import { OrderSummary } from "./_components/pdv/order-summary";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+    const organizations = await getOrganizations();
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Header fixo no topo */}
@@ -18,19 +18,16 @@ export default function DashboardPage() {
       />
 
       {/* Conteúdo com scroll */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <HeaderPDV />
-
-        <div className="flex flex-1 flex-col md:flex-row gap-4 p-4 overflow-auto">
-          <main className="flex-1 flex flex-col gap-4">
-            <CustomerSection />
-            <OrderItemsSection />
-          </main>
-
-          <aside className="w-full md:w-96 shrink-0">
-            <OrderSummary />
-          </aside>
+      <div className="container mx-auto py-10 px-4 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Empresas</h1>
+            <p className="text-muted-foreground">Gerencie suas Empresas Clientes.</p>
+          </div>
+          <CreateOrganizationDialog />
         </div>
+
+        <OrganizationTable organizations={organizations} />
       </div>
     </div>
   );

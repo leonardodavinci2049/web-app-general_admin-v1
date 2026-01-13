@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CreateOrganizationForm } from "../organization1/_forms/create-organization";
+import { CreateOrganizationForm } from "../../organization/_forms/create-organization";
 
 export function CreateOrganizationDialog() {
   const [open, setOpen] = useState(false);
