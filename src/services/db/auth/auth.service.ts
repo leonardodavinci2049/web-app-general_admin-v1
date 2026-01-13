@@ -541,6 +541,39 @@ async function findOrganizationsByIds(params: {
 }
 
 /**
+ * Finds all organizations in the system
+ *
+ * Replaces: prisma.organization.findMany()
+ *
+ * @example
+ * ```typescript
+ * const response = await AuthService.findAllOrganizations();
+ * ```
+ */
+async function findAllOrganizations(): Promise<
+  ServiceResponse<Organization[]>
+> {
+  try {
+    const query = `
+      SELECT 
+        id, name, slug, logo, createdAt, metadata
+      FROM ${AUTH_TABLES.ORGANIZATION}
+      ORDER BY name ASC
+    `;
+
+    const results = await dbService.selectExecute<OrganizationEntity>(query);
+
+    return {
+      success: true,
+      data: results.map(mapOrganizationEntityToDto),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<Organization[]>(error, "findAllOrganizations");
+  }
+}
+
+/**
  * Finds an organization by slug
  *
  * Replaces: prisma.organization.findFirst({ where: { slug } })
@@ -710,7 +743,9 @@ async function createSubscription(params: {
       throw new AuthValidationError("Status é obrigatório", "status");
     }
 
-    const id = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const id = `sub_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 9)}`;
     const now = new Date();
 
     const query = `
@@ -1149,6 +1184,7 @@ export const AuthService = {
   // Organization Methods
   findOrganizationById,
   findOrganizationsByIds,
+  findAllOrganizations,
   findOrganizationBySlug,
   findOrganizationBySlugWithMembers,
 
