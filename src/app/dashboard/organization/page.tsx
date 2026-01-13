@@ -19,8 +19,10 @@ export default async function OrganizationPage() {
       <div className="container mx-auto py-10 px-4 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-       <h1 className="text-3xl font-bold tracking-tight">Empresas</h1>
-            <p className="text-muted-foreground">Gerencie suas Empresas Clientes.</p>
+            <h1 className="text-3xl font-bold tracking-tight">Empresas</h1>
+            <p className="text-muted-foreground">
+              Gerencie suas Empresas Clientes.
+            </p>
           </div>
           <CreateOrganizationDialog />
         </div>
