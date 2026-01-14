@@ -179,6 +179,17 @@ export const auth = betterAuth({
         shipping,
         customer,
       },
+        schema: {
+        organization: {
+          additionalFields: {
+            system_id: {
+              type: "number", 
+              input: true, 
+              required: true, 
+            }, 
+          },
+        },
+      },    
     }),
 
     lastLoginMethod(),
