@@ -24,6 +24,7 @@ export function resultQueryData<T>(
         recordId,
         sanitizedData, // Sanitize the data
         quantity,
+        errorId,
         info1,
       );
     } else {
@@ -37,6 +38,7 @@ export function resultQueryData<T>(
         recordId,
         sanitizedData, // Sanitize the data
         quantity,
+        errorId,
         info1,
       );
     }
@@ -52,6 +54,7 @@ export function resultQueryData<T>(
       recordId, // Sanitize the data
       sanitizedData,
       quantity,
+      errorId,
     );
   }
 }
