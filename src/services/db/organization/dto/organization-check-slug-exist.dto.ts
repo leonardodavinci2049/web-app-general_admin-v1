@@ -14,7 +14,6 @@ export function validateOrganizationCheckSlugExistDto(
 
   const dto = data as Record<string, unknown>;
 
-
   // Validação do PE_TERM (obrigatório)
   if (typeof dto.PE_TERM !== "string" || dto.PE_TERM.trim() === "") {
     throw new Error("PE_TERM é obrigatório e deve ser uma string válida");
