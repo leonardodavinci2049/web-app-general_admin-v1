@@ -1,11 +1,14 @@
 import { envs } from "@/core/config";
+import { getUserId } from "@/lib/auth/get-user-id";
 import type { OrganizationSelAllDto } from "../dto/organization-sel-all.dto";
 
-export function OrganizationSelAllQuery(
+export async function OrganizationSelAllQuery(
   dataJsonDto: OrganizationSelAllDto,
-): string {
+): Promise<string> {
+  const userId = await getUserId();
+
   const PE_APP_ID = envs.APP_ID;
-  const PE_USER_ID = envs.USER_ID;
+  const PE_USER_ID = userId;
   const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID;
   const PE_ORGANIZATION = dataJsonDto.PE_ORGANIZATION;
   const PE_LIMIT = dataJsonDto.PE_LIMIT;

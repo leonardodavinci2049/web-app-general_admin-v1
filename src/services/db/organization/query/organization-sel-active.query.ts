@@ -1,11 +1,14 @@
 import { envs } from "@/core/config";
+import { getUserId } from "@/lib/auth/get-user-id";
 import type { OrganizationSelActiveDto } from "../dto/organization-sel-active.dto";
 
-export function OrganizationSelActiveQuery(
+export async function OrganizationSelActiveQuery(
   _dataJsonDto: OrganizationSelActiveDto,
-): string {
+): Promise<string> {
+  const userId = await getUserId();
+
   const PE_APP_ID = envs.APP_ID;
-  const PE_USER_ID = envs.USER_ID;
+  const PE_USER_ID = userId;
 
   const queryString = ` call sp_organization_sel_active_v1(
         ${PE_APP_ID},
