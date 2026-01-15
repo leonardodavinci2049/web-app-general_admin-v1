@@ -1,16 +1,5 @@
 import type { RowDataPacket } from "mysql2";
 
-export interface tblSystemUser extends RowDataPacket {
-  USER_ID: number;
-  SYSTEM_CLIENT_ID?: number;
-  STORE_ID?: number;
-  NOME?: string;
-  EMAIL?: string;
-  SENHA?: string;
-  ROLE?: number;
-  PATH_IMAGEM?: string;
-}
-
 // Login feedback information
 
 export interface SpDefaultFeedback extends RowDataPacket {
@@ -31,23 +20,23 @@ export interface SpOperationResult {
 }
 
 export interface TblOrganizationFindId extends RowDataPacket {
-  id: number;
+  id: string;
   system_id: number;
   name: string;
   slug: string;
   logo: string;
-  createdAt: string;
-  metadata: string;
+  createdAt: Date;
+  metadata: Date;
 }
 
 export interface TblOrganizationFind extends RowDataPacket {
-  id: number;
+  id: string;
   system_id: number;
   name: string;
   slug: string;
   logo: string;
-  createdAt: string;
-  metadata: string;
+  createdAt: Date;
+  metadata: Date;
 }
 
 export type SpResultRecordCreateType = [SpDefaultFeedback[], SpOperationResult];
