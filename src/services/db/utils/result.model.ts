@@ -5,6 +5,7 @@ export class ResultModel {
     public recordId: string,
     public data: unknown,
     public quantity?: number,
+    public errorId?: number,
     public info1?: string,
     public info2?: string,
   ) {}

@@ -39,6 +39,17 @@ export interface TblOrganizationFind extends RowDataPacket {
   metadata: Date;
 }
 
+export interface TblOrganizationActive extends RowDataPacket {
+  member_id: string;
+  id: string;
+  system_id: number;
+  name: string;
+  slug: string;
+  logo: string;
+  createdAt: Date;
+  metadata: Date;
+}
+
 export type SpResultRecordCreateType = [SpDefaultFeedback[], SpOperationResult];
 export type SpResultRecordUpdateType = [SpDefaultFeedback[], SpOperationResult];
 export type SpResultRecordDeleteType = [SpDefaultFeedback[], SpOperationResult];
@@ -52,6 +63,12 @@ export type SpResultRecordFindIdType = [
 
 export type SpResultRecordFindType = [
   TblOrganizationFind[], // Primeiro item: array de usuários
+  SpDefaultFeedback[], // Terceiro item: resultado SQL
+  SpOperationResult, // Segundo item: array de feedbacks
+];
+
+export type SpResultRecordActiveType = [
+  TblOrganizationActive[], // Primeiro item: array de usuários
   SpDefaultFeedback[], // Terceiro item: resultado SQL
   SpOperationResult, // Segundo item: array de feedbacks
 ];
