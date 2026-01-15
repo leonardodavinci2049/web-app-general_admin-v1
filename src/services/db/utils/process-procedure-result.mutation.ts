@@ -11,20 +11,18 @@ export function processProcedureResult(
   resultData: unknown[] | [unknown[], unknown[]],
   notFoundMessage: string,
 ): ResultModel {
-
   const DefaultFeedback = resultData[0] as SpDefaultFeedback[];
   const qtRecords = DefaultFeedback.length ?? 0;
   const errorId: number = DefaultFeedback[0]?.sp_error_id ?? 0;
-  const recordId: string = DefaultFeedback[0]?.sp_return_id ?? '';
+  const recordId: string = DefaultFeedback[0]?.sp_return_id ?? "";
 
- 
-  let Feedback = DefaultFeedback[0]?.sp_message || '';
+  let Feedback = DefaultFeedback[0]?.sp_message || "";
 
   if (qtRecords === 0 && errorId === 0) {
     Feedback = notFoundMessage;
   }
 
-  return resultQueryData< SpDefaultFeedback[]>(
+  return resultQueryData<SpDefaultFeedback[]>(
     0,
     recordId,
     errorId,
