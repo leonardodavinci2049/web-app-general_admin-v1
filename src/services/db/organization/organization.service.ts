@@ -1,7 +1,7 @@
 import { MESSAGES } from "@/core/constants/globalConstants";
 
 import dbService from "../dbConnection";
-import { processProcedureResult } from "../utils/process-procedure-result";
+import { processProcedureResult } from "../utils/process-procedure-result.query";
 import { ResultModel } from "../utils/result.model";
 
 import { validateOrganizationSelActiveDto } from "./dto/organization-sel-active.dto";
