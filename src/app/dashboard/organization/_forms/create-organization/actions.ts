@@ -21,7 +21,7 @@ export async function createOrganizationAction(
   const rawData = {
     name: formData.get("name"),
     slug: formData.get("slug"),
-    system_id: 33, // Temporary hardcoded value 
+    system_id: 33, // Temporary hardcoded value
   };
 
   // Validate with Zod
