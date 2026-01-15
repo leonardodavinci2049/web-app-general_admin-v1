@@ -43,12 +43,17 @@ export function validateOrganizationSelAllDto(
   }
 
   return {
-    PE_ORGANIZATION_ID: dto.PE_ORGANIZATION_ID
-      ? (dto.PE_ORGANIZATION_ID as string).trim()
-      : undefined,
-    PE_ORGANIZATION: dto.PE_ORGANIZATION
-      ? (dto.PE_ORGANIZATION as string).trim()
-      : undefined,
-    PE_LIMIT: dto.PE_LIMIT !== undefined ? Number(dto.PE_LIMIT) : undefined,
+    PE_ORGANIZATION_ID:
+      typeof dto.PE_ORGANIZATION_ID === "string"
+        ? dto.PE_ORGANIZATION_ID.trim()
+        : undefined,
+    PE_ORGANIZATION:
+      typeof dto.PE_ORGANIZATION === "string"
+        ? dto.PE_ORGANIZATION.trim()
+        : undefined,
+    PE_LIMIT:
+      dto.PE_LIMIT !== undefined && dto.PE_LIMIT !== null
+        ? Number(dto.PE_LIMIT)
+        : undefined,
   };
 }
