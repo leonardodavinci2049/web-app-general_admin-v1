@@ -5,7 +5,7 @@ export function OrganizationUpdSystemIdQuery(
   dataJsonDto: OrganizationUpdSystemIdDto,
 ): string {
   const PE_APP_ID = envs.APP_ID;
-  const PE_USER_ID = dataJsonDto.PE_USER_ID;
+  const PE_USER_ID = envs.USER_ID;
   const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID;
   const PE_SYSTEM_ID = dataJsonDto.PE_SYSTEM_ID;
 

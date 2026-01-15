@@ -1,9 +1,16 @@
-import { ResultModel } from "./result.model";
+export const API_VERSION = "v1";
+export const DEFAULT_PAGE_SIZE = 10;
+export const MAX_PAGE_SIZE = 100;
+
+// Constantes relacionadas a autenticação
+export const JWT_EXPIRES_IN = "24h";
+export const PASSWORD_MIN_LENGTH = 8;
 
 // Constantes para códigos de resposta
 export const RESPONSE_CODES = {
   SUCCESS: 100200,
   PROCESSED_SUCCESS: 100201,
+  NO_CONTENT_FOUND: 100200, // Busca válida mas sem resultados
   NOT_FOUND: 100404,
   VALIDATION_ERROR: 100400,
   INTERNAL_ERROR: 100500,
@@ -24,6 +31,9 @@ export const MESSAGES = {
   USER_UPDATED: "Usuário atualizado com sucesso",
   USER_DELETED: "Usuário excluído com sucesso",
   USER_NOT_FOUND: "Usuário não encontrado",
+  SEARCH_NO_RESULTS:
+    "Busca realizada com sucesso, mas nenhum resultado foi encontrado",
+  RESOURCE_NOT_FOUND: "Recurso não encontrado", // Para 404 real
   PROCESSING_SUCCESS: "Informações processadas com sucesso",
   PROCESSING_FAILURE: "Não foi possível processar as informações",
   INVALID_TOKEN: "Token inválido",
@@ -33,42 +43,3 @@ export const MESSAGES = {
   UNKNOWN_ERROR: "Ocorreu um erro desconhecido",
   PASSWORD_REQUIREMENTS: "Use número, letras maiúscula e minuscula",
 };
-
-export function resultQueryData<T>(
-  recordId: number,
-  errorId: number,
-  feedback: string,
-  resultData: T,
-  quantity: number = 0,
-  info1?: string,
-): ResultModel {
-  const sanitizedData = JSON.parse(JSON.stringify(resultData)) as T;
-
-  if (errorId === 0 && recordId > 0) {
-    const sucessoMessage =
-      feedback && feedback.trim() !== ""
-        ? feedback
-        : MESSAGES.PROCESSING_SUCCESS;
-    return new ResultModel(
-      RESPONSE_CODES.SUCCESS,
-      sucessoMessage,
-      recordId,
-      sanitizedData,
-      quantity,
-      info1,
-    );
-  } else {
-    const failedMessage =
-      feedback && feedback.trim() !== ""
-        ? feedback
-        : MESSAGES.PROCESSING_FAILURE;
-
-    return new ResultModel(
-      RESPONSE_CODES.PROCESSING_FAILED,
-      failedMessage,
-      recordId,
-      sanitizedData,
-      quantity,
-    );
-  }
-}
