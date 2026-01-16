@@ -4,37 +4,39 @@ import dbService from "../dbConnection";
 import { processProcedureResult } from "../utils/process-procedure-result.query";
 import { ResultModel } from "../utils/result.model";
 
-import { validateOrganizationSelActiveDto } from "./dto/organization-sel-active.dto";
-import { validateOrganizationSelAllDto } from "./dto/organization-sel-all.dto";
-import { validateOrganizationSelIdDto } from "./dto/organization-sel-id.dto";
+import { validateOrganizationFindActiveDto } from "./dto/organization-find-active.dto";
+import { validateOrganizationFindAllDto } from "./dto/organization-find-all.dto";
+import { validateOrganizationFindByIdDto } from "./dto/organization-find-by-id.dto";
 
-import { OrganizationSelActiveQuery } from "./query/organization-sel-active.query";
-import { OrganizationSelAllQuery } from "./query/organization-sel-all.query";
-import { OrganizationSelIdQuery } from "./query/organization-sel-id.query";
+import { OrganizationFindActiveQuery } from "./query/organization-find-active.query";
+import { OrganizationFindAllQuery } from "./query/organization-find-all.query";
+import { OrganizationFindByIdQuery } from "./query/organization-find-by-id.query";
 
 import type {
   SpResultRecordActiveType,
-  SpResultRecordFindIdType,
+  SpResultRecordFindByIdType,
   SpResultRecordFindType,
   TblOrganizationActive,
   TblOrganizationFind,
-  TblOrganizationFindId,
+  TblOrganizationFindById,
 } from "./types/organization.type";
 
 export class OrganizationService {
   // Serviço para buscar organização por ID
-  async execOrganizationSelIdQuery(dataJsonDto: unknown): Promise<ResultModel> {
+  async execOrganizationFindByIdQuery(
+    dataJsonDto: unknown,
+  ): Promise<ResultModel> {
     try {
       // Valida os dados de entrada
-      const validatedDto = validateOrganizationSelIdDto(dataJsonDto);
+      const validatedDto = validateOrganizationFindByIdDto(dataJsonDto);
 
-      const queryString = await OrganizationSelIdQuery(validatedDto);
+      const queryString = await OrganizationFindByIdQuery(validatedDto);
 
       const resultData = (await dbService.selectExecute(
         queryString,
-      )) as unknown as SpResultRecordFindIdType;
+      )) as unknown as SpResultRecordFindByIdType;
 
-      return processProcedureResult<TblOrganizationFindId>(
+      return processProcedureResult<TblOrganizationFindById>(
         resultData as unknown[],
         "Organization not found",
       );
@@ -45,14 +47,14 @@ export class OrganizationService {
     }
   }
 
-  async execOrganizationSelAllQuery(
+  async execOrganizationFindAllQuery(
     dataJsonDto: unknown,
   ): Promise<ResultModel> {
     try {
       // Valida os dados de entrada
-      const validatedDto = validateOrganizationSelAllDto(dataJsonDto);
+      const validatedDto = validateOrganizationFindAllDto(dataJsonDto);
 
-      const queryString = await OrganizationSelAllQuery(validatedDto);
+      const queryString = await OrganizationFindAllQuery(validatedDto);
 
       const resultData = (await dbService.selectExecute(
         queryString,
@@ -69,14 +71,14 @@ export class OrganizationService {
     }
   }
 
-  async execOrganizationSelActiveQuery(
+  async execOrganizationFindActiveQuery(
     dataJsonDto: unknown,
   ): Promise<ResultModel> {
     try {
       // Valida os dados de entrada
-      const validatedDto = validateOrganizationSelActiveDto(dataJsonDto);
+      const validatedDto = validateOrganizationFindActiveDto(dataJsonDto);
 
-      const queryString = await OrganizationSelActiveQuery(validatedDto);
+      const queryString = await OrganizationFindActiveQuery(validatedDto);
 
       const resultData = (await dbService.selectExecute(
         queryString,

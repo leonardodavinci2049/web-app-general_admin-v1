@@ -19,7 +19,7 @@ export interface SpOperationResult {
   changedRows: number;
 }
 
-export interface TblOrganizationFindId extends RowDataPacket {
+export interface TblOrganizationFindById extends RowDataPacket {
   id: string;
   system_id: number;
   name: string;
@@ -55,8 +55,8 @@ export type SpResultRecordUpdateType = [SpDefaultFeedback[], SpOperationResult];
 export type SpResultRecordDeleteType = [SpDefaultFeedback[], SpOperationResult];
 
 // Or keep the tuple type and create a related interface
-export type SpResultRecordFindIdType = [
-  TblOrganizationFindId[], // Primeiro item: array de usuários
+export type SpResultRecordFindByIdType = [
+  TblOrganizationFindById[], // Primeiro item: array de usuários
   SpDefaultFeedback[], // Terceiro item: resultado SQL
   SpOperationResult, // Segundo item: array de feedbacks
 ];
