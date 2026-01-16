@@ -1,4 +1,4 @@
-export interface OrganizationSelAllDto {
+export interface OrganizationFindAllDto {
   PE_ORGANIZATION_ID?: string;
   PE_ORGANIZATION?: string;
   PE_LIMIT?: number;
@@ -7,9 +7,9 @@ export interface OrganizationSelAllDto {
 /**
  * Valida o DTO para selecionar todas as organizações
  */
-export function validateOrganizationSelAllDto(
+export function validateOrganizationFindAllDto(
   data: unknown,
-): OrganizationSelAllDto {
+): OrganizationFindAllDto {
   if (data !== undefined && data !== null && typeof data !== "object") {
     throw new Error("Dados inválidos fornecidos");
   }

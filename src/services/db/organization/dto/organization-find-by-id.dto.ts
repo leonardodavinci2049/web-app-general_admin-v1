@@ -1,13 +1,13 @@
-export interface OrganizationSelIdDto {
+export interface OrganizationFindByIdDto {
   PE_ORGANIZATION_ID: string;
 }
 
 /**
  * Valida o DTO para selecionar uma organização por ID
  */
-export function validateOrganizationSelIdDto(
+export function validateOrganizationFindByIdDto(
   data: unknown,
-): OrganizationSelIdDto {
+): OrganizationFindByIdDto {
   if (!data || typeof data !== "object") {
     throw new Error("Dados inválidos fornecidos");
   }
