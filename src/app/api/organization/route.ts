@@ -21,6 +21,39 @@ export async function POST(request: NextRequest) {
         result =
           await organizationService.execOrganizationFindActiveQuery(params);
         break;
+      case "checkTermsExist":
+        result =
+          await organizationService.execOrganizationCheckTermsExistQuery(
+            params,
+          );
+        break;
+      case "checkNameExist":
+        result =
+          await organizationService.execOrganizationCheckNameExistQuery(params);
+        break;
+      case "checkSlugExist":
+        result =
+          await organizationService.execOrganizationCheckSlugExistQuery(params);
+        break;
+      case "checkSystemIdExist":
+        result =
+          await organizationService.execOrganizationCheckSystenIdExistQuery(
+            params,
+          );
+        break;
+      case "updateSlug":
+        result =
+          await organizationService.execOrganizationUpdateSlugQuery(params);
+        break;
+      case "updateName":
+        result =
+          await organizationService.execOrganizationUpdateNameQuery(params);
+        break;
+      case "updateSystemId":
+        result =
+          await organizationService.execOrganizationUpdateSystemIdQuery(params);
+        break;
+
       default:
         result = await organizationService.execOrganizationFindAllQuery(params);
         break;

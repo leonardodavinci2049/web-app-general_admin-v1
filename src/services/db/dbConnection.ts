@@ -127,7 +127,7 @@ class DatabaseService {
     } catch (error) {
       console.error("Erro ao executar selectExecute:", error);
       throw new ErroExecucaoConsulta(
-        "Falha ao executar consulta SELECT com execute" ,
+        "Falha ao executar consulta SELECT com execute",
         queryString,
         error as Error,
       );

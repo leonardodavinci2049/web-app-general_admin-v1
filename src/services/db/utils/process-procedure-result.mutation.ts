@@ -7,7 +7,7 @@ interface SpDefaultFeedback {
   sp_error_id?: number;
 }
 
-export function processProcedureResult(
+export function processProcedureResultMutation(
   resultData: unknown[] | [unknown[], unknown[]],
   notFoundMessage: string,
 ): ResultModel {

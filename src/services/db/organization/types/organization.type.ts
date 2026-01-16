@@ -53,7 +53,10 @@ export interface TblOrganizationActive extends RowDataPacket {
 export type SpResultRecordCreateType = [SpDefaultFeedback[], SpOperationResult];
 export type SpResultRecordUpdateType = [SpDefaultFeedback[], SpOperationResult];
 export type SpResultRecordDeleteType = [SpDefaultFeedback[], SpOperationResult];
-
+export type SpResultRecordCheckExistType = [
+  SpDefaultFeedback[],
+  SpOperationResult,
+];
 // Or keep the tuple type and create a related interface
 export type SpResultRecordFindByIdType = [
   TblOrganizationFindById[], // Primeiro item: array de usuários
