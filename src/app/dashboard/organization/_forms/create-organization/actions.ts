@@ -11,6 +11,7 @@ export type CreateOrganizationState = {
   errors?: {
     name?: string[];
     slug?: string[];
+    system_id?: string[];
   };
 };
 
@@ -20,8 +21,8 @@ export async function createOrganizationAction(
 ): Promise<CreateOrganizationState> {
   const rawData = {
     name: formData.get("name"),
+    system_id: formData.get("system_id"),
     slug: formData.get("slug"),
-    system_id: 33, // Temporary hardcoded value
   };
 
   // Validate with Zod
@@ -30,12 +31,12 @@ export async function createOrganizationAction(
   if (!validatedFields.success) {
     return {
       success: false,
-      message: "Validation failed",
+      message: "Falha na validação",
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  const { name, slug } = validatedFields.data;
+  const { name, slug, system_id } = validatedFields.data;
 
   try {
     await auth.api.createOrganization({
@@ -43,7 +44,7 @@ export async function createOrganizationAction(
       body: {
         name,
         slug,
-        system_id: 33, // Temporary hardcoded value
+        system_id,
       },
     });
 
@@ -51,13 +52,13 @@ export async function createOrganizationAction(
 
     return {
       success: true,
-      message: "Organization created successfully",
+      message: "Organização criada com sucesso",
     };
   } catch (error) {
     const e = error as Error;
     return {
       success: false,
-      message: e.message || "Failed to create organization",
+      message: e.message || "Falha ao criar organização",
     };
   }
 }

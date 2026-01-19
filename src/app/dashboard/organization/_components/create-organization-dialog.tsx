@@ -22,15 +22,15 @@ export function CreateOrganizationDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          <span className="hidden sm:inline">Create Organization</span>
-          <span className="sm:hidden">Organization</span>
+          <span className="hidden sm:inline">Criar Organização</span>
+          <span className="sm:hidden">Organização</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Organization</DialogTitle>
+          <DialogTitle>Criar Organização</DialogTitle>
           <DialogDescription>
-            Create a new organization to get started.
+            Crie uma nova organização para começar.
           </DialogDescription>
         </DialogHeader>
         <CreateOrganizationForm onSuccess={() => setOpen(false)} />

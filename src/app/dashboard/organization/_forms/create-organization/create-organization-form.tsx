@@ -1,20 +1,26 @@
 "use client";
 
-import Form from "next/form";
-import { useActionState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
+import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { SubmitButton } from "@/components/common/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  type CreateOrganizationState,
-  createOrganizationAction,
-} from "./actions";
 
-const initialState: CreateOrganizationState = {
-  success: false,
-  message: "",
-};
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { createOrganizationAction } from "./actions";
+import {
+  type CreateOrganizationInput,
+  createOrganizationSchema,
+} from "./schema";
 
 interface CreateOrganizationFormProps {
   onSuccess?: () => void;
@@ -23,77 +29,125 @@ interface CreateOrganizationFormProps {
 export function CreateOrganizationForm({
   onSuccess,
 }: CreateOrganizationFormProps) {
-  const [state, formAction] = useActionState(
-    createOrganizationAction,
-    initialState,
-  );
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (state.message) {
-      if (state.success) {
-        toast.success(state.message);
+  const form = useForm<CreateOrganizationInput>({
+    resolver: zodResolver(
+      createOrganizationSchema,
+    ) as Resolver<CreateOrganizationInput>,
+    defaultValues: {
+      name: "",
+      slug: "",
+      system_id: undefined,
+    },
+  });
+
+  function onSubmit(data: CreateOrganizationInput) {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("slug", data.slug);
+      formData.append("system_id", String(data.system_id));
+
+      const result = await createOrganizationAction(
+        { success: false, message: "" },
+        formData,
+      );
+
+      if (result.success) {
+        toast.success(result.message);
+        form.reset();
         onSuccess?.();
-      } else if (!state.errors) {
-        toast.error(state.message);
+      } else {
+        if (result.errors) {
+          // Map server-side errors to form fields
+          if (result.errors.name) {
+            form.setError("name", { message: result.errors.name[0] });
+          }
+          if (result.errors.slug) {
+            form.setError("slug", { message: result.errors.slug[0] });
+          }
+          if (result.errors.system_id) {
+            form.setError("system_id", { message: result.errors.system_id[0] });
+          }
+        }
+        toast.error(result.message);
       }
-    }
-  }, [state, onSuccess]);
+    });
+  }
 
   return (
-    <Form action={formAction} className="space-y-4">
-      <div className="grid gap-2">
-        <Label
-          htmlFor="name"
-          className={state.errors?.name ? "text-destructive" : ""}
-        >
-          Name
-        </Label>
-        <Input
-          id="name"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
           name="name"
-          type="text"
-          placeholder="My Organization"
-          required
-          minLength={2}
-          maxLength={50}
-          aria-describedby="name-error"
-          aria-invalid={!!state.errors?.name}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome da Organização</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ex: Acme Corp"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormDescription>O nome público da organização.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {state.errors?.name && (
-          <p id="name-error" className="text-sm text-destructive" role="alert">
-            {state.errors.name[0]}
-          </p>
-        )}
-      </div>
 
-      <div className="grid gap-2">
-        <Label
-          htmlFor="slug"
-          className={state.errors?.slug ? "text-destructive" : ""}
-        >
-          Slug
-        </Label>
-        <Input
-          id="slug"
+        <FormField
+          control={form.control}
+          name="system_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ID do Sistema</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Ex: 1001"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormDescription>
+                Identificador numérico único do sistema legado.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="slug"
-          type="text"
-          placeholder="my-org"
-          required
-          minLength={2}
-          maxLength={50}
-          pattern="^[a-z0-9-]+$"
-          title="Only lowercase letters, numbers, and hyphens are allowed"
-          aria-describedby="slug-error"
-          aria-invalid={!!state.errors?.slug}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Slug</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ex: acme-corp"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormDescription>
+                Identificador único para URLs (apenas letras minúsculas, números
+                e hifens).
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {state.errors?.slug && (
-          <p id="slug-error" className="text-sm text-destructive" role="alert">
-            {state.errors.slug[0]}
-          </p>
-        )}
-      </div>
 
-      <SubmitButton pendingText="Creating...">Create Organization</SubmitButton>
+        <div className="flex justify-end pt-4">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Criando..." : "Criar Organização"}
+          </Button>
+        </div>
+      </form>
     </Form>
   );
 }
