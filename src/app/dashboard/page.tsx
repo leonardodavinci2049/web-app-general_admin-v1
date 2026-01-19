@@ -3,9 +3,9 @@ import { getUserId } from "@/lib/auth/get-user-id";
 import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-breadcrumb";
 import { InvitationStatus } from "./_components/invitation-status";
-import { CreateOrganizationDialog } from "./admin/_components/create-organization-dialog";
-import { OrganizationTable } from "./admin/_components/organization-table";
-import { OrganizationSearch } from "./admin/_components/organization-search";
+import { CreateOrganizationDialog } from "./organization/_components/create-organization-dialog";
+import { OrganizationSearch } from "./organization/_components/organization-search";
+import { OrganizationTable } from "./organization/_components/organization-table";
 
 export default async function DashboardPage() {
   // Obter userId FORA do cache scope (usa headers())

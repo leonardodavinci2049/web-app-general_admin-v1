@@ -13,7 +13,7 @@ import { InviteInformation } from "./_components/invite-information";
 
 export default async function InvitationPage({
   params,
-}: PageProps<"/dashboard/admin/organization2/[id]">) {
+}: PageProps<"/dashboard/organization2/[id]">) {
   await connection();
   const session = await auth.api.getSession({ headers: await headers() });
   if (session == null) return redirect("/auth/login");

@@ -1,9 +1,9 @@
 import { getUserId } from "@/lib/auth/get-user-id";
 import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
-import { CreateOrganizationDialog } from "../admin/_components/create-organization-dialog";
-import { OrganizationSearch } from "../admin/_components/organization-search";
-import { OrganizationTable } from "../admin/_components/organization-table";
+import { CreateOrganizationDialog } from "./_components/create-organization-dialog";
+import { OrganizationSearch } from "./_components/organization-search";
+import { OrganizationTable } from "./_components/organization-table";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 

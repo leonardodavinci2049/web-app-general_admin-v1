@@ -3,9 +3,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth/auth-client";
-import { InvitesTab } from "./invites-tab";
-import { MembersTab } from "./members-tab";
-import { SubscriptionsTab } from "./subscriptions-tab";
+import { InvitesTab } from "../../organization2/_components/invites-tab";
+import { MembersTab } from "../../organization2/_components/members-tab";
+import { SubscriptionsTab } from "../../organization2/_components/subscriptions-tab";
 
 export function OrganizationTabs() {
   const { data: activeOrganization } = authClient.useActiveOrganization();
