@@ -1,13 +1,17 @@
 "use client";
 
 import {
+  Activity,
   AudioWaveform,
   Bot,
   Frame,
   GalleryVerticalEnd,
-  Map as MapIcon,
-  PieChart,
+  Layers,
+  Mail,
   Settings2,
+  Shield,
+  UserCircle,
+  Users,
 } from "lucide-react";
 import type * as React from "react";
 
@@ -59,62 +63,36 @@ const data = {
     {
       name: "Usuários",
       url: "/dashboard/users",
-      icon: PieChart,
+      icon: Users,
     },
 
     {
       name: "Profile",
       url: "/dashboard/profile",
-      icon: PieChart,
+      icon: UserCircle,
+    },
+    {
+      name: "convites",
+      url: "/dashboard/invites",
+      icon: Mail,
+    },
+    {
+      name: "Logs de Acesso",
+      url: "/dashboard/access-logs",
+      icon: Shield,
+    },
+    {
+      name: "Logs de Operações",
+      url: "/dashboard/operation-logs",
+      icon: Activity,
     },
     {
       name: "Plataformas",
       url: "#",
-      icon: MapIcon,
+      icon: Layers,
     },
   ],
 
-  navMain: [
-    {
-      title: "Relatórios",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Painel",
-          url: "/dashboard/report/panel",
-        },
-        {
-          title: "Relatórios de Organizações",
-          url: "/dashboard/report/organization",
-        },
-        {
-          title: "Relatórios de Usuários",
-          url: "/dashboard/report/users",
-        },
-        {
-          title: "Relatório de Sistema",
-          url: "/dashboard/report/system",
-        },
-      ],
-    },
-    {
-      title: "Configurações",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Configurações Gerais",
-          url: "#",
-        },
-
-        {
-          title: "Impressoras",
-          url: "#",
-        },
-      ],
-    },
-  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -125,7 +103,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={data.projects} />
-        <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
