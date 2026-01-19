@@ -1,11 +1,11 @@
-import { connection } from "next/server";
+//import { connection } from "next/server";
 import { getAllOrganizations } from "@/server/organizations";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { CreateOrganizationDialog } from "../admin/_components/create-organization-dialog";
 import { OrganizationTable } from "../admin/_components/organization-table";
 
 export default async function OrganizationPage() {
-  await connection();
+  // await connection();
   const organizations = await getAllOrganizations();
 
   return (
