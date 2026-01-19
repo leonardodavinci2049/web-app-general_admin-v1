@@ -64,7 +64,7 @@ const data = {
 
     {
       name: "Profile",
-      url: "/dashboard/admin/profile",
+      url: "/dashboard/profile",
       icon: PieChart,
     },
     {
