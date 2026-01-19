@@ -1,13 +1,17 @@
 "use client";
 
 import {
+  Activity,
   AudioWaveform,
   Bot,
   Frame,
   GalleryVerticalEnd,
-  Map as MapIcon,
-  PieChart,
+  Layers,
+  Mail,
   Settings2,
+  Shield,
+  UserCircle,
+  Users,
 } from "lucide-react";
 import type * as React from "react";
 
@@ -59,18 +63,33 @@ const data = {
     {
       name: "Usuários",
       url: "/dashboard/users",
-      icon: PieChart,
+      icon: Users,
     },
 
     {
       name: "Profile",
       url: "/dashboard/profile",
-      icon: PieChart,
+      icon: UserCircle,
+    },
+    {
+      name: "convites",
+      url: "/dashboard/invites",
+      icon: Mail,
+    },
+    {
+      name: "Logs de Acesso",
+      url: "/dashboard/access-logs",
+      icon: Shield,
+    },
+    {
+      name: "Logs de Operações",
+      url: "/dashboard/operation-logs",
+      icon: Activity,
     },
     {
       name: "Plataformas",
       url: "#",
-      icon: MapIcon,
+      icon: Layers,
     },
   ],
 
