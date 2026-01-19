@@ -90,8 +90,12 @@ export async function getAllOrganizations(
  * Cache Strategy:
  * - cacheLife("hours"): 1 hour cache duration
  * - cacheTag: specific organization tag + general organizations tag for invalidation
+ *
+ * @param userId - User ID obtained OUTSIDE of cache scope (from headers/session)
+ * @param id - Organization ID to fetch
  */
 export async function getOrganizationById(
+  userId: string,
   id: string,
 ): Promise<OrganizationDetail | null> {
   "use cache";
@@ -100,7 +104,8 @@ export async function getOrganizationById(
 
   try {
     const response = await organizationService.execOrganizationFindByIdQuery({
-      id,
+      PE_USER_ID: userId,
+      PE_ORGANIZATION_ID: id,
     });
 
     if (response.statusCode !== 100200 || !response.data) {

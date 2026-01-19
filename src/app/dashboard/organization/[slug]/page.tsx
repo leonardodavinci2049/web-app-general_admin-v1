@@ -2,17 +2,23 @@ import Link from "next/link";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { getOrganizationBySlug } from "@/server/organizations";
-import { getUsers } from "@/server/users";
+import { getCurrentUser, getUsers } from "@/server/users";
 import InviteUsersTable from "./_components/invite-users-table";
 import MembersTable from "./_components/members-table";
+import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
+import { OrganizationDetailsCard } from "./_components/organization-details-card";
 
 type Params = Promise<{ slug: string }>;
 
 export default async function OrganizationPage({ params }: { params: Params }) {
   const { slug } = await params;
 
+  const { currentUser } = await getCurrentUser();
   const organization = await getOrganizationBySlug(slug);
   const users = await getUsers(organization?.id || "");
+  const organizationDetails = organization
+    ? await getOrganizationById(currentUser.id, organization.id)
+    : null;
 
   if (!organization) {
     return <div>Organization not found</div>;
@@ -38,6 +44,12 @@ export default async function OrganizationPage({ params }: { params: Params }) {
             <Button variant="outline">Voltar</Button>
           </Link>
         </div>
+        {organizationDetails && (
+          <div className="space-y-4">
+            <OrganizationDetailsCard organization={organizationDetails} />
+          </div>
+        )}
+
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Membros</h2>
