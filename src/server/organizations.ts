@@ -26,6 +26,10 @@ export async function getOrganizations() {
  * Carrega todas as organizações do sistema
  * Para uso em dashboards de administração global
  * Requer autenticação - redireciona para /sign-in se não houver sessão
+ *
+ * @deprecated Use getAllOrganizations from '@/services/db/organization/organization-cached-service'
+ * Server actions devem ser usadas apenas para mutations (POST, PUT, DELETE).
+ * Para data fetching em Server Components, use o cached service diretamente.
  */
 export async function getAllOrganizations() {
   // Verifica se existe um usuário logado antes de carregar dados

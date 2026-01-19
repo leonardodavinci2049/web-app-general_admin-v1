@@ -14,10 +14,12 @@ export const CACHE_TAGS = {
   product: (id: string) => `product-${id}`,
   productGallery: (id: string) => `product-gallery-${id}`,
   category: (id: string) => `category-${id}`,
+  organization: (id: string) => `organization-${id}`,
 
   // Static tags
   products: "products",
   categories: "categories",
+  organizations: "organizations",
   navigation: "navigation",
   banners: "banners",
   footer: "footer",
