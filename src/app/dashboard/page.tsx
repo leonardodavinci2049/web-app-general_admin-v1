@@ -1,14 +1,17 @@
-import { connection } from "next/server";
 import { Suspense } from "react";
-import { getAllOrganizations } from "@/server/organizations";
+import { getUserId } from "@/lib/auth/get-user-id";
+import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-breadcrumb";
 import { InvitationStatus } from "./_components/invitation-status";
 import { CreateOrganizationDialog } from "./admin/_components/create-organization-dialog";
 import { OrganizationTable } from "./admin/_components/organization-table";
 
 export default async function DashboardPage() {
-  await connection();
-  const organizations = await getAllOrganizations();
+  // Obter userId FORA do cache scope (usa headers())
+  const userId = await getUserId();
+
+  // Carregamento com cache - userId passado como argumento
+  const organizations = await getAllOrganizations(userId);
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Header fixo no topo */}
