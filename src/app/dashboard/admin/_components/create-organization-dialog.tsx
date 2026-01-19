@@ -22,7 +22,8 @@ export function CreateOrganizationDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Create Organization
+          <span className="hidden sm:inline">Create Organization</span>
+          <span className="sm:hidden">Organization</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
