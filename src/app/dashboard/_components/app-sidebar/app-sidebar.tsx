@@ -93,47 +93,6 @@ const data = {
     },
   ],
 
-  navMain: [
-    {
-      title: "Relatórios",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Painel",
-          url: "/dashboard/report/panel",
-        },
-        {
-          title: "Relatórios de Organizações",
-          url: "/dashboard/report/organization",
-        },
-        {
-          title: "Relatórios de Usuários",
-          url: "/dashboard/report/users",
-        },
-        {
-          title: "Relatório de Sistema",
-          url: "/dashboard/report/system",
-        },
-      ],
-    },
-    {
-      title: "Configurações",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Configurações Gerais",
-          url: "#",
-        },
-
-        {
-          title: "Impressoras",
-          url: "#",
-        },
-      ],
-    },
-  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -144,7 +103,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={data.projects} />
-        <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
