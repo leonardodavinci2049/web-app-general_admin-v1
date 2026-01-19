@@ -27,7 +27,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
               <TableHead className="w-20">Logo</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>ID</TableHead>
+              <TableHead>ID System</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -55,7 +55,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                   <Badge variant="outline">{org.slug}</Badge>
                 </TableCell>
                 <TableCell className="font-mono text-xs text-muted-foreground">
-                  {org.id}
+                  {org.system_id}
                 </TableCell>
                 <TableCell>
                   {org.createdAt

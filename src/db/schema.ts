@@ -2,6 +2,7 @@ export type Role = "ADMIN" | "MEMBER" | "BILLING";
 
 export type Organization = {
   id: string;
+  system_id?: number | null;
   name: string;
   slug?: string | null;
   logo?: string | null;

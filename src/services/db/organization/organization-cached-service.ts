@@ -31,6 +31,7 @@ function transformOrganization(
 ): Organization {
   return {
     id: org.id,
+    system_id: org.system_id,
     name: org.name,
     slug: org.slug,
     logo: org.logo || null,
