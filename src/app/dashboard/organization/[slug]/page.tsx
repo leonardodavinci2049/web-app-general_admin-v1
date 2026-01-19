@@ -3,9 +3,9 @@ import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/sit
 import { Button } from "@/components/ui/button";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser, getUsers } from "@/server/users";
+import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
 import InviteUsersTable from "./_components/invite-users-table";
 import MembersTable from "./_components/members-table";
-import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
 import { OrganizationDetailsCard } from "./_components/organization-details-card";
 
 type Params = Promise<{ slug: string }>;
