@@ -5,6 +5,7 @@ import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-
 import { InvitationStatus } from "./_components/invitation-status";
 import { CreateOrganizationDialog } from "./admin/_components/create-organization-dialog";
 import { OrganizationTable } from "./admin/_components/organization-table";
+import { OrganizationSearch } from "./admin/_components/organization-search";
 
 export default async function DashboardPage() {
   // Obter userId FORA do cache scope (usa headers())
@@ -39,7 +40,7 @@ export default async function DashboardPage() {
           </div>
           <CreateOrganizationDialog />
         </div>
-
+        <OrganizationSearch />
         <OrganizationTable organizations={organizations} />
       </div>
     </div>
