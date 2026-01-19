@@ -42,7 +42,10 @@ import type {
 } from "./types/organization.type";
 
 export class OrganizationService {
-  // Serviço para buscar organização por ID
+  // ============================================================================
+  // buscar organização
+  // ============================================================================
+
   async execOrganizationFindByIdQuery(
     dataJsonDto: unknown,
   ): Promise<ResultModel> {
@@ -114,6 +117,9 @@ export class OrganizationService {
       return new ResultModel(100404, errorMessage, "", []);
     }
   }
+  // ============================================================================
+  // verificar se termos da organização existe
+  // ============================================================================
 
   async execOrganizationCheckTermsExistQuery(
     dataJsonDto: unknown,
@@ -212,6 +218,9 @@ export class OrganizationService {
       return new ResultModel(100404, errorMessage, "", []);
     }
   }
+  // ============================================================================
+  // criar organização
+  // ============================================================================
 
   async execOrganizationCreateQuery(
     dataJsonDto: unknown,
@@ -236,6 +245,9 @@ export class OrganizationService {
       return new ResultModel(100404, errorMessage, "", []);
     }
   }
+  // ============================================================================
+  // atualizar termos da organização
+  // ============================================================================
 
   async execOrganizationUpdateNameQuery(
     dataJsonDto: unknown,
@@ -308,6 +320,9 @@ export class OrganizationService {
       return new ResultModel(100404, errorMessage, "", []);
     }
   }
+  // ============================================================================
+  // deletar organização
+  // ============================================================================
   async execOrganizationDeleteQuery(
     dataJsonDto: unknown,
   ): Promise<ResultModel> {
