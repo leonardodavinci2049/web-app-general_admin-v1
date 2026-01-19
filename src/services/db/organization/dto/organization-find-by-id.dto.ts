@@ -1,4 +1,5 @@
 export interface OrganizationFindByIdDto {
+  PE_USER_ID: string;
   PE_ORGANIZATION_ID: string;
 }
 
@@ -13,6 +14,15 @@ export function validateOrganizationFindByIdDto(
   }
 
   const dto = data as Record<string, unknown>;
+
+  // Validação de PE_USER_ID
+  if (typeof dto.PE_USER_ID !== "string" || dto.PE_USER_ID.trim() === "") {
+    throw new Error("PE_USER_ID é obrigatório e deve ser uma string válida");
+  }
+
+  if (dto.PE_USER_ID.length > 191) {
+    throw new Error("PE_USER_ID não pode exceder 191 caracteres");
+  }
 
   // Validação de campos de string (varchar)
   if (
@@ -30,6 +40,7 @@ export function validateOrganizationFindByIdDto(
   }
 
   return {
+    PE_USER_ID: (dto.PE_USER_ID as string).trim(),
     PE_ORGANIZATION_ID: (dto.PE_ORGANIZATION_ID as string).trim(),
   };
 }
