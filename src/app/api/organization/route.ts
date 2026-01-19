@@ -41,6 +41,9 @@ export async function POST(request: NextRequest) {
             params,
           );
         break;
+      case "create":
+        result = await organizationService.execOrganizationCreateQuery(params);
+        break;
       case "updateSlug":
         result =
           await organizationService.execOrganizationUpdateSlugQuery(params);
@@ -52,6 +55,9 @@ export async function POST(request: NextRequest) {
       case "updateSystemId":
         result =
           await organizationService.execOrganizationUpdateSystemIdQuery(params);
+        break;
+      case "delete":
+        result = await organizationService.execOrganizationDeleteQuery(params);
         break;
 
       default:

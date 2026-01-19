@@ -14,11 +14,11 @@ export async function OrganizationFindAllQuery(
   const PE_LIMIT = dataJsonDto.PE_LIMIT;
 
   const queryString = ` call sp_organization_find_all_v1(
-        ${PE_APP_ID},
+         ${PE_APP_ID},
         '${PE_USER_ID}',
-        ${PE_ORGANIZATION_ID ? `'${PE_ORGANIZATION_ID}'` : "NULL"},
-        ${PE_ORGANIZATION ? `'${PE_ORGANIZATION}'` : "NULL"},
-        ${PE_LIMIT ?? 0}
+        '${PE_ORGANIZATION_ID ?? ""}',
+        '${PE_ORGANIZATION ?? ""}',
+         ${PE_LIMIT ?? 50}
         ) `;
 
   return queryString;
