@@ -55,6 +55,7 @@ function transformOrganization(
  */
 export async function getAllOrganizations(
   userId: string,
+  searchTerm?: string,
 ): Promise<OrganizationListItem[]> {
   "use cache";
   cacheLife("hours");
@@ -63,6 +64,7 @@ export async function getAllOrganizations(
   try {
     const response = await organizationService.execOrganizationFindAllQuery({
       PE_USER_ID: userId,
+      PE_ORGANIZATION: searchTerm,
     });
 
     if (response.statusCode !== 100200 || !response.data) {
