@@ -1,5 +1,6 @@
 "use client";
 
+import { Building2, CalendarIcon, Fingerprint, HashIcon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { OrganizationDetail } from "@/services/db/organization/organization-cached-service";
-import { CalendarIcon, HashIcon, Fingerprint, Building2 } from "lucide-react";
 
 interface OrganizationDetailsCardProps {
   organization: OrganizationDetail;
