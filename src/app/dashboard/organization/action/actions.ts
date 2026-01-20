@@ -59,3 +59,70 @@ export async function updateOrganizationNameAction(
     };
   }
 }
+
+export async function updateOrganizationSlugAction(
+  organizationId: string,
+  slug: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const userId = await getUserId();
+    const result = await organizationService.execOrganizationUpdateSlugQuery({
+      PE_USER_ID: userId,
+      PE_ORGANIZATION_ID: organizationId,
+      PE_ORGANIZATION_SLUG: slug,
+    });
+
+    if (result.statusCode === 200 || result.statusCode === 100200) {
+      revalidatePath("/dashboard/organization");
+      revalidatePath("/dashboard/organization/[slug]", "layout");
+      return {
+        success: true,
+        message: "Slug da organização atualizado com sucesso",
+      };
+    } else {
+      return {
+        success: false,
+        message: result.message || "Erro ao atualizar slug da organização",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Erro desconhecido",
+    };
+  }
+}
+
+export async function updateOrganizationSystemIdAction(
+  organizationId: string,
+  systemId: number,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const userId = await getUserId();
+    const result =
+      await organizationService.execOrganizationUpdateSystemIdQuery({
+        PE_USER_ID: userId,
+        PE_ORGANIZATION_ID: organizationId,
+        PE_SYSTEM_ID: systemId,
+      });
+
+    if (result.statusCode === 200 || result.statusCode === 100200) {
+      revalidatePath("/dashboard/organization");
+      revalidatePath("/dashboard/organization/[slug]", "layout");
+      return {
+        success: true,
+        message: "ID do Sistema atualizado com sucesso",
+      };
+    } else {
+      return {
+        success: false,
+        message: result.message || "Erro ao atualizar ID do Sistema",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Erro desconhecido",
+    };
+  }
+}
