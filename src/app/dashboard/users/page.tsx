@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
-import { UserTable } from "./_components/user-table";
 import { UserSearch } from "./_components/user-search";
+import { UserTable } from "./_components/user-table";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 

@@ -1,3 +1,4 @@
+import type { UserWithRole } from "better-auth/plugins/admin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { UserWithRole } from "better-auth/plugins/admin";
 import { UserActions } from "./user-actions";
 
 interface UserTableProps {

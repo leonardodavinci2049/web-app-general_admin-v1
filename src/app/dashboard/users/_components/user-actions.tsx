@@ -2,14 +2,15 @@
 
 import type { UserWithRole } from "better-auth/plugins/admin";
 import {
+  KeyRound,
   MoreHorizontal,
   ShieldAlert,
-  UserMinus,
   UserCheck,
-  KeyRound,
   UserCog,
+  UserMinus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -31,7 +32,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth/auth-client";
-import { useState } from "react";
 
 interface UserActionsProps {
   user: UserWithRole;
@@ -122,64 +122,62 @@ export function UserActions({ user, selfId }: UserActionsProps) {
   if (isSelf) return null;
 
   return (
-    <>
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleImpersonateUser(user.id)}>
-              <UserCog className="mr-2 h-4 w-4" />
-              Personificar
+    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => handleImpersonateUser(user.id)}>
+            <UserCog className="mr-2 h-4 w-4" />
+            Personificar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleRevokeSessions(user.id)}>
+            <KeyRound className="mr-2 h-4 w-4" />
+            Revogar Sessões
+          </DropdownMenuItem>
+          {user.banned ? (
+            <DropdownMenuItem onClick={() => handleUnbanUser(user.id)}>
+              <UserCheck className="mr-2 h-4 w-4 text-green-600" />
+              Desbanir Usuário
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleRevokeSessions(user.id)}>
-              <KeyRound className="mr-2 h-4 w-4" />
-              Revogar Sessões
+          ) : (
+            <DropdownMenuItem onClick={() => handleBanUser(user.id)}>
+              <ShieldAlert className="mr-2 h-4 w-4 text-orange-600" />
+              Banir Usuário
             </DropdownMenuItem>
-            {user.banned ? (
-              <DropdownMenuItem onClick={() => handleUnbanUser(user.id)}>
-                <UserCheck className="mr-2 h-4 w-4 text-green-600" />
-                Desbanir Usuário
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem onClick={() => handleBanUser(user.id)}>
-                <ShieldAlert className="mr-2 h-4 w-4 text-orange-600" />
-                Banir Usuário
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuSeparator />
-            <AlertDialogTrigger asChild>
-              <DropdownMenuItem className="text-destructive focus:text-destructive">
-                <UserMinus className="mr-2 h-4 w-4" />
-                Excluir Usuário
-              </DropdownMenuItem>
-            </AlertDialogTrigger>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+          <DropdownMenuSeparator />
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem className="text-destructive focus:text-destructive">
+              <UserMinus className="mr-2 h-4 w-4" />
+              Excluir Usuário
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Excluir Usuário</AlertDialogTitle>
-            <AlertDialogDescription>
-              Você tem certeza que deseja excluir este usuário? Esta ação não
-              pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => handleRemoveUser(user.id)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Excluir Usuário</AlertDialogTitle>
+          <AlertDialogDescription>
+            Você tem certeza que deseja excluir este usuário? Esta ação não pode
+            ser desfeita.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => handleRemoveUser(user.id)}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            Excluir
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
