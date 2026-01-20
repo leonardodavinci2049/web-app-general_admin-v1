@@ -1,6 +1,8 @@
 "use client";
 
-import { CalendarIcon, Mail, Shield, User, Fingerprint } from "lucide-react";
+import { CalendarIcon, Fingerprint, Mail, Shield, User } from "lucide-react";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -8,9 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import type { User as UserType } from "@/services/db/auth/types/auth.types";
-import Image from "next/image";
 
 interface UserDetailsCardProps {
   user: UserType;

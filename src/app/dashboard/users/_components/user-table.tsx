@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { UserWithRole } from "better-auth/plugins/admin";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
