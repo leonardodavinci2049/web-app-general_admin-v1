@@ -1,4 +1,5 @@
 export interface OrganizationDeleteDto {
+  PE_USER_ID: string;
   PE_ORGANIZATION_ID: string;
 }
 
@@ -13,6 +14,11 @@ export function validateOrganizationDeleteDto(
   }
 
   const dto = data as Record<string, unknown>;
+
+  // Validação de PE_USER_ID obrigatório
+  if (!dto.PE_USER_ID || typeof dto.PE_USER_ID !== "string") {
+    throw new Error("PE_USER_ID é obrigatório e deve ser uma string");
+  }
 
   // Validação de campos de string (varchar)
   if (
@@ -30,6 +36,7 @@ export function validateOrganizationDeleteDto(
   }
 
   return {
+    PE_USER_ID: String(dto.PE_USER_ID).trim(),
     PE_ORGANIZATION_ID: (dto.PE_ORGANIZATION_ID as string).trim(),
   };
 }

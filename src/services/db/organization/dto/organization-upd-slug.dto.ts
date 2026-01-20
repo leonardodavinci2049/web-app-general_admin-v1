@@ -1,4 +1,5 @@
 export interface OrganizationUpdSlugDto {
+  PE_USER_ID: string;
   PE_ORGANIZATION_ID: string;
   PE_ORGANIZATION_SLUG: string;
 }
@@ -14,6 +15,11 @@ export function validateOrganizationUpdSlugDto(
   }
 
   const dto = data as Record<string, unknown>;
+
+  // Validação de PE_USER_ID obrigatório
+  if (!dto.PE_USER_ID || typeof dto.PE_USER_ID !== "string") {
+    throw new Error("PE_USER_ID é obrigatório e deve ser uma string");
+  }
 
   // Validação de campos de string (varchar)
   if (
@@ -44,6 +50,7 @@ export function validateOrganizationUpdSlugDto(
   }
 
   return {
+    PE_USER_ID: String(dto.PE_USER_ID).trim(),
     PE_ORGANIZATION_ID: (dto.PE_ORGANIZATION_ID as string).trim(),
     PE_ORGANIZATION_SLUG: (dto.PE_ORGANIZATION_SLUG as string).trim(),
   };
