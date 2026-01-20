@@ -1,80 +1,69 @@
-import { Users } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { auth } from "@/lib/auth/auth";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
-import { UserRow } from "./_components/user-row";
+import { UserTable } from "./_components/user-table";
+import { UserSearch } from "./_components/user-search";
 
-export default async function AdminPage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function UsersPage(props: { searchParams: SearchParams }) {
   await connection();
+  const searchParams = await props.searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (session == null) return redirect("/auth/login");
+
   const hasAccess = await auth.api.userHasPermission({
     headers: await headers(),
     body: { permission: { user: ["list"] } },
   });
+
   if (!hasAccess.success) return redirect("/");
+
+  const searchTerm =
+    typeof searchParams.search === "string" ? searchParams.search : undefined;
 
   const users = await auth.api.listUsers({
     headers: await headers(),
-    query: { limit: 100, sortBy: "createdAt", sortDirection: "desc" },
+    query: {
+      limit: 100,
+      sortBy: "createdAt",
+      sortDirection: "desc",
+      ...(searchTerm
+        ? {
+            filterField: "name",
+            filterValue: searchTerm,
+            filterOperator: "contains",
+          }
+        : {}),
+    },
   });
 
   return (
-    <div className="mx-auto container my-6 px-4">
+    <>
       <SiteHeaderWithBreadcrumb
         title="Dashboard"
         breadcrumbItems={[
-          { label: "Dashboard", href: "#" },
+          { label: "Dashboard", href: "" },
           { label: "Usuários", isActive: true },
         ]}
       />
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Users ({users.total})
-          </CardTitle>
-          <CardDescription>
-            Gerenciar contas de usuário, funções e permissões.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="w-25">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.users.map((user) => (
-                  <UserRow key={user.id} user={user} selfId={session.user.id} />
-                ))}
-              </TableBody>
-            </Table>
+
+      <div className="container mx-auto py-10 px-4 space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-3xl font-bold tracking-tight">Usuários</h1>
+            <p className="text-muted-foreground">
+              Gerencie contas de usuário, funções e permissões.
+            </p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        <UserSearch />
+        <UserTable users={users.users} selfId={session.user.id} />
+      </div>
+    </>
   );
 }
