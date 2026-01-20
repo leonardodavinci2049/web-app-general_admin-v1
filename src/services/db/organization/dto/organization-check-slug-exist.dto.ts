@@ -1,4 +1,5 @@
 export interface OrganizationCheckSlugExistDto {
+  PE_USER_ID: string;
   PE_TERM: string;
 }
 
@@ -14,6 +15,11 @@ export function validateOrganizationCheckSlugExistDto(
 
   const dto = data as Record<string, unknown>;
 
+  // Validação de PE_USER_ID obrigatório
+  if (!dto.PE_USER_ID || typeof dto.PE_USER_ID !== "string") {
+    throw new Error("PE_USER_ID é obrigatório e deve ser uma string");
+  }
+
   // Validação do PE_TERM (obrigatório)
   if (typeof dto.PE_TERM !== "string" || dto.PE_TERM.trim() === "") {
     throw new Error("PE_TERM é obrigatório e deve ser uma string válida");
@@ -24,6 +30,7 @@ export function validateOrganizationCheckSlugExistDto(
   }
 
   return {
+    PE_USER_ID: String(dto.PE_USER_ID).trim(),
     PE_TERM: (dto.PE_TERM as string).trim(),
   };
 }

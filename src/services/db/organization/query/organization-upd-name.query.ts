@@ -1,14 +1,11 @@
 import { envs } from "@/core/config";
-import { getUserId } from "@/lib/auth/get-user-id";
 import type { OrganizationUpdNameDto } from "../dto/organization-upd-name.dto";
 
-export async function OrganizationUpdNameQuery(
+export function OrganizationUpdNameQuery(
   dataJsonDto: OrganizationUpdNameDto,
-): Promise<string> {
-  const userId = await getUserId();
-
+): string {
   const PE_APP_ID = envs.APP_ID;
-  const PE_USER_ID = userId;
+  const PE_USER_ID = dataJsonDto.PE_USER_ID;
   const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID;
   const PE_ORGANIZATION_NAME = dataJsonDto.PE_ORGANIZATION_NAME;
 

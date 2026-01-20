@@ -1,4 +1,5 @@
 export interface OrganizationCreateDto {
+  PE_USER_ID: string;
   PE_SYSTEM_ID: number;
   PE_ORGANIZATION_ID: string;
   PE_ORGANIZATION_NAME: string;
@@ -16,6 +17,11 @@ export function validateOrganizationCreateDto(
   }
 
   const dto = data as Record<string, unknown>;
+
+  // Validação de PE_USER_ID obrigatório
+  if (!dto.PE_USER_ID || typeof dto.PE_USER_ID !== "string") {
+    throw new Error("PE_USER_ID é obrigatório e deve ser uma string");
+  }
 
   // Validação de campos numéricos (INT)
   if (typeof dto.PE_SYSTEM_ID !== "number") {
@@ -64,6 +70,7 @@ export function validateOrganizationCreateDto(
   }
 
   return {
+    PE_USER_ID: String(dto.PE_USER_ID).trim(),
     PE_SYSTEM_ID: Number(dto.PE_SYSTEM_ID),
     PE_ORGANIZATION_ID: (dto.PE_ORGANIZATION_ID as string).trim(),
     PE_ORGANIZATION_NAME: (dto.PE_ORGANIZATION_NAME as string).trim(),
