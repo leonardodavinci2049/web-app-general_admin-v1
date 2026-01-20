@@ -69,7 +69,7 @@ class DatabaseService {
       };
 
       this.poolConnection = createPool(config);
-      console.log("Conectado ao banco de dados MySQL");
+     // console.log("Conectado ao banco de dados MySQL");
     } catch (error) {
       console.error(
         "Erro ao conectar ao banco de dados MySQL com mysql2",
