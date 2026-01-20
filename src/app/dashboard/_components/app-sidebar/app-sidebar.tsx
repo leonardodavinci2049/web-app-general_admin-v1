@@ -3,12 +3,10 @@
 import {
   Activity,
   AudioWaveform,
-  Bot,
   Frame,
   GalleryVerticalEnd,
   Layers,
   Mail,
-  Settings2,
   Shield,
   UserCircle,
   Users,

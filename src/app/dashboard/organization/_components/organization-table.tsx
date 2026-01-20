@@ -26,8 +26,9 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
             <TableRow className="bg-secondary hover:bg-secondary">
               <TableHead className="w-20">Logo</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Slug</TableHead>
               <TableHead>ID System</TableHead>
+              <TableHead>Slug</TableHead>
+
               <TableHead>Created At</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -51,12 +52,14 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                     {org.name}
                   </Link>
                 </TableCell>
-                <TableCell>
-                  <Badge variant="outline">{org.slug}</Badge>
-                </TableCell>
                 <TableCell className="font-mono text-xs text-muted-foreground">
                   {org.system_id}
                 </TableCell>
+
+                <TableCell>
+                  <Badge variant="outline">{org.slug}</Badge>
+                </TableCell>
+
                 <TableCell>
                   {org.createdAt
                     ? new Intl.DateTimeFormat("en-US", {
