@@ -1,4 +1,5 @@
 import type { UserWithRole } from "better-auth/plugins/admin";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -46,7 +47,12 @@ export function UserTable({ users, selfId }: UserTableProps) {
                 </TableCell>
                 <TableCell className="font-medium">
                   <div className="flex items-center gap-2">
-                    {user.name || "Sem nome"}
+                    <Link
+                      href={`/dashboard/users/${user.id}`}
+                      className="hover:underline"
+                    >
+                      {user.name || "Sem nome"}
+                    </Link>
                     {user.id === selfId && (
                       <Badge
                         variant="outline"
@@ -121,9 +127,12 @@ export function UserTable({ users, selfId }: UserTableProps) {
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium block truncate">
+                    <Link
+                      href={`/dashboard/users/${user.id}`}
+                      className="font-medium block truncate hover:underline"
+                    >
                       {user.name || "Sem nome"}
-                    </span>
+                    </Link>
                     {user.id === selfId && (
                       <Badge
                         variant="outline"
