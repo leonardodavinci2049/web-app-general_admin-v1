@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { AuthService } from "@/services/db/auth/auth.service";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
 import { UserDetailsCard } from "./_components/user-details-card";
+import { UserPasswordCard } from "./_components/security/user-password-card";
+import { UserTwoFactorCard } from "./_components/security/user-two-factor-card";
+import { UserSessionsCard } from "./_components/security/user-sessions-card";
 
 type Params = Promise<{ id: string }>;
 
@@ -15,6 +18,11 @@ export default async function UserPage({ params }: { params: Params }) {
 
   const userResponse = await AuthService.findUserById({ userId: id });
   const user = userResponse.data;
+
+  const sessionsResponse = await AuthService.findSessionsByUserId({
+    userId: id,
+  });
+  const sessions = sessionsResponse.data || [];
 
   if (!user) {
     return notFound();
@@ -46,8 +54,15 @@ export default async function UserPage({ params }: { params: Params }) {
           </Link>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <UserDetailsCard user={user} />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <UserPasswordCard email={user.email} />
+            <UserTwoFactorCard isEnabled={user.twoFactorEnabled ?? false} />
+          </div>
+
+          <UserSessionsCard sessions={sessions} />
         </div>
       </div>
     </>

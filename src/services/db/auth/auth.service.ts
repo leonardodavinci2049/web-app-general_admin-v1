@@ -16,12 +16,15 @@ import {
   mapMemberEntityToDto,
   mapMemberWithUserEntityToDto,
   mapOrganizationEntityToDto,
+  mapSessionEntityToDto,
   mapSubscriptionEntityToDto,
   mapUserEntityToDto,
   type Organization,
   type OrganizationEntity,
   type OrganizationWithMembers,
   type ServiceResponse,
+  type Session,
+  type SessionEntity,
   type Subscription,
   type SubscriptionEntity,
   type User,
@@ -1147,6 +1150,76 @@ async function findNonMemberUsers(params: {
 }
 
 // ============================================================================
+// ============================================================================
+// Session Methods
+// ============================================================================
+
+/**
+ * Finds all sessions for a user
+ *
+ * Replaces: prisma.session.findMany({ where: { userId } })
+ */
+async function findSessionsByUserId(params: {
+  userId: string;
+}): Promise<ServiceResponse<Session[]>> {
+  try {
+    validateId(params.userId, "userId");
+
+    const query = `
+      SELECT 
+        id, expiresAt, token, createdAt, updatedAt, 
+        ipAddress, userAgent, userId, impersonatedBy, 
+        activeOrganizationId, activeTeamId
+      FROM ${AUTH_TABLES.SESSION}
+      WHERE userId = ?
+      ORDER BY createdAt DESC
+    `;
+
+    const results = await dbService.selectExecute<SessionEntity>(query, [
+      params.userId,
+    ]);
+
+    return {
+      success: true,
+      data: results.map(mapSessionEntityToDto),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<Session[]>(error, "findSessionsByUserId");
+  }
+}
+
+/**
+ * Deletes a session by ID
+ *
+ * Replaces: prisma.session.delete({ where: { id } })
+ */
+async function deleteSession(params: {
+  sessionId: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.sessionId, "sessionId");
+
+    const query = `
+      DELETE FROM ${AUTH_TABLES.SESSION}
+      WHERE id = ?
+    `;
+
+    const result = await dbService.ModifyExecute(query, [params.sessionId]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error:
+        result.affectedRows === 0
+          ? "Sessão não encontrada ou já deletada"
+          : null,
+    };
+  } catch (error) {
+    return handleModifyError(error, "deleteSession");
+  }
+}
+
 // Namespace Export - AuthService
 // ============================================================================
 
@@ -1199,6 +1272,10 @@ export const AuthService = {
   findSubscriptionById,
   updateSubscription,
   deleteSubscription,
+
+  // Session Methods
+  findSessionsByUserId,
+  deleteSession,
 } as const;
 
 // Export default for easier import
@@ -1212,6 +1289,7 @@ export type {
   Organization,
   OrganizationWithMembers,
   ServiceResponse,
+  Session,
   Subscription,
   User,
 } from "./types/auth.types";
