@@ -35,3 +35,50 @@ export type Member = {
   metadata?: string | null;
   user: User;
 };
+
+export type LogLogin = {
+  logId: number;
+  appId: number;
+  organizationId: string;
+  userId: string;
+  userName: string;
+  moduleId: string;
+  recordId: string;
+  log: string;
+  note: string;
+  createdAt: Date | string;
+};
+
+export type LogOperation = {
+  logId: number;
+  appId: number;
+  appName: string;
+  organizationId: string;
+  organizationName: string;
+  userId: string;
+  userName: string;
+  moduleId: string;
+  recordId: string;
+  log: string;
+  note: string;
+  createdAt: Date | string;
+};
+
+export type Invitation = {
+  id: string;
+  organizationId: string;
+  teamId: string;
+  email: string;
+  role: string;
+  status: string;
+  expiresAt: Date | string;
+  inviterId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
+export type MemberRole = {
+  id: number;
+  role: string;
+  name: string;
+};
