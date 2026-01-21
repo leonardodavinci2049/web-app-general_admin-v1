@@ -5,10 +5,12 @@ import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
 import { AuthService } from "@/services/db/auth/auth.service";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
-import { UserDetailsCard } from "./_components/user-details-card";
+import { UserAccountsCard } from "./_components/security/user-accounts-card";
 import { UserPasswordCard } from "./_components/security/user-password-card";
-import { UserTwoFactorCard } from "./_components/security/user-two-factor-card";
 import { UserSessionsCard } from "./_components/security/user-sessions-card";
+import { UserTwoFactorCard } from "./_components/security/user-two-factor-card";
+import { UserDeletion } from "./_components/user-deletion";
+import { UserDetailsCard } from "./_components/user-details-card";
 
 type Params = Promise<{ id: string }>;
 
@@ -23,6 +25,11 @@ export default async function UserPage({ params }: { params: Params }) {
     userId: id,
   });
   const sessions = sessionsResponse.data || [];
+
+  const accountsResponse = await AuthService.findAccountsByUserId({
+    userId: id,
+  });
+  const accounts = accountsResponse.data || [];
 
   if (!user) {
     return notFound();
@@ -63,6 +70,9 @@ export default async function UserPage({ params }: { params: Params }) {
           </div>
 
           <UserSessionsCard sessions={sessions} />
+          <UserAccountsCard accounts={accounts} />
+
+          <UserDeletion userId={user.id} userName={user.name || "Usuário"} />
         </div>
       </div>
     </>

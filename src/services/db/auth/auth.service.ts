@@ -7,12 +7,15 @@ import dbService, {
 } from "@/services/db/dbConnection";
 
 import {
+  type Account,
+  type AccountEntity,
   AUTH_TABLES,
   AuthValidationError,
   type Member,
   type MemberEntity,
   type MemberWithUserEntity,
   type ModifyResponse,
+  mapAccountEntityToDto,
   mapMemberEntityToDto,
   mapMemberWithUserEntityToDto,
   mapOrganizationEntityToDto,
@@ -1220,6 +1223,76 @@ async function deleteSession(params: {
   }
 }
 
+// ============================================================================
+// Account Methods
+// ============================================================================
+
+/**
+ * Finds all accounts for a user
+ *
+ * Replaces: prisma.account.findMany({ where: { userId } })
+ */
+async function findAccountsByUserId(params: {
+  userId: string;
+}): Promise<ServiceResponse<Account[]>> {
+  try {
+    validateId(params.userId, "userId");
+
+    const query = `
+      SELECT 
+        id, accountId, providerId, userId, accessToken, refreshToken, 
+        idToken, accessTokenExpiresAt, refreshTokenExpiresAt, scope, 
+        password, createdAt, updatedAt
+      FROM ${AUTH_TABLES.ACCOUNT}
+      WHERE userId = ?
+      ORDER BY createdAt DESC
+    `;
+
+    const results = await dbService.selectExecute<AccountEntity>(query, [
+      params.userId,
+    ]);
+
+    return {
+      success: true,
+      data: results.map(mapAccountEntityToDto),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<Account[]>(error, "findAccountsByUserId");
+  }
+}
+
+/**
+ * Deletes an account by ID
+ *
+ * Replaces: prisma.account.delete({ where: { id } })
+ */
+async function deleteAccount(params: {
+  accountId: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.accountId, "accountId");
+
+    const query = `
+      DELETE FROM ${AUTH_TABLES.ACCOUNT}
+      WHERE id = ?
+    `;
+
+    const result = await dbService.ModifyExecute(query, [params.accountId]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error:
+        result.affectedRows === 0
+          ? "Conta não encontrada ou já deletada"
+          : null,
+    };
+  } catch (error) {
+    return handleModifyError(error, "deleteAccount");
+  }
+}
+
 // Namespace Export - AuthService
 // ============================================================================
 
@@ -1276,6 +1349,10 @@ export const AuthService = {
   // Session Methods
   findSessionsByUserId,
   deleteSession,
+
+  // Account Methods
+  findAccountsByUserId,
+  deleteAccount,
 } as const;
 
 // Export default for easier import
@@ -1283,6 +1360,7 @@ export default AuthService;
 
 // Re-export types for easier use
 export type {
+  Account,
   Member,
   MemberWithUser,
   ModifyResponse,
