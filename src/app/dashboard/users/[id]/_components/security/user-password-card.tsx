@@ -1,7 +1,6 @@
 "use client";
 
 import { BetterAuthActionButton } from "@/components/auth/better-auth-action-button";
-import { authClient } from "@/lib/auth/auth-client";
 import {
   Card,
   CardContent,
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function UserPasswordCard({ email }: { email: string }) {
   return (

@@ -1,9 +1,11 @@
 "use client";
 
 import { Monitor, Smartphone } from "lucide-react";
-import { UAParser } from "ua-parser-js";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { UAParser } from "ua-parser-js";
+import { LoadingSwap } from "@/components/auth/loading-swap";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,10 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { revokeUserSession } from "../../_actions/session-actions";
 import type { Session } from "@/services/db/auth/types/auth.types";
-import { useState } from "react";
-import { LoadingSwap } from "@/components/auth/loading-swap";
+import { revokeUserSession } from "../../_actions/session-actions";
 
 interface UserSessionsCardProps {
   sessions: Session[];
