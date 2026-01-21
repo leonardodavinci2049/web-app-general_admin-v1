@@ -74,6 +74,11 @@ const data = {
       icon: Mail,
     },
     {
+      name: "Funções",
+      url: "/dashboard/roles",
+      icon: Mail,
+    },
+    {
       name: "Logs de Acesso",
       url: "/dashboard/access-logs",
       icon: Shield,
