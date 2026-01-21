@@ -105,6 +105,7 @@ function SessionItem({ session }: { session: Session }) {
           <div className="font-medium">{getBrowserInformation()}</div>
           <div className="text-xs text-muted-foreground space-y-0.5">
             <p>Criado em: {formatDate(session.createdAt)}</p>
+            <p>Atualizado em: {formatDate(session.updatedAt)}</p>
             {session.expiresAt && (
               <p>Expira em: {formatDate(session.expiresAt)}</p>
             )}
