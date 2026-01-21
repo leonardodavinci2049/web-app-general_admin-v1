@@ -28,7 +28,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth/auth-client";
@@ -150,13 +149,6 @@ export function UserActions({ user, selfId }: UserActionsProps) {
               Banir Usuário
             </DropdownMenuItem>
           )}
-          <DropdownMenuSeparator />
-          <AlertDialogTrigger asChild>
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
-              <UserMinus className="mr-2 h-4 w-4" />
-              Excluir Usuário
-            </DropdownMenuItem>
-          </AlertDialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
 

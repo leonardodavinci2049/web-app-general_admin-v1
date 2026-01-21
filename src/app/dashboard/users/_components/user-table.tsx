@@ -49,7 +49,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/dashboard/users/${user.id}`}
-                      className="hover:underline"
+                      className="hover:underline text-blue-600 dark:text-blue-400"
                     >
                       {user.name || "Sem nome"}
                     </Link>
@@ -129,7 +129,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/dashboard/users/${user.id}`}
-                      className="font-medium block truncate hover:underline"
+                      className="font-medium hover:underline text-blue-600 dark:text-blue-400 block truncate"
                     >
                       {user.name || "Sem nome"}
                     </Link>
