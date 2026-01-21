@@ -9,7 +9,6 @@ import {
   Layers,
   Mail,
   Shield,
-  UserCircle,
   Users,
 } from "lucide-react";
 import type * as React from "react";
@@ -62,12 +61,6 @@ const data = {
       name: "Usuários",
       url: "/dashboard/users",
       icon: Users,
-    },
-
-    {
-      name: "Profile",
-      url: "/dashboard/profile",
-      icon: UserCircle,
     },
     {
       name: "convites",
