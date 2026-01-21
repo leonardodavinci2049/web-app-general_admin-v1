@@ -63,12 +63,6 @@ const data = {
       url: "/dashboard/users",
       icon: Users,
     },
-
-    {
-      name: "Profile",
-      url: "/dashboard/profile",
-      icon: UserCircle,
-    },
     {
       name: "convites",
       url: "/dashboard/invites",
