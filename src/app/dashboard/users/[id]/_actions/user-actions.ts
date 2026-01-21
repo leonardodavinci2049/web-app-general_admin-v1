@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 
 export type DeleteUserActionState = {
@@ -32,6 +31,13 @@ export async function deleteUserAction(
       body: { userId },
       headers: await headers(),
     });
+
+    if (!deletedUser) {
+      return {
+        success: false,
+        message: "Failed to delete user",
+      };
+    }
 
     revalidatePath("/dashboard/users");
     revalidatePath(`/dashboard/users/${userId}`);
