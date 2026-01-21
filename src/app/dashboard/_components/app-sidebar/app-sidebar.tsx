@@ -3,6 +3,7 @@
 import {
   Activity,
   AudioWaveform,
+  Badge,
   Frame,
   GalleryVerticalEnd,
   Layers,
@@ -74,6 +75,11 @@ const data = {
       icon: Mail,
     },
     {
+      name: "Funções",
+      url: "/dashboard/roles",
+      icon: Badge,
+    },
+    {
       name: "Logs de Acesso",
       url: "/dashboard/access-logs",
       icon: Shield,
@@ -85,7 +91,7 @@ const data = {
     },
     {
       name: "Plataformas",
-      url: "#",
+      url: "/dashboard/platforms",
       icon: Layers,
     },
   ],
