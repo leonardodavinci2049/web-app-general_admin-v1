@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Organization } from "@/db/schema";
-import { OrganizationActions } from "./organization-actions";
 
 interface OrganizationTableProps {
   organizations: Organization[];
@@ -68,7 +68,11 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                     : "-"}
                 </TableCell>
                 <TableCell className="text-right">
-                  <OrganizationActions organization={org} />
+                  <Button asChild>
+                    <Link href={`/dashboard/organization/${org.slug}`}>
+                      Editar
+                    </Link>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -107,7 +111,9 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                   </Badge>
                 </div>
               </div>
-              <OrganizationActions organization={org} />
+              <Button asChild>
+                <Link href={`/dashboard/organization/${org.slug}`}>Editar</Link>
+              </Button>
             </div>
             <div className="mt-3 flex flex-col gap-1 text-sm text-muted-foreground">
               <p className="font-mono text-xs truncate">ID: {org.id}</p>

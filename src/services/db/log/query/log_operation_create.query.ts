@@ -5,21 +5,21 @@ export function LogOperationCreateQuery(
   dataJsonDto: LogOperationCreateDto,
 ): string {
   const PE_APP_ID = envs.APP_ID;
-  const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID;
-  const PE_USER_ID = dataJsonDto.PE_USER_ID;
-  const PE_MODULE_ID = dataJsonDto.PE_MODULE_ID;
-  const PE_RECORD_ID = dataJsonDto.PE_RECORD_ID;
-  const PE_LOG = dataJsonDto.PE_LOG;
-  const PE_NOTE = dataJsonDto.PE_NOTE;
+  const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID || "";
+  const PE_USER_ID = dataJsonDto.PE_USER_ID || "";
+  const PE_MODULE_ID = dataJsonDto.PE_MODULE_ID || 0;
+  const PE_RECORD_ID = dataJsonDto.PE_RECORD_ID || "";
+  const PE_LOG = dataJsonDto.PE_LOG || "";
+  const PE_NOTE = dataJsonDto.PE_NOTE || "";
 
   const queryString = ` call sp_log_operation_create_v1(
         ${PE_APP_ID},
-        '${PE_ORGANIZATION_ID || "null"}',
-        '${PE_USER_ID || "null"}',
+        '${PE_ORGANIZATION_ID}',
+        '${PE_USER_ID}',
         ${PE_MODULE_ID},
         ${PE_RECORD_ID},
-        '${PE_LOG || "null"}',
-        '${PE_NOTE || "null"}'
+        '${PE_LOG}',
+        '${PE_NOTE}'
         ) `;
 
   return queryString;
