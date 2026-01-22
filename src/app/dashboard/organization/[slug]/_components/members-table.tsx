@@ -37,18 +37,18 @@ export default function MembersTable({ members }: MembersTableProps) {
                 <TableCell>
                   <Avatar>
                     <AvatarImage
-                      src={member.user.image || ""}
-                      alt={member.user.name || ""}
+                      src={member.user?.image || ""}
+                      alt={member.user?.name || ""}
                     />
                     <AvatarFallback>
-                      {member.user.name?.substring(0, 2).toUpperCase() || "U"}
+                      {member.user?.name?.substring(0, 2).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </TableCell>
                 <TableCell className="font-medium">
-                  {member.user.name}
+                  {member.user?.name}
                 </TableCell>
-                <TableCell>{member.user.email}</TableCell>
+                <TableCell>{member.user?.email}</TableCell>
                 <TableCell>
                   <Badge variant="secondary">{member.role}</Badge>
                 </TableCell>
@@ -86,23 +86,23 @@ export default function MembersTable({ members }: MembersTableProps) {
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <Avatar>
                   <AvatarImage
-                    src={member.user.image || ""}
-                    alt={member.user.name || ""}
+                    src={member.user?.image || ""}
+                    alt={member.user?.name || ""}
                   />
                   <AvatarFallback>
-                    {member.user.name?.substring(0, 2).toUpperCase() || "U"}
+                    {member.user?.name?.substring(0, 2).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium truncate">{member.user.name}</p>
+                  <p className="font-medium truncate">{member.user?.name}</p>
                   <p className="text-sm text-muted-foreground truncate">
-                    {member.user.email}
+                    {member.user?.email}
                   </p>
                 </div>
               </div>
               <MembersActions member={member} />
             </div>
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-3 flex items-center   gap-2">
               <Badge variant="secondary">{member.role}</Badge>
               {member.createdAt && (
                 <span className="text-xs text-muted-foreground">

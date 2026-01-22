@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { MemberRole } from "@/services/db/schema";
+import type { TblMemberRole } from "@/services/db/schema";
 
 interface RoleTableProps {
-  roles: MemberRole[];
+  roles: TblMemberRole[];
 }
 
 export function RoleTable({ roles }: RoleTableProps) {
@@ -48,8 +48,10 @@ export function RoleTable({ roles }: RoleTableProps) {
                 <TableCell className="font-mono text-muted-foreground">
                   {role.id}
                 </TableCell>
-                <TableCell>{getRoleBadge(role.role)}</TableCell>
-                <TableCell className="font-medium">{role.name}</TableCell>
+                <TableCell>{getRoleBadge(role.role || "")}</TableCell>
+                <TableCell className="font-medium">
+                  {role.name || "-"}
+                </TableCell>
               </TableRow>
             ))}
             {roles.length === 0 && (
@@ -74,11 +76,11 @@ export function RoleTable({ roles }: RoleTableProps) {
                 <p className="text-sm font-mono text-muted-foreground">
                   ID: {role.id}
                 </p>
-                {getRoleBadge(role.role)}
+                {getRoleBadge(role.role || "")}
               </div>
 
               <div>
-                <p className="font-medium">{role.name}</p>
+                <p className="font-medium">{role.name || "-"}</p>
               </div>
             </div>
           </div>

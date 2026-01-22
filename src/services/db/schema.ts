@@ -171,6 +171,7 @@ export type LogLogin = {
   app_id?: number | null;
   organization_Id?: string | null;
   user_id?: string | null;
+  user_name?: string | null;
   module_id?: number | null;
   record_id?: string | null;
   log?: string | null;
@@ -181,8 +182,11 @@ export type LogLogin = {
 export type LogOperation = {
   log_id: number;
   app_id?: number | null;
+  app_name?: string | null;
   organization_Id?: string | null;
+  organization_name?: string | null;
   user_id?: string | null;
+  user_name?: string | null;
   module_id?: number | null;
   record_id?: string | null;
   log?: string | null;

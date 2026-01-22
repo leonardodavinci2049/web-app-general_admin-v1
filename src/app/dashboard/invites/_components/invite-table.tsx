@@ -64,7 +64,7 @@ export function InviteTable({ invites }: InviteTableProps) {
             {invites.map((invite) => (
               <TableRow key={invite.id}>
                 <TableCell className="font-medium">{invite.email}</TableCell>
-                <TableCell>{getRoleBadge(invite.role)}</TableCell>
+                <TableCell>{getRoleBadge(invite.role || "")}</TableCell>
                 <TableCell>
                   {isExpired(invite.expiresAt) && invite.status === "pending"
                     ? getStatusBadge("expired")
@@ -109,10 +109,10 @@ export function InviteTable({ invites }: InviteTableProps) {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {getRoleBadge(invite.role)}
+                {getRoleBadge(invite.role || "")}
                 {isExpired(invite.expiresAt) && invite.status === "pending"
                   ? getStatusBadge("expired")
-                  : getStatusBadge(invite.status)}
+                  : getStatusBadge(invite.status || "")}
               </div>
 
               <div className="space-y-2 pt-3 border-t text-xs text-muted-foreground">

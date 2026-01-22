@@ -3,19 +3,22 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { MemberRole } from "@/services/db/schema";
+import type { TblMemberRole } from "@/services/db/schema";
 import memberService from "./member.service";
 import type { TblMemberRoleFindAll } from "./types/member.type";
 
 const logger = createLogger("MemberCachedService");
 
-export type MemberRoleListItem = MemberRole;
+export type MemberRoleListItem = TblMemberRole;
 
-function transformMemberRole(role: TblMemberRoleFindAll): MemberRole {
+function transformMemberRole(role: TblMemberRoleFindAll): TblMemberRole {
   return {
     id: role.id,
+    uuid: role.uuid,
     role: role.role,
     name: role.name,
+    createdAt: role.createdAt,
+    updatedAt: role.updatedAt,
   };
 }
 
