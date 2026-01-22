@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
+import { AUTH_TABLES } from "@/services/db/auth/types/auth.types";
+import dbService from "@/services/db/dbConnection";
 import { createUserSchema } from "./schema";
 
 export type CreateUserState = {
@@ -40,7 +42,7 @@ export async function createUserAction(
   const { name, email, password, role } = validatedFields.data;
 
   try {
-    await auth.api.createUser({
+    const result = await auth.api.createUser({
       headers: await headers(),
       body: {
         name,
@@ -49,6 +51,12 @@ export async function createUserAction(
         role,
       },
     });
+
+    
+    await dbService.ModifyExecute(
+      `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1 WHERE id = ?`,
+      [result.user.id],
+    );
 
     revalidatePath("/dashboard/users");
 
