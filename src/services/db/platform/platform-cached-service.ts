@@ -2,16 +2,16 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
-import type { MemberRole } from "@/db/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import roleService from "./role.service";
-import type { TblRoleFindAll } from "./types/role.type";
+import type { MemberRole } from "@/services/db/schema";
+import memberService from "./platform.service";
+import type { TblMemberRoleFindAll } from "./types/platform.type";
 
-const logger = createLogger("RoleCachedService");
+const logger = createLogger("MemberCachedService");
 
 export type MemberRoleListItem = MemberRole;
 
-function transformMemberRole(role: TblRoleFindAll): MemberRole {
+function transformMemberRole(role: TblMemberRoleFindAll): MemberRole {
   return {
     id: role.id,
     role: role.role,
@@ -29,7 +29,7 @@ export async function getAllMemberRoles(
   cacheTag(CACHE_TAGS.memberRoles);
 
   try {
-    const response = await roleService.execMemberRoleFindAllQuery({
+    const response = await memberService.execMemberRoleFindAllQuery({
       PE_ORGANIZATION_ID: organizationId,
       PE_USER_ID: userId,
       PE_LIMIT: limit,

@@ -14,8 +14,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { User } from "@/db/schema";
 import { authClient } from "@/lib/auth/auth-client";
+import type { User } from "@/services/db/schema";
 
 type InviteUsersTableProps = {
   users: User[];

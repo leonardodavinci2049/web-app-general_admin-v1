@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { SubmitButton } from "@/components/common/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Organization } from "@/db/schema";
+import type { Organization } from "@/services/db/schema";
 import {
   type UpdateOrganizationState,
   updateOrganizationAction,

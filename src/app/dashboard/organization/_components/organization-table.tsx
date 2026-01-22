@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Organization } from "@/db/schema";
+import type { Organization } from "@/services/db/schema";
 
 interface OrganizationTableProps {
   organizations: Organization[];
