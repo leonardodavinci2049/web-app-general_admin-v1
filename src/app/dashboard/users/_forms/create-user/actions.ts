@@ -52,7 +52,6 @@ export async function createUserAction(
       },
     });
 
-    
     await dbService.ModifyExecute(
       `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1 WHERE id = ?`,
       [result.user.id],
