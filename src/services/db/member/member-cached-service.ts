@@ -2,7 +2,7 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
-import type { MemberRole } from "@/db/schema";
+import type { MemberRole } from "@/services/db/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import memberService from "./member.service";
 import type { TblMemberRoleFindAll } from "./types/member.type";

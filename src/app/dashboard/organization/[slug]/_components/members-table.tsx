@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Member } from "@/db/schema";
+import type { Member } from "@/services/db/schema";
 import { MembersActions } from "./members-actions";
 
 type MembersTableProps = {

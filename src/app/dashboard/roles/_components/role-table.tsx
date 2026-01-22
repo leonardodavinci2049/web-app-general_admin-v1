@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { MemberRole } from "@/db/schema";
+import type { MemberRole } from "@/services/db/schema";
 
 interface RoleTableProps {
   roles: MemberRole[];

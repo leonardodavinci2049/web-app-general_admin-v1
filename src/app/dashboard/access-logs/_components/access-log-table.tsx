@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogLogin } from "@/db/schema";
+import type { LogLogin } from "@/services/db/schema";
 
 interface AccessLogTableProps {
   logs: LogLogin[];

@@ -20,7 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Member } from "@/db/schema";
+import type { Member } from "@/services/db/schema";
 import { removeMember } from "@/server/members";
 
 interface MembersActionsProps {
