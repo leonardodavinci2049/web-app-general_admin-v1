@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { getAllMemberRoles } from "@/services/db/role/role-cached-service";
+import { getAllMemberRoles } from "@/services/db/member/member-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { RoleTable } from "./_components/role-table";
 

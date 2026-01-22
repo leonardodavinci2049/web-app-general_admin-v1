@@ -19,7 +19,7 @@ export interface SpOperationResult {
   changedRows: number;
 }
 
-export interface TblRoleFindAll extends RowDataPacket {
+export interface TblMemberRoleFindAll extends RowDataPacket {
   id: number;
   role: string;
   name: string;
@@ -34,8 +34,8 @@ export type SpResultRecordCheckExistType = [
 ];
 // Or keep the tuple type and create a related interface
 
-export type SpResultRecordRoleFindAllType = [
-  TblRoleFindAll[], // Primeiro item: array de usuários
+export type SpResultRecordMemberRoleFindAllType = [
+  TblMemberRoleFindAll[], // Primeiro item: array de usuários
   SpDefaultFeedback[], // Terceiro item: resultado SQL
   SpOperationResult, // Segundo item: array de feedbacks
 ];
