@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Invitation } from "@/db/schema";
+import type { Invitation } from "@/services/db/schema";
 
 interface InviteTableProps {
   invites: Invitation[];

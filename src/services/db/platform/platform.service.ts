@@ -3,14 +3,14 @@ import { MESSAGES } from "@/core/constants/globalConstants";
 import dbService from "../dbConnection";
 import { processProcedureResultQueryWithoutId } from "../utils/process-procedure-result.query";
 import { ResultModel } from "../utils/result.model";
-import { validateMemberRoleFindAllDto } from "./dto/member_role_find_all.dto";
-import { MemberRoleFindAllQuery } from "./query/member_role_find_all.query";
+import { validateMemberRoleFindAllDto } from "./dto/platform_app_find_all.dto";
+import { MemberRoleFindAllQuery } from "./query/platform_app_find_all.query";
 import type {
-  SpResultRecordRoleFindAllType,
-  TblRoleFindAll,
-} from "./types/role.type";
+  SpResultRecordMemberRoleFindAllType,
+  TblMemberRoleFindAll,
+} from "./types/platform.type";
 
-export class RoleService {
+export class MemberService {
   async execMemberRoleFindAllQuery(dataJsonDto: unknown): Promise<ResultModel> {
     try {
       const validatedDto = validateMemberRoleFindAllDto(dataJsonDto);
@@ -19,9 +19,9 @@ export class RoleService {
 
       const resultData = (await dbService.selectExecute(
         queryString,
-      )) as unknown as SpResultRecordRoleFindAllType;
+      )) as unknown as SpResultRecordMemberRoleFindAllType;
 
-      return processProcedureResultQueryWithoutId<TblRoleFindAll>(
+      return processProcedureResultQueryWithoutId<TblMemberRoleFindAll>(
         resultData as unknown[],
         "Member roles not found",
       );
@@ -33,5 +33,5 @@ export class RoleService {
   }
 }
 
-const roleService = new RoleService();
-export default roleService;
+const memberService = new MemberService();
+export default memberService;

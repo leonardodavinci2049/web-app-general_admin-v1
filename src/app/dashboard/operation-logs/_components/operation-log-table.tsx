@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogOperation } from "@/db/schema";
+import type { LogOperation } from "@/services/db/schema";
 
 interface OperationLogTableProps {
   logs: LogOperation[];
