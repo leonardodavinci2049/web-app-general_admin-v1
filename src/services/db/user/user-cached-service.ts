@@ -2,8 +2,8 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
-import type { User } from "@/services/db/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
+import type { User } from "@/services/db/schema";
 import type { TblUserFindAll, TblUserFindById } from "./types/user.type";
 import userService from "./user.service";
 

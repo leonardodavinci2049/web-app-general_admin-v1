@@ -2,8 +2,8 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
-import type { Invitation } from "@/services/db/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
+import type { Invitation } from "@/services/db/schema";
 import invitationService from "./invitation.service";
 import type { TblInvitationFindAll } from "./types/invitation.type";
 
