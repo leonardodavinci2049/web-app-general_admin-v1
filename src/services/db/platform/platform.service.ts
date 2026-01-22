@@ -3,27 +3,29 @@ import { MESSAGES } from "@/core/constants/globalConstants";
 import dbService from "../dbConnection";
 import { processProcedureResultQueryWithoutId } from "../utils/process-procedure-result.query";
 import { ResultModel } from "../utils/result.model";
-import { validateMemberRoleFindAllDto } from "./dto/platform_app_find_all.dto";
-import { MemberRoleFindAllQuery } from "./query/platform_app_find_all.query";
+import { validatePlatformAppFindAllDto } from "./dto/platform-app-find-all.dto";
+import { PlatformAppFindAllQuery } from "./query/platform-app-find-all.query";
 import type {
-  SpResultRecordMemberRoleFindAllType,
-  TblMemberRoleFindAll,
+  SpResultRecordPlatformAppFindAllType,
+  TblPlatformAppFindAll,
 } from "./types/platform.type";
 
-export class MemberService {
-  async execMemberRoleFindAllQuery(dataJsonDto: unknown): Promise<ResultModel> {
+export class PlatformService {
+  async execPlatformAppFindAllQuery(
+    dataJsonDto: unknown,
+  ): Promise<ResultModel> {
     try {
-      const validatedDto = validateMemberRoleFindAllDto(dataJsonDto);
+      const validatedDto = validatePlatformAppFindAllDto(dataJsonDto);
 
-      const queryString = await MemberRoleFindAllQuery(validatedDto);
+      const queryString = PlatformAppFindAllQuery(validatedDto);
 
       const resultData = (await dbService.selectExecute(
         queryString,
-      )) as unknown as SpResultRecordMemberRoleFindAllType;
+      )) as unknown as SpResultRecordPlatformAppFindAllType;
 
-      return processProcedureResultQueryWithoutId<TblMemberRoleFindAll>(
+      return processProcedureResultQueryWithoutId<TblPlatformAppFindAll>(
         resultData as unknown[],
-        "Member roles not found",
+        "Platform apps not found",
       );
     } catch (err) {
       const errorMessage =
@@ -33,5 +35,5 @@ export class MemberService {
   }
 }
 
-const memberService = new MemberService();
-export default memberService;
+const platformService = new PlatformService();
+export default platformService;

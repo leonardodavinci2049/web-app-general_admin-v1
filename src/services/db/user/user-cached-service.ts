@@ -15,15 +15,19 @@ export type UserDetail = User;
 function transformUser(user: TblUserFindById | TblUserFindAll): User {
   return {
     id: user.id,
+    person_id: user.person_id,
     name: user.name,
     email: user.email,
+    emailVerified: "emailVerified" in user ? user.emailVerified === 1 : false,
     image: user.image || null,
-    twoFactorEnabled: user.twoFactorEnabled === 1,
+    twoFactorEnabled:
+      "twoFactorEnabled" in user ? user.twoFactorEnabled === 1 : false,
     role: user.role,
-    banned: user.banned === 1,
-    banReason: user.banReason || null,
-    banExpires: user.banExpires || null,
+    banned: "banned" in user ? user.banned === 1 : false,
+    banReason: "banReason" in user ? user.banReason || null : null,
+    banExpires: "banExpires" in user ? user.banExpires || null : null,
     createdAt: user.createdAt,
+    updatedAt: "updatedAt" in user ? user.updatedAt : user.createdAt,
   };
 }
 

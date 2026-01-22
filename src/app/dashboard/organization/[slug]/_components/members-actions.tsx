@@ -84,7 +84,7 @@ export function MembersActions({ member }: MembersActionsProps) {
             <DialogTitle>Remove Member</DialogTitle>
             <DialogDescription>
               Are you sure you want to remove{" "}
-              <strong>{member.user.name}</strong> from the organization? This
+              <strong>{member.user?.name}</strong> from the organization? This
               action cannot be undone.
             </DialogDescription>
           </DialogHeader>

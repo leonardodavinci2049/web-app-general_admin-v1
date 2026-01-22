@@ -7,30 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TblMemberRole } from "@/services/db/schema";
+import type { TblApp } from "@/services/db/schema";
 
-interface RoleTableProps {
-  roles: TblMemberRole[];
+interface PlatformTableProps {
+  platforms: TblApp[];
 }
 
-export function RoleTable({ roles }: RoleTableProps) {
-  const getRoleBadge = (role: string) => {
-    const roleLower = role.toLowerCase();
-    switch (roleLower) {
-      case "admin":
-      case "owner":
-        return <Badge variant="default">{role}</Badge>;
-      case "manager":
-        return (
-          <Badge variant="outline" className="border-blue-500 text-blue-600">
-            {role}
-          </Badge>
-        );
-      default:
-        return <Badge variant="secondary">{role}</Badge>;
-    }
-  };
-
+export function PlatformTable({ platforms }: PlatformTableProps) {
   return (
     <>
       <div className="hidden md:block rounded-md border">
@@ -38,26 +21,26 @@ export function RoleTable({ roles }: RoleTableProps) {
           <TableHeader>
             <TableRow className="bg-secondary hover:bg-secondary">
               <TableHead className="w-12">ID</TableHead>
-              <TableHead>Código</TableHead>
               <TableHead>Nome</TableHead>
+              <TableHead>Descrição</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {roles.map((role) => (
-              <TableRow key={role.id}>
+            {platforms.map((platform) => (
+              <TableRow key={platform.id}>
                 <TableCell className="font-mono text-muted-foreground">
-                  {role.id}
+                  {platform.id}
                 </TableCell>
-                <TableCell>{getRoleBadge(role.role || "")}</TableCell>
                 <TableCell className="font-medium">
-                  {role.name || "-"}
+                  <Badge variant="outline">{platform.name || "-"}</Badge>
                 </TableCell>
+                <TableCell>{platform.description || "-"}</TableCell>
               </TableRow>
             ))}
-            {roles.length === 0 && (
+            {platforms.length === 0 && (
               <TableRow>
                 <TableCell colSpan={3} className="h-24 text-center">
-                  Nenhuma função encontrada.
+                  Nenhuma plataforma encontrada.
                 </TableCell>
               </TableRow>
             )}
@@ -66,28 +49,30 @@ export function RoleTable({ roles }: RoleTableProps) {
       </div>
 
       <div className="md:hidden space-y-3">
-        {roles.map((role) => (
+        {platforms.map((platform) => (
           <div
-            key={role.id}
+            key={platform.id}
             className="rounded-lg border bg-card p-4 shadow-sm"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-mono text-muted-foreground">
-                  ID: {role.id}
+                  ID: {platform.id}
                 </p>
-                {getRoleBadge(role.role || "")}
+                <Badge variant="outline">{platform.name || "-"}</Badge>
               </div>
 
               <div>
-                <p className="font-medium">{role.name || "-"}</p>
+                <p className="text-sm text-muted-foreground">
+                  {platform.description || "-"}
+                </p>
               </div>
             </div>
           </div>
         ))}
-        {roles.length === 0 && (
+        {platforms.length === 0 && (
           <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-            Nenhuma função encontrada.
+            Nenhuma plataforma encontrada.
           </div>
         )}
       </div>

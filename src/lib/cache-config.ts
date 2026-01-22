@@ -19,6 +19,7 @@ export const CACHE_TAGS = {
   logLogin: (id: number) => `log-login-${id}`,
   logOperation: (id: number) => `log-operation-${id}`,
   invitation: (id: string) => `invitation-${id}`,
+  platformApp: (id: number) => `platform-app-${id}`,
 
   // Static tags
   products: "products",
@@ -32,6 +33,7 @@ export const CACHE_TAGS = {
   navigation: "navigation",
   banners: "banners",
   footer: "footer",
+  platformAppFindAll: "platform-app-find-all",
 } as const;
 
 // Cache life profiles (matching next.config.ts cacheLife)
