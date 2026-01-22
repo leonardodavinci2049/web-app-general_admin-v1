@@ -2,26 +2,20 @@
 
 import { auth } from "@/lib/auth/auth";
 import { AuthService } from "@/services/db/auth/auth.service";
-import type { Role } from "@/services/db/schema";
+import type { OrganizationMemberRole } from "@/services/db/schema";
 import { isAdmin } from "./permissions";
-
-const roleMap: Record<Role, "owner" | "salesperson" | "finance"> = {
-  ADMIN: "owner",
-  MEMBER: "salesperson",
-  BILLING: "finance",
-};
 
 export const addMember = async (
   organizationId: string,
   userId: string,
-  role: Role,
+  role: OrganizationMemberRole,
 ) => {
   try {
     await auth.api.addMember({
       body: {
         userId,
         organizationId,
-        role: roleMap[role],
+        role,
       },
     });
   } catch (error) {

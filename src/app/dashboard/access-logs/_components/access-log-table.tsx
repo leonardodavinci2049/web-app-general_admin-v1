@@ -54,27 +54,28 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
           </TableHeader>
           <TableBody>
             {logs.map((log) => (
-              <TableRow key={log.logId}>
+              <TableRow key={log.log_id}>
                 <TableCell className="font-mono text-muted-foreground">
-                  {log.logId}
+                  {log.log_id}
                 </TableCell>
-                <TableCell className="font-medium">{log.userName}</TableCell>
+                <TableCell className="font-medium">{log.user_name}</TableCell>
                 <TableCell className="text-muted-foreground">
-                  {log.organizationId}
+                  {log.organization_Id}
                 </TableCell>
-                <TableCell>{getModuleBadge(log.moduleId)}</TableCell>
+                <TableCell>{getModuleBadge(String(log.module_id))}</TableCell>
                 <TableCell className="font-mono text-xs">
-                  {log.recordId}
+                  {log.record_id}
                 </TableCell>
-                <TableCell>{getLogTypeBadge(log.log)}</TableCell>
+                <TableCell>{getLogTypeBadge(log.log || "")}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {log.note || "-"}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {new Intl.DateTimeFormat("pt-BR", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  }).format(new Date(log.createdAt))}
+                  {log.createdAt &&
+                    new Intl.DateTimeFormat("pt-BR", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    }).format(new Date(log.createdAt))}
                 </TableCell>
               </TableRow>
             ))}
@@ -92,7 +93,7 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
       <div className="md:hidden space-y-3">
         {logs.map((log) => (
           <div
-            key={log.logId}
+            key={log.log_id}
             className="rounded-lg border bg-card p-4 shadow-sm"
           >
             <div className="space-y-3">
@@ -100,13 +101,13 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <p className="text-sm font-mono text-muted-foreground">
-                      ID: {log.logId}
+                      ID: {log.log_id}
                     </p>
-                    {getModuleBadge(log.moduleId)}
+                    {getModuleBadge(String(log.module_id))}
                   </div>
-                  <p className="font-medium">{log.userName}</p>
+                  <p className="font-medium">{log.user_name}</p>
                 </div>
-                {getLogTypeBadge(log.log)}
+                {getLogTypeBadge(log.log || "")}
               </div>
 
               <div className="space-y-2 pt-3 border-t text-sm">
@@ -115,18 +116,18 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
                     Organização
                   </span>
                   <span className="font-mono text-xs">
-                    {log.organizationId}
+                    {log.organization_Id}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-muted-foreground text-xs">
                     Registro
                   </span>
-                  <span className="font-mono text-xs">{log.recordId}</span>
+                  <span className="font-mono text-xs">{log.record_id}</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-muted-foreground text-xs">Log</span>
-                  <p className="line-clamp-2" title={log.log}>
+                  <p className="line-clamp-2" title={log.log || ""}>
                     {log.log}
                   </p>
                 </div>
@@ -141,10 +142,11 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
               <div className="pt-3 border-t flex items-center justify-between text-xs text-muted-foreground">
                 <span>Acessado em</span>
                 <span>
-                  {new Intl.DateTimeFormat("pt-BR", {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  }).format(new Date(log.createdAt))}
+                  {log.createdAt &&
+                    new Intl.DateTimeFormat("pt-BR", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    }).format(new Date(log.createdAt))}
                 </span>
               </div>
             </div>

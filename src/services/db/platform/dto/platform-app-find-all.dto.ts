@@ -1,15 +1,16 @@
-export interface MemberRoleFindAllDto {
+export interface PlatformAppFindAllDto {
   PE_ORGANIZATION_ID?: string;
   PE_USER_ID?: string;
+  PE_SEARCH_APP?: string;
   PE_LIMIT?: number;
 }
 
 /**
- * Valida o DTO para selecionar todos os membros com roles
+ * Valida o DTO para selecionar todos os aplicativos da plataforma
  */
-export function validateMemberRoleFindAllDto(
+export function validatePlatformAppFindAllDto(
   data: unknown,
-): MemberRoleFindAllDto {
+): PlatformAppFindAllDto {
   if (data !== undefined && data !== null && typeof data !== "object") {
     throw new Error("Dados inválidos fornecidos");
   }
@@ -42,6 +43,15 @@ export function validateMemberRoleFindAllDto(
     }
   }
 
+  if (dto.PE_SEARCH_APP !== undefined && dto.PE_SEARCH_APP !== null) {
+    if (typeof dto.PE_SEARCH_APP !== "string") {
+      throw new Error("PE_SEARCH_APP deve ser uma string");
+    }
+    if (dto.PE_SEARCH_APP.length > 191) {
+      throw new Error("PE_SEARCH_APP não pode exceder 191 caracteres");
+    }
+  }
+
   return {
     PE_ORGANIZATION_ID:
       typeof dto.PE_ORGANIZATION_ID === "string"
@@ -49,6 +59,10 @@ export function validateMemberRoleFindAllDto(
         : undefined,
     PE_USER_ID:
       typeof dto.PE_USER_ID === "string" ? dto.PE_USER_ID.trim() : undefined,
+    PE_SEARCH_APP:
+      typeof dto.PE_SEARCH_APP === "string"
+        ? dto.PE_SEARCH_APP.trim()
+        : undefined,
     PE_LIMIT:
       dto.PE_LIMIT !== undefined && dto.PE_LIMIT !== null
         ? Number(dto.PE_LIMIT)

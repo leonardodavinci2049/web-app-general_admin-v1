@@ -3,48 +3,52 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { MemberRole } from "@/services/db/schema";
-import memberService from "./platform.service";
-import type { TblMemberRoleFindAll } from "./types/platform.type";
+import type { TblApp } from "@/services/db/schema";
+import platformService from "./platform.service";
+import type { TblPlatformAppFindAll } from "./types/platform.type";
 
-const logger = createLogger("MemberCachedService");
+const logger = createLogger("PlatformCachedService");
 
-export type MemberRoleListItem = MemberRole;
+export type PlatformAppListItem = TblApp;
 
-function transformMemberRole(role: TblMemberRoleFindAll): MemberRole {
+function transformPlatformApp(platformApp: TblPlatformAppFindAll): TblApp {
   return {
-    id: role.id,
-    role: role.role,
-    name: role.name,
+    id: platformApp.id,
+    name: platformApp.name,
+    description: null,
+    createdAt: null,
+    updatedAt: null,
   };
 }
 
-export async function getAllMemberRoles(
+export async function getAllPlatformApps(
   organizationId?: string,
   userId?: string,
+  searchTerm?: string,
   limit?: number,
-): Promise<MemberRoleListItem[]> {
+): Promise<PlatformAppListItem[]> {
   "use cache";
   cacheLife("hours");
-  cacheTag(CACHE_TAGS.memberRoles);
+  cacheTag(CACHE_TAGS.platformAppFindAll);
 
   try {
-    const response = await memberService.execMemberRoleFindAllQuery({
+    const response = await platformService.execPlatformAppFindAllQuery({
       PE_ORGANIZATION_ID: organizationId,
       PE_USER_ID: userId,
+      PE_SEARCH_APP: searchTerm,
       PE_LIMIT: limit,
     });
 
     if (response.statusCode !== 100200 || !response.data) {
-      logger.error("Error loading member roles:", response.message);
+      logger.error("Error loading platform apps:", response.message);
       return [];
     }
 
-    const rawRoles = Array.isArray(response.data) ? response.data : [];
+    const rawPlatformApps = Array.isArray(response.data) ? response.data : [];
 
-    return rawRoles.map(transformMemberRole);
+    return rawPlatformApps.map(transformPlatformApp);
   } catch (error) {
-    logger.error("Failed to fetch member roles:", error);
+    logger.error("Failed to fetch platform apps:", error);
     return [];
   }
 }
