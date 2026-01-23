@@ -63,10 +63,7 @@ export default function Header02() {
               <ModeToggle />
             </Suspense>
             <div className="flex gap-2">
-              <Link
-                href="/"
-                className={buttonVariants({ variant: "default" })}
-              >
+              <Link href="/" className={buttonVariants({ variant: "default" })}>
                 Get Started
               </Link>
             </div>

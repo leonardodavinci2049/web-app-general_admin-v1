@@ -1,4 +1,6 @@
-import { getUserId } from "@/lib/auth/get-user-id";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth/auth";
 import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { CreateOrganizationDialog } from "./_components/create-organization-dialog";
@@ -11,13 +13,13 @@ export default async function OrganizationPage(props: {
   searchParams: SearchParams;
 }) {
   const searchParams = await props.searchParams;
-  // Obter userId FORA do cache scope (usa headers())
-  const userId = await getUserId();
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session == null) return redirect("/sign-in");
   const searchTerm =
     typeof searchParams.search === "string" ? searchParams.search : undefined;
 
-  // Carregamento com cache - userId passado como argumento
-  const organizations = await getAllOrganizations(userId, searchTerm);
+  const organizations = await getAllOrganizations(session.user.id, searchTerm);
 
   return (
     <>

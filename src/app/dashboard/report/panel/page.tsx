@@ -1,10 +1,17 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { ChartAreaInteractive } from "@/app/dashboard/_components/panel/chart-area-interactive";
 import data from "@/app/dashboard/_components/panel/data.json";
 import { DataTable } from "@/app/dashboard/_components/panel/data-table";
 import { SectionCards } from "@/app/dashboard/_components/panel/section-cards";
+import { auth } from "@/lib/auth/auth";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
 
-const Page = () => {
+const Page = async () => {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session == null) return redirect("/sign-in");
+
   return (
     <>
       <SiteHeaderWithBreadcrumb

@@ -1,8 +1,10 @@
 import { ArrowLeft } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth/auth";
 import { AuthService } from "@/services/db/auth/auth.service";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
 import { UserAccountsCard } from "./_components/security/user-accounts-card";
@@ -17,6 +19,10 @@ type Params = Promise<{ id: string }>;
 export default async function UserPage({ params }: { params: Params }) {
   await connection();
   const { id } = await params;
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session == null) return redirect("/sign-in");
 
   const userResponse = await AuthService.findUserById({ userId: id });
   const user = userResponse.data;
