@@ -1,16 +1,16 @@
 import { getAllNotMembers } from "@/services/db/member/member-cached-service";
 import type { TblMemberNotFindAll } from "@/services/db/member/types/member.type";
 import type { User } from "@/services/db/schema";
-import InviteUsersTable from "./invite-users-table";
+import NotMembersTable from "./not-members-table";
 import { InviteUsersTableSkeleton } from "./skeleton/invite-users-table-skeleton";
 
-type OrganizationInviteSectionProps = {
+type OrganizationNotMembersSectionProps = {
   organizationId: string;
 };
 
-async function OrganizationInviteSectionContent({
+async function OrganizationNotMembersSectionContent({
   organizationId,
-}: OrganizationInviteSectionProps) {
+}: OrganizationNotMembersSectionProps) {
   const rawNotMembers = await getAllNotMembers(organizationId);
 
   const users: User[] = rawNotMembers.map((u: TblMemberNotFindAll) => ({
@@ -24,15 +24,15 @@ async function OrganizationInviteSectionContent({
     twoFactorEnabled: false,
   }));
 
-  return <InviteUsersTable organizationId={organizationId} users={users} />;
+  return <NotMembersTable organizationId={organizationId} users={users} />;
 }
 
-export function OrganizationInviteSection(
-  props: OrganizationInviteSectionProps,
+export function OrganizationNotMembersSection(
+  props: OrganizationNotMembersSectionProps,
 ) {
-  return <OrganizationInviteSectionContent {...props} />;
+  return <OrganizationNotMembersSectionContent {...props} />;
 }
 
-export function OrganizationInviteSectionSkeleton() {
+export function OrganizationNotMembersSectionSkeleton() {
   return <InviteUsersTableSkeleton />;
 }

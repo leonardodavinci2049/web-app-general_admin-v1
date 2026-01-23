@@ -5,6 +5,37 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
 import organizationService from "@/services/db/organization/organization.service";
+import type { OrganizationMemberRole } from "@/services/db/schema";
+
+export async function addMemberAction(
+  userId: string,
+  role: OrganizationMemberRole,
+  organizationId: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const result = await auth.api.addMember({
+      headers: await headers(),
+      body: {
+        userId,
+        role,
+        organizationId,
+      },
+    });
+
+    if (result) {
+      revalidatePath("/dashboard/organization/[slug]", "page");
+      return { success: true, message: "Member added successfully" };
+    } else {
+      return { success: false, message: "Failed to add member" };
+    }
+  } catch (error) {
+    const e = error as Error;
+    return {
+      success: false,
+      message: e.message || "Failed to add member",
+    };
+  }
+}
 
 export async function deleteOrganizationAction(organizationId: string) {
   try {

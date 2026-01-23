@@ -11,13 +11,13 @@ import {
   OrganizationDetailsSectionSkeleton,
 } from "./_components/organization-details-section";
 import {
-  OrganizationInviteSection,
-  OrganizationInviteSectionSkeleton,
-} from "./_components/organization-invite-section";
-import {
   OrganizationMembersSection,
   OrganizationMembersSectionSkeleton,
 } from "./_components/organization-members-section";
+import {
+  OrganizationNotMembersSection,
+  OrganizationNotMembersSectionSkeleton,
+} from "./_components/organization-not-members-section";
 
 type Params = Promise<{ slug: string }>;
 
@@ -87,14 +87,14 @@ export default async function OrganizationPage({ params }: { params: Params }) {
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">
-              Convide Usuários
+              Adicionar Membros
             </h2>
             <p className="text-muted-foreground">
-              Convide usuários para se juntarem a esta organização.
+              Adicione usuários como membros desta organização.
             </p>
           </div>
-          <Suspense fallback={<OrganizationInviteSectionSkeleton />}>
-            <OrganizationInviteSection organizationId={organization.id} />
+          <Suspense fallback={<OrganizationNotMembersSectionSkeleton />}>
+            <OrganizationNotMembersSection organizationId={organization.id} />
           </Suspense>
         </div>
       </div>

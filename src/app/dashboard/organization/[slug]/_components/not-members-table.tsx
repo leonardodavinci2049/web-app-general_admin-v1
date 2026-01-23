@@ -4,8 +4,24 @@ import { Loader2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { addMemberAction } from "@/app/dashboard/organization/action/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -14,48 +30,68 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { authClient } from "@/lib/auth/auth-client";
-import type { User } from "@/services/db/schema";
+import type { OrganizationMemberRole, User } from "@/services/db/schema";
 
-type InviteUsersTableProps = {
+type NotMembersTableProps = {
   users: User[];
   organizationId: string;
 };
 
-export default function InviteUsersTable({
+const MEMBER_ROLES: OrganizationMemberRole[] = [
+  "owner",
+  "manager",
+  "salesperson",
+  "operator",
+  "cashier",
+  "finance",
+  "shipping",
+  "customer",
+];
+
+export default function NotMembersTable({
   users,
   organizationId,
-}: InviteUsersTableProps) {
+}: NotMembersTableProps) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedRole, setSelectedRole] =
+    useState<OrganizationMemberRole>("customer");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
-  const handleInviteMember = async (user: User) => {
+  const handleAddMember = async () => {
+    if (!selectedUser) return;
+
     try {
-      setLoadingId(user.id);
-      if (!user.email) {
-        setLoadingId(null);
-        toast.error("User has no email address");
-        return;
-      }
-      const { error } = await authClient.organization.inviteMember({
-        email: user.email,
-        role: "customer",
+      setLoadingId(selectedUser.id);
+
+      const result = await addMemberAction(
+        selectedUser.id,
+        selectedRole,
         organizationId,
-      });
+      );
 
-      if (error) {
-        toast.error(error.message);
+      if (!result.success) {
+        toast.error(result.message);
         return;
       }
 
-      toast.success("Invitation sent to member");
+      toast.success("Member added to organization");
+      setIsDialogOpen(false);
+      setSelectedUser(null);
+      setSelectedRole("customer");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to invite member to organization");
+      toast.error("Failed to add member to organization");
       console.error(error);
     } finally {
       setLoadingId(null);
     }
+  };
+
+  const openAddMemberDialog = (user: User) => {
+    setSelectedUser(user);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -87,7 +123,7 @@ export default function InviteUsersTable({
                 <TableCell className="text-right">
                   <Button
                     disabled={loadingId === user.id}
-                    onClick={() => handleInviteMember(user)}
+                    onClick={() => openAddMemberDialog(user)}
                     size="sm"
                     variant="outline"
                   >
@@ -96,7 +132,7 @@ export default function InviteUsersTable({
                     ) : (
                       <UserPlus className="mr-2 size-4" />
                     )}
-                    Invite
+                    Add
                   </Button>
                 </TableCell>
               </TableRow>
@@ -104,7 +140,7 @@ export default function InviteUsersTable({
             {users.length === 0 && (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No users found to invite.
+                  No users found to add.
                 </TableCell>
               </TableRow>
             )}
@@ -136,7 +172,7 @@ export default function InviteUsersTable({
               </div>
               <Button
                 disabled={loadingId === user.id}
-                onClick={() => handleInviteMember(user)}
+                onClick={() => openAddMemberDialog(user)}
                 size="sm"
                 variant="outline"
               >
@@ -145,17 +181,74 @@ export default function InviteUsersTable({
                 ) : (
                   <UserPlus className="size-4" />
                 )}
-                <span className="sr-only">Invite {user.name}</span>
+                <span className="sr-only">Add {user.name}</span>
               </Button>
             </div>
           </div>
         ))}
         {users.length === 0 && (
           <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-            No users found to invite.
+            No users found to add.
           </div>
         )}
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Member</DialogTitle>
+            <DialogDescription>
+              Select a role to add {selectedUser?.name} to this organization.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="role-select" className="text-sm font-medium">
+                Role
+              </label>
+              <Select
+                value={selectedRole}
+                onValueChange={(value) =>
+                  setSelectedRole(value as OrganizationMemberRole)
+                }
+              >
+                <SelectTrigger id="role-select">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MEMBER_ROLES.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDialogOpen(false);
+                setSelectedUser(null);
+                setSelectedRole("customer");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleAddMember} disabled={loadingId !== null}>
+              {loadingId ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                "Add Member"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
