@@ -1,6 +1,5 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -14,12 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { removeMember } from "@/server/members";
 import type { Member } from "@/services/db/schema";
 
@@ -37,67 +30,64 @@ export function MembersActions({ member }: MembersActionsProps) {
     try {
       const { success, error } = await removeMember(member.id);
       if (success) {
-        toast.success("Member removed successfully");
+        toast.success("Membro removido com sucesso");
         setShowDeleteDialog(false);
         router.refresh();
       } else {
-        toast.error(error || "Failed to remove member");
+        toast.error(error || "Falha ao remover membro");
       }
     } catch (_error) {
-      toast.error("An error occurred");
+      toast.error("Ocorreu um erro");
     } finally {
       setIsDeleting(false);
     }
   };
 
   const handleEdit = () => {
-    toast.info("Edit member functionality coming soon");
+    toast.info("Funcionalidade de editar cargo em breve");
   };
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={handleEdit}>
-            <Pencil className="mr-2 h-4 w-4" />
-            Edit Role
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Remove Member
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2 justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleEdit}
+          className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 h-8"
+        >
+          Editar
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowDeleteDialog(true)}
+          className="border-rose-500 text-rose-600 hover:bg-rose-50 hover:text-rose-700 h-8"
+        >
+          Remover
+        </Button>
+      </div>
 
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove Member</DialogTitle>
+            <DialogTitle>Remover Membro</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove{" "}
-              <strong>{member.user?.name}</strong> from the organization? This
-              action cannot be undone.
+              Tem certeza que deseja remover{" "}
+              <strong>{member.user?.name}</strong> da organização? Esta ação não
+              pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">Cancelar</Button>
             </DialogClose>
             <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? "Removing..." : "Remove"}
+              {isDeleting ? "Removendo..." : "Remover"}
             </Button>
           </DialogFooter>
         </DialogContent>

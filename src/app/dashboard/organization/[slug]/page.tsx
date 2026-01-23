@@ -18,6 +18,7 @@ import {
   OrganizationNotMembersSection,
   OrganizationNotMembersSectionSkeleton,
 } from "./_components/organization-not-members-section";
+import { OrganizationDeletion } from "./_components/organization-deletion";
 
 type Params = Promise<{ slug: string }>;
 
@@ -97,6 +98,11 @@ export default async function OrganizationPage({ params }: { params: Params }) {
             <OrganizationNotMembersSection organizationId={organization.id} />
           </Suspense>
         </div>
+
+        <OrganizationDeletion
+          organizationId={organization.id}
+          organizationName={organization.name}
+        />
       </div>
     </>
   );
