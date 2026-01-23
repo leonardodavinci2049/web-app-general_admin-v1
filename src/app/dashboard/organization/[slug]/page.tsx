@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
 import type { Organization } from "@/services/db/schema";
+import { OrganizationDeletion } from "./_components/organization-deletion";
 import {
   OrganizationDetailsSection,
   OrganizationDetailsSectionSkeleton,
@@ -18,7 +19,6 @@ import {
   OrganizationNotMembersSection,
   OrganizationNotMembersSectionSkeleton,
 } from "./_components/organization-not-members-section";
-import { OrganizationDeletion } from "./_components/organization-deletion";
 
 type Params = Promise<{ slug: string }>;
 
