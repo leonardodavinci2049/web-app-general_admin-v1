@@ -2,8 +2,17 @@ import Link from "next/link";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { getOrganizationBySlug } from "@/server/organizations";
-import { getCurrentUser, getUsers } from "@/server/users";
+import { getCurrentUser } from "@/server/users";
+import {
+  getAllMembers,
+  getAllNotMembers,
+} from "@/services/db/member/member-cached-service";
+import type {
+  TblMemberFindAll,
+  TblMemberNotFindAll,
+} from "@/services/db/member/types/member.type";
 import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
+import type { Member, User } from "@/services/db/schema";
 import InviteUsersTable from "./_components/invite-users-table";
 import MembersTable from "./_components/members-table";
 import { OrganizationDetailsCard } from "./_components/organization-details-card";
@@ -15,10 +24,43 @@ export default async function OrganizationPage({ params }: { params: Params }) {
 
   const { currentUser } = await getCurrentUser();
   const organization = await getOrganizationBySlug(slug);
-  const users = await getUsers(organization?.id || "");
+  const rawMembers = organization ? await getAllMembers(organization.id) : [];
+  const rawNotMembers = organization
+    ? await getAllNotMembers(organization.id)
+    : [];
   const organizationDetails = organization
     ? await getOrganizationById(currentUser.id, organization.id)
     : null;
+
+  const members: Member[] = rawMembers.map((m: TblMemberFindAll) => ({
+    id: m.id.toString(),
+    organizationId: organization?.id || "",
+    userId: m.id.toString(),
+    role: m.role,
+    createdAt: m.createdAt,
+    updatedAt: new Date(),
+    user: {
+      id: m.id.toString(),
+      name: m.name,
+      email: m.email,
+      image: m.image,
+      emailVerified: true,
+      createdAt: m.createdAt,
+      updatedAt: new Date(),
+      twoFactorEnabled: false,
+    },
+  }));
+
+  const users: User[] = rawNotMembers.map((u: TblMemberNotFindAll) => ({
+    id: u.id.toString(),
+    name: u.name,
+    email: u.email,
+    image: u.image,
+    emailVerified: true,
+    createdAt: u.createdAt,
+    updatedAt: new Date(),
+    twoFactorEnabled: false,
+  }));
 
   if (!organization) {
     return <div>Organization not found</div>;
@@ -57,7 +99,7 @@ export default async function OrganizationPage({ params }: { params: Params }) {
               Gerenciar os membros desta organização.
             </p>
           </div>
-          <MembersTable members={organization.member || []} />
+          <MembersTable members={members} />
         </div>
 
         <div className="space-y-4">

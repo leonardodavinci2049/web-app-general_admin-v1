@@ -1,18 +1,18 @@
 import { envs } from "@/core/config";
-import type { MemberRoleFindAllDto } from "../dto/member-role-find-all.dto";
+import type { MemberFindAllDto } from "../dto/member-find-all.dto";
 
-export function MemberRoleFindAllQuery(
-  dataJsonDto: MemberRoleFindAllDto,
-): string {
+export function MemberFindAllQuery(dataJsonDto: MemberFindAllDto): string {
   const PE_APP_ID = envs.APP_ID;
   const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID || "";
   const PE_USER_ID = dataJsonDto.PE_USER_ID || "";
+  const PE_SEARCH_USER = dataJsonDto.PE_SEARCH_USER || "";
   const PE_LIMIT = dataJsonDto.PE_LIMIT || 20;
 
-  const queryString = ` call sp_member_role_find_all_v2(
+  const queryString = ` call sp_member_find_all_v1(
         ${PE_APP_ID},
         '${PE_ORGANIZATION_ID}',
         '${PE_USER_ID}',
+        '${PE_SEARCH_USER}',
         ${PE_LIMIT}
         ) `;
 

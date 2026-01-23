@@ -27,6 +27,7 @@ export const CACHE_TAGS = {
   organizations: "organizations",
   users: "users",
   invitations: "invitations",
+  members: "members",
   memberRoles: "member-roles",
   logLogins: "log-logins",
   logOperations: "log-operations",
