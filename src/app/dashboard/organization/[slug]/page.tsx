@@ -1,70 +1,55 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
+import type { Organization } from "@/services/db/schema";
 import {
-  getAllMembers,
-  getAllNotMembers,
-} from "@/services/db/member/member-cached-service";
-import type {
-  TblMemberFindAll,
-  TblMemberNotFindAll,
-} from "@/services/db/member/types/member.type";
-import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
-import type { Member, User } from "@/services/db/schema";
-import InviteUsersTable from "./_components/invite-users-table";
-import MembersTable from "./_components/members-table";
-import { OrganizationDetailsCard } from "./_components/organization-details-card";
+  OrganizationDetailsSection,
+  OrganizationDetailsSectionSkeleton,
+} from "./_components/organization-details-section";
+import {
+  OrganizationInviteSection,
+  OrganizationInviteSectionSkeleton,
+} from "./_components/organization-invite-section";
+import {
+  OrganizationMembersSection,
+  OrganizationMembersSectionSkeleton,
+} from "./_components/organization-members-section";
 
 type Params = Promise<{ slug: string }>;
 
-export default async function OrganizationPage({ params }: { params: Params }) {
-  const { slug } = await params;
-
-  const { currentUser } = await getCurrentUser();
+async function getOrganizationData(slug: string) {
   const organization = await getOrganizationBySlug(slug);
-  const rawMembers = organization ? await getAllMembers(organization.id) : [];
-  const rawNotMembers = organization
-    ? await getAllNotMembers(organization.id)
-    : [];
-  const organizationDetails = organization
-    ? await getOrganizationById(currentUser.id, organization.id)
-    : null;
-
-  const members: Member[] = rawMembers.map((m: TblMemberFindAll) => ({
-    id: m.id.toString(),
-    organizationId: organization?.id || "",
-    userId: m.id.toString(),
-    role: m.role,
-    createdAt: m.createdAt,
-    updatedAt: new Date(),
-    user: {
-      id: m.id.toString(),
-      name: m.name,
-      email: m.email,
-      image: m.image,
-      emailVerified: true,
-      createdAt: m.createdAt,
-      updatedAt: new Date(),
-      twoFactorEnabled: false,
-    },
-  }));
-
-  const users: User[] = rawNotMembers.map((u: TblMemberNotFindAll) => ({
-    id: u.id.toString(),
-    name: u.name,
-    email: u.email,
-    image: u.image,
-    emailVerified: true,
-    createdAt: u.createdAt,
-    updatedAt: new Date(),
-    twoFactorEnabled: false,
-  }));
 
   if (!organization) {
-    return <div>Organization not found</div>;
+    notFound();
   }
+
+  return organization;
+}
+
+type PageHeaderProps = {
+  organization: Organization;
+};
+
+function PageHeader({ organization }: PageHeaderProps) {
+  return (
+    <div className="flex items-center justify-between">
+      <h1 className="text-3xl font-bold tracking-tight">{organization.name}</h1>
+      <Link href="/dashboard/organization">
+        <Button variant="outline">Voltar</Button>
+      </Link>
+    </div>
+  );
+}
+
+export default async function OrganizationPage({ params }: { params: Params }) {
+  const { slug } = await params;
+  const { currentUser } = await getCurrentUser();
+  const organization = await getOrganizationData(slug);
 
   return (
     <>
@@ -78,19 +63,14 @@ export default async function OrganizationPage({ params }: { params: Params }) {
       />
 
       <div className="container mx-auto py-10 px-4 space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {organization.name}
-          </h1>
-          <Link href="/dashboard/organization">
-            <Button variant="outline">Voltar</Button>
-          </Link>
-        </div>
-        {organizationDetails && (
-          <div className="space-y-4">
-            <OrganizationDetailsCard organization={organizationDetails} />
-          </div>
-        )}
+        <PageHeader organization={organization} />
+
+        <Suspense fallback={<OrganizationDetailsSectionSkeleton />}>
+          <OrganizationDetailsSection
+            userId={currentUser.id}
+            organizationId={organization.id}
+          />
+        </Suspense>
 
         <div className="space-y-4">
           <div>
@@ -99,7 +79,9 @@ export default async function OrganizationPage({ params }: { params: Params }) {
               Gerenciar os membros desta organização.
             </p>
           </div>
-          <MembersTable members={members} />
+          <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
+            <OrganizationMembersSection organizationId={organization.id} />
+          </Suspense>
         </div>
 
         <div className="space-y-4">
@@ -111,7 +93,9 @@ export default async function OrganizationPage({ params }: { params: Params }) {
               Convide usuários para se juntarem a esta organização.
             </p>
           </div>
-          <InviteUsersTable organizationId={organization.id} users={users} />
+          <Suspense fallback={<OrganizationInviteSectionSkeleton />}>
+            <OrganizationInviteSection organizationId={organization.id} />
+          </Suspense>
         </div>
       </div>
     </>
