@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserActions } from "./user-actions";
+import { Button } from "@/components/ui/button";
 
 interface UserTableProps {
   users: UserWithRole[];
@@ -95,7 +95,9 @@ export function UserTable({ users, selfId }: UserTableProps) {
                   }).format(new Date(user.createdAt))}
                 </TableCell>
                 <TableCell className="text-right">
-                  <UserActions user={user} selfId={selfId} />
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/dashboard/users/${user.id}`}>Editar</Link>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -147,7 +149,10 @@ export function UserTable({ users, selfId }: UserTableProps) {
                   </p>
                 </div>
               </div>
-              <UserActions user={user} selfId={selfId} />
+
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/dashboard/users/${user.id}`}>Editar</Link>
+              </Button>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
