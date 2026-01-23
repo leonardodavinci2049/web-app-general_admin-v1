@@ -64,7 +64,7 @@ export default function Header02() {
             </Suspense>
             <div className="flex gap-2">
               <Link
-                href="/login"
+                href="/"
                 className={buttonVariants({ variant: "default" })}
               >
                 Get Started
@@ -109,7 +109,7 @@ export default function Header02() {
                 <div className="border-t pt-4 px-4">
                   <div className="mt-2 flex flex-col gap-2">
                     <Link
-                      href="/login"
+                      href="/sign-in"
                       className={cn(
                         buttonVariants({ variant: "default" }),
                         "py-5",

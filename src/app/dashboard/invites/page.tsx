@@ -16,7 +16,7 @@ export default async function InvitesPage(props: {
   const searchParams = await props.searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (session == null) return redirect("/auth/login");
+  if (session == null) return redirect("/sign-in");
 
   const searchTerm =
     typeof searchParams.search === "string" ? searchParams.search : undefined;

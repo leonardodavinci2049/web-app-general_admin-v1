@@ -10,7 +10,7 @@ export default async function RolesPage() {
   await connection();
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (session == null) return redirect("/auth/login");
+  if (session == null) return redirect("/sign-in");
 
   const roles = await getAllMemberRoles(undefined, undefined, 100);
 
