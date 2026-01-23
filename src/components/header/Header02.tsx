@@ -63,10 +63,7 @@ export default function Header02() {
               <ModeToggle />
             </Suspense>
             <div className="flex gap-2">
-              <Link
-                href="/login"
-                className={buttonVariants({ variant: "default" })}
-              >
+              <Link href="/" className={buttonVariants({ variant: "default" })}>
                 Get Started
               </Link>
             </div>
@@ -109,7 +106,7 @@ export default function Header02() {
                 <div className="border-t pt-4 px-4">
                   <div className="mt-2 flex flex-col gap-2">
                     <Link
-                      href="/login"
+                      href="/sign-in"
                       className={cn(
                         buttonVariants({ variant: "default" }),
                         "py-5",

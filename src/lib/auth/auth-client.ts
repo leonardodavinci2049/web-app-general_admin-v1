@@ -38,7 +38,7 @@ export const authClient = createAuthClient({
     }),
     twoFactorClient({
       onTwoFactorRedirect: () => {
-        window.location.href = "/auth/2fa";
+        window.location.href = "/2fa";
       },
     }),
     adminClient({

@@ -26,7 +26,7 @@ export function UserPasswordCard({ email }: { email: string }) {
           action={() => {
             return authClient.requestPasswordReset({
               email,
-              redirectTo: "/auth/reset-password",
+              redirectTo: "/reset-password",
             });
           }}
         >

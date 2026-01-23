@@ -1,5 +1,7 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { getUserId } from "@/lib/auth/get-user-id";
+import { auth } from "@/lib/auth/auth";
 import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-breadcrumb";
 import { InvitationStatus } from "./_components/invitation-status";
@@ -8,11 +10,11 @@ import { OrganizationSearch } from "./organization/_components/organization-sear
 import { OrganizationTable } from "./organization/_components/organization-table";
 
 export default async function DashboardPage() {
-  // Obter userId FORA do cache scope (usa headers())
-  const userId = await getUserId();
+  const session = await auth.api.getSession({ headers: await headers() });
 
-  // Carregamento com cache - userId passado como argumento
-  const organizations = await getAllOrganizations(userId);
+  if (session == null) return redirect("/sign-in");
+
+  const organizations = await getAllOrganizations(session.user.id);
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Header fixo no topo */}
