@@ -14,7 +14,7 @@ export default async function UsersPage(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (session == null) return redirect("/auth/login");
+  if (session == null) return redirect("/sign-in");
 
   const hasAccess = await auth.api.userHasPermission({
     headers: await headers(),

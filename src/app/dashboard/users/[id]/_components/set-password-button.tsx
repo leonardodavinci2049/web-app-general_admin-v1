@@ -11,7 +11,7 @@ export function SetPasswordButton({ email }: { email: string }) {
       action={() => {
         return authClient.requestPasswordReset({
           email,
-          redirectTo: "/auth/reset-password",
+          redirectTo: "/reset-password",
         });
       }}
     >
