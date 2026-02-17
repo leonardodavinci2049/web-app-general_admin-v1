@@ -35,7 +35,6 @@ export class LogService {
         resultData as unknown[],
         "Login log creation failed",
       );
-      
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : MESSAGES.UNKNOWN_ERROR;
