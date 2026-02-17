@@ -3,7 +3,7 @@
 import Form from "next/form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SubmitButton } from "@/components/common/submit-button";
 import { Badge } from "@/components/ui/badge";
@@ -30,10 +30,14 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const lastMethod = authClient.getLastUsedLoginMethod();
+  const [lastMethod, setLastMethod] = useState<string | null>(null);
   const router = useRouter();
 
   const [state, formAction] = useActionState(signInAction, initialState);
+
+  useEffect(() => {
+    setLastMethod(authClient.getLastUsedLoginMethod());
+  }, []);
 
   useEffect(() => {
     if (state.message) {
