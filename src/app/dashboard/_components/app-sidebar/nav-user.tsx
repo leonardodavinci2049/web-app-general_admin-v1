@@ -8,8 +8,6 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -39,22 +37,15 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    try {
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success("Logged out successfully");
-            router.push("/sign-in");
-          },
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/sign-in";
         },
-      });
-    } catch (error) {
-      toast.error("Failed to logout");
-      console.error(error);
-    }
+      },
+    });
   };
 
   return (
