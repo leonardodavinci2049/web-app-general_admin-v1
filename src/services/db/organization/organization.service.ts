@@ -87,8 +87,6 @@ export class OrganizationService {
         resultData as unknown[],
         "Organization not found",
       );
-
-      
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : MESSAGES.UNKNOWN_ERROR;
