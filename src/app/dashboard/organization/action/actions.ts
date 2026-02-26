@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
+import { AuthService } from "@/services/db/auth/auth.service";
 import organizationService from "@/services/db/organization/organization.service";
 import type { OrganizationMemberRole } from "@/services/db/schema";
 
@@ -13,6 +14,19 @@ export async function addMemberAction(
   organizationId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
+    const memberships = await AuthService.findMembersByUser({ userId });
+
+    if (
+      memberships.success &&
+      memberships.data &&
+      memberships.data.length > 0
+    ) {
+      return {
+        success: false,
+        message: "Este usuário já pertence a outra organização",
+      };
+    }
+
     const result = await auth.api.addMember({
       headers: await headers(),
       body: {

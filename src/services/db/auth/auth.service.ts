@@ -13,6 +13,7 @@ import {
   AuthValidationError,
   type Member,
   type MemberEntity,
+  type MemberWithUser,
   type MemberWithUserEntity,
   type ModifyResponse,
   mapAccountEntityToDto,
@@ -440,6 +441,54 @@ async function deleteMember(params: {
     };
   } catch (error) {
     return handleModifyError(error, "deleteMember");
+  }
+}
+
+/**
+ * Finds all members of an organization with their user data (JOIN)
+ *
+ * @example
+ * ```typescript
+ * const response = await AuthService.findMembersWithUsersByOrganization({
+ *   organizationId: "org-123"
+ * });
+ * ```
+ */
+async function findMembersWithUsersByOrganization(params: {
+  organizationId: string;
+}): Promise<ServiceResponse<MemberWithUser[]>> {
+  try {
+    validateId(params.organizationId, "organizationId");
+
+    const query = `
+      SELECT 
+        m.id, m.organizationId, m.userId, m.role, m.createdAt, m.updatedAt,
+        u.id as user_id, u.name as user_name, u.email as user_email,
+        u.emailVerified as user_emailVerified, u.image as user_image,
+        u.createdAt as user_createdAt, u.updatedAt as user_updatedAt,
+        u.twoFactorEnabled as user_twoFactorEnabled, u.role as user_role,
+        u.banned as user_banned, u.banReason as user_banReason,
+        u.banExpires as user_banExpires
+      FROM ${AUTH_TABLES.MEMBER} m
+      INNER JOIN ${AUTH_TABLES.USER} u ON m.userId = u.id
+      WHERE m.organizationId = ?
+      ORDER BY m.createdAt ASC
+    `;
+
+    const results = await dbService.selectExecute<MemberWithUserEntity>(query, [
+      params.organizationId,
+    ]);
+
+    return {
+      success: true,
+      data: results.map(mapMemberWithUserEntityToDto),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<MemberWithUser[]>(
+      error,
+      "findMembersWithUsersByOrganization",
+    );
   }
 }
 
@@ -1152,6 +1201,43 @@ async function findNonMemberUsers(params: {
   }
 }
 
+/**
+ * Finds users who are not members of any organization
+ *
+ * @example
+ * ```typescript
+ * const response = await AuthService.findUsersWithoutAnyOrganization();
+ * ```
+ */
+async function findUsersWithoutAnyOrganization(): Promise<
+  ServiceResponse<User[]>
+> {
+  try {
+    const query = `
+      SELECT 
+        u.id, u.name, u.email, u.emailVerified, u.image, 
+        u.createdAt, u.updatedAt, u.twoFactorEnabled, 
+        u.role, u.banned, u.banReason, u.banExpires
+      FROM ${AUTH_TABLES.USER} u
+      WHERE u.id NOT IN (
+        SELECT DISTINCT m.userId 
+        FROM ${AUTH_TABLES.MEMBER} m
+      )
+      ORDER BY u.name ASC
+    `;
+
+    const results = await dbService.selectExecute<UserEntity>(query);
+
+    return {
+      success: true,
+      data: results.map(mapUserEntityToDto),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<User[]>(error, "findUsersWithoutAnyOrganization");
+  }
+}
+
 // ============================================================================
 // ============================================================================
 // Session Methods
@@ -1326,6 +1412,7 @@ export const AuthService = {
   findFirstMemberByUser,
   findMembersByUser,
   deleteMember,
+  findMembersWithUsersByOrganization,
 
   // Organization Methods
   findOrganizationById,
@@ -1338,6 +1425,7 @@ export const AuthService = {
   findUserOrganizations,
   findActiveOrganization,
   findNonMemberUsers,
+  findUsersWithoutAnyOrganization,
 
   // Subscription Methods
   createSubscription,
