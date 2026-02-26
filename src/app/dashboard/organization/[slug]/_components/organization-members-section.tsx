@@ -1,5 +1,4 @@
-import { getAllMembers } from "@/services/db/member/member-cached-service";
-import type { TblMemberFindAll } from "@/services/db/member/types/member.type";
+import { AuthService } from "@/services/db/auth/auth.service";
 import type { Member } from "@/services/db/schema";
 import MembersTable from "./members-table";
 import { MembersTableSkeleton } from "./skeleton/members-table-skeleton";
@@ -11,24 +10,26 @@ type OrganizationMembersSectionProps = {
 async function OrganizationMembersSectionContent({
   organizationId,
 }: OrganizationMembersSectionProps) {
-  const rawMembers = await getAllMembers(organizationId);
-
-  const members: Member[] = rawMembers.map((m: TblMemberFindAll) => ({
-    id: m.id.toString(),
+  const response = await AuthService.findMembersWithUsersByOrganization({
     organizationId,
-    userId: m.id.toString(),
+  });
+
+  const members: Member[] = (response.data ?? []).map((m) => ({
+    id: m.id,
+    organizationId: m.organizationId,
+    userId: m.userId,
     role: m.role,
     createdAt: m.createdAt,
-    updatedAt: new Date(),
+    updatedAt: m.updatedAt,
     user: {
-      id: m.id.toString(),
-      name: m.name,
-      email: m.email,
-      image: m.image,
-      emailVerified: true,
-      createdAt: m.createdAt,
-      updatedAt: new Date(),
-      twoFactorEnabled: false,
+      id: m.user.id,
+      name: m.user.name,
+      email: m.user.email,
+      image: m.user.image,
+      emailVerified: m.user.emailVerified,
+      createdAt: m.user.createdAt,
+      updatedAt: m.user.updatedAt,
+      twoFactorEnabled: m.user.twoFactorEnabled,
     },
   }));
 

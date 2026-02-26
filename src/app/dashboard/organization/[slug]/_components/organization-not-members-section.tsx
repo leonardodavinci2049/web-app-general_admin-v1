@@ -1,5 +1,4 @@
-import { getAllNotMembers } from "@/services/db/member/member-cached-service";
-import type { TblMemberNotFindAll } from "@/services/db/member/types/member.type";
+import { AuthService } from "@/services/db/auth/auth.service";
 import type { User } from "@/services/db/schema";
 import NotMembersTable from "./not-members-table";
 import { InviteUsersTableSkeleton } from "./skeleton/invite-users-table-skeleton";
@@ -11,17 +10,17 @@ type OrganizationNotMembersSectionProps = {
 async function OrganizationNotMembersSectionContent({
   organizationId,
 }: OrganizationNotMembersSectionProps) {
-  const rawNotMembers = await getAllNotMembers(organizationId);
+  const response = await AuthService.findUsersWithoutAnyOrganization();
 
-  const users: User[] = rawNotMembers.map((u: TblMemberNotFindAll) => ({
-    id: u.id.toString(),
+  const users: User[] = (response.data ?? []).map((u) => ({
+    id: u.id,
     name: u.name,
     email: u.email,
     image: u.image,
-    emailVerified: true,
+    emailVerified: u.emailVerified,
     createdAt: u.createdAt,
-    updatedAt: new Date(),
-    twoFactorEnabled: false,
+    updatedAt: u.updatedAt,
+    twoFactorEnabled: u.twoFactorEnabled,
   }));
 
   return <NotMembersTable organizationId={organizationId} users={users} />;
