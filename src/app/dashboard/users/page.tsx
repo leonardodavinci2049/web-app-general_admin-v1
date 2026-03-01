@@ -18,7 +18,7 @@ export default async function UsersPage(props: { searchParams: SearchParams }) {
 
   const hasAccess = await auth.api.userHasPermission({
     headers: await headers(),
-    body: { permission: { user: ["list"] } },
+    body: { permissions: { user: ["list"] } },
   });
 
   if (!hasAccess.success) return redirect("/");
