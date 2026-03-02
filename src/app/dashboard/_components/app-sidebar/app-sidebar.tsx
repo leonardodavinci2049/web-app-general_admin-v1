@@ -23,6 +23,7 @@ import {
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
+import { SidebarLogo } from "./sidebar-logo";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "App";
 // This is sample data.
@@ -94,7 +95,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+       <SidebarLogo />
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={data.projects} />
