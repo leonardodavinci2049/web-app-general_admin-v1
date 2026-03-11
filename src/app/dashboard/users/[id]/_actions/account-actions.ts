@@ -1,10 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { AuthService } from "@/services/db/auth/auth.service";
+import { AccountService } from "@/services/db/account/account.service";
 
 export async function unlinkUserAccount(accountId: string) {
-  const result = await AuthService.deleteAccount({ accountId });
+  const result = await AccountService.deleteAccount({ accountId });
 
   if (result.success) {
     revalidatePath("/dashboard/users");

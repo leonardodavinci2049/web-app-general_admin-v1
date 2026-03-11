@@ -1,9 +1,9 @@
 import { MESSAGES } from "@/core/constants/globalConstants";
 
-import dbService from "../dbConnection";
-import { processProcedureResultMutation } from "../utils/process-procedure-result.mutation";
-import { processProcedureResultQueryWithoutId } from "../utils/process-procedure-result.query";
-import { ResultModel } from "../utils/result.model";
+import dbService from "@/lib/cnx-database/dbConnection";
+import { processProcedureResultMutation } from "@/lib/cnx-database/utils/process-procedure-result.mutation";
+import { processProcedureResultQueryWithoutId } from "@/lib/cnx-database/utils/process-procedure-result.query";
+import { ResultModel } from "@/lib/cnx-database/utils/result.model";
 import { validateLogLoginCreateDto } from "./dto/log_login_create.dto";
 import { validateLogLoginFindAllDto } from "./dto/log_login_find_all.dto";
 import { validateLogOperationCreateDto } from "./dto/log_operation_create.dto";

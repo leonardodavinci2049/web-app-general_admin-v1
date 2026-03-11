@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Session } from "@/services/db/auth/types/auth.types";
+import type { Session } from "@/lib/cnx-database/shared/auth/auth.types";
 import { revokeUserSession } from "../../_actions/session-actions";
 
 interface UserSessionsCardProps {

@@ -1,11 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
-import AuthService, {
+import SubscriptionService, {
   type ModifyResponse,
   type ServiceResponse,
   type Subscription,
-} from "@/services/db/auth/auth.service";
+} from "@/services/db/subscription/subscription.service";
 
 // ============================================================================
 // Types
@@ -52,7 +52,7 @@ export async function createSubscription(
       };
     }
 
-    return await AuthService.createSubscription({
+    return await SubscriptionService.createSubscription({
       userId: session.user.id,
       plan: input.plan,
       status: input.status,
@@ -93,7 +93,7 @@ export async function getMySubscription(): Promise<
       };
     }
 
-    return await AuthService.findSubscriptionByUserId({
+    return await SubscriptionService.findSubscriptionByUserId({
       userId: session.user.id,
     });
   } catch (error) {
@@ -129,7 +129,7 @@ export async function getSubscriptionByUserId(
       };
     }
 
-    return await AuthService.findSubscriptionByUserId({ userId });
+    return await SubscriptionService.findSubscriptionByUserId({ userId });
   } catch (error) {
     console.error("[getSubscriptionByUserId] Erro:", error);
     return {
@@ -163,7 +163,7 @@ export async function getSubscriptionById(
       };
     }
 
-    return await AuthService.findSubscriptionById({ subscriptionId });
+    return await SubscriptionService.findSubscriptionById({ subscriptionId });
   } catch (error) {
     console.error("[getSubscriptionById] Erro:", error);
     return {
@@ -199,9 +199,10 @@ export async function updateMySubscription(
     }
 
     // Primeiro busca a subscription do usuário
-    const subscriptionResponse = await AuthService.findSubscriptionByUserId({
-      userId: session.user.id,
-    });
+    const subscriptionResponse =
+      await SubscriptionService.findSubscriptionByUserId({
+        userId: session.user.id,
+      });
 
     if (!subscriptionResponse.success || !subscriptionResponse.data) {
       return {
@@ -211,7 +212,7 @@ export async function updateMySubscription(
       };
     }
 
-    return await AuthService.updateSubscription({
+    return await SubscriptionService.updateSubscription({
       subscriptionId: subscriptionResponse.data.id,
       plan: input.plan,
       status: input.status,
@@ -253,7 +254,7 @@ export async function updateSubscription(
       };
     }
 
-    return await AuthService.updateSubscription({
+    return await SubscriptionService.updateSubscription({
       subscriptionId,
       plan: input.plan,
       status: input.status,
@@ -290,9 +291,10 @@ export async function deleteMySubscription(): Promise<ModifyResponse> {
     }
 
     // Primeiro busca a subscription do usuário
-    const subscriptionResponse = await AuthService.findSubscriptionByUserId({
-      userId: session.user.id,
-    });
+    const subscriptionResponse =
+      await SubscriptionService.findSubscriptionByUserId({
+        userId: session.user.id,
+      });
 
     if (!subscriptionResponse.success || !subscriptionResponse.data) {
       return {
@@ -302,7 +304,7 @@ export async function deleteMySubscription(): Promise<ModifyResponse> {
       };
     }
 
-    return await AuthService.deleteSubscription({
+    return await SubscriptionService.deleteSubscription({
       subscriptionId: subscriptionResponse.data.id,
     });
   } catch (error) {
@@ -338,7 +340,7 @@ export async function deleteSubscription(
       };
     }
 
-    return await AuthService.deleteSubscription({ subscriptionId });
+    return await SubscriptionService.deleteSubscription({ subscriptionId });
   } catch (error) {
     console.error("[deleteSubscription] Erro:", error);
     return {

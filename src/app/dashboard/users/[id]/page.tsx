@@ -5,7 +5,9 @@ import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
-import { AuthService } from "@/services/db/auth/auth.service";
+import { AccountService } from "@/services/db/account/account.service";
+import { SessionService } from "@/services/db/session/session.service";
+import { UserAuthService } from "@/services/db/user/user.service";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
 import { UserAccountsCard } from "./_components/security/user-accounts-card";
 import { UserPasswordCard } from "./_components/security/user-password-card";
@@ -24,15 +26,15 @@ export default async function UserPage({ params }: { params: Params }) {
 
   if (session == null) return redirect("/sign-in");
 
-  const userResponse = await AuthService.findUserById({ userId: id });
+  const userResponse = await UserAuthService.findUserById({ userId: id });
   const user = userResponse.data;
 
-  const sessionsResponse = await AuthService.findSessionsByUserId({
+  const sessionsResponse = await SessionService.findSessionsByUserId({
     userId: id,
   });
   const sessions = sessionsResponse.data || [];
 
-  const accountsResponse = await AuthService.findAccountsByUserId({
+  const accountsResponse = await AccountService.findAccountsByUserId({
     userId: id,
   });
   const accounts = accountsResponse.data || [];
