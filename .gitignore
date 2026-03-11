@@ -42,7 +42,9 @@ next-env.d.ts
 
 # others
 .github/
+.agents/
 /docs
 tasks-project-next.md
 ecosystem.config.js
 AGENTS.md
+/scripts

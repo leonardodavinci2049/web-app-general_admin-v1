@@ -15,6 +15,7 @@ export type CreateUserState = {
     email?: string[];
     password?: string[];
     role?: string[];
+    personId?: string[];
   };
 };
 
@@ -27,6 +28,7 @@ export async function createUserAction(
     email: formData.get("email"),
     password: formData.get("password"),
     role: formData.get("role"),
+    personId: formData.get("personId"),
   };
 
   const validatedFields = createUserSchema.safeParse(rawData);
@@ -39,7 +41,7 @@ export async function createUserAction(
     };
   }
 
-  const { name, email, password, role } = validatedFields.data;
+  const { name, email, password, role, personId } = validatedFields.data;
 
   try {
     const result = await auth.api.createUser({
@@ -52,9 +54,19 @@ export async function createUserAction(
       },
     });
 
+    const updateFields: string[] = ["emailVerified = 1"];
+    const updateParams: (string | number)[] = [];
+
+    if (personId != null) {
+      updateFields.push("person_id = ?");
+      updateParams.push(personId);
+    }
+
+    updateParams.push(result.user.id);
+
     await dbService.ModifyExecute(
-      `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1 WHERE id = ?`,
-      [result.user.id],
+      `UPDATE ${AUTH_TABLES.USER} SET ${updateFields.join(", ")} WHERE id = ?`,
+      updateParams,
     );
 
     revalidatePath("/dashboard/users");

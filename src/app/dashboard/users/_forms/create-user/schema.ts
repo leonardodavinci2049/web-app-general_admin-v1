@@ -13,6 +13,14 @@ export const createUserSchema = z.object({
     .min(8, "A senha deve ter pelo menos 8 caracteres")
     .max(100, "A senha deve ter no máximo 100 caracteres"),
   role: z.enum(["user", "admin"]).default("user"),
+  personId: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val || val.trim() === "") return undefined;
+      const num = Number(val);
+      return Number.isNaN(num) ? undefined : num;
+    }),
 });
 
-export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type CreateUserInput = z.input<typeof createUserSchema>;

@@ -14,6 +14,7 @@ export interface User {
   banned: boolean | null;
   banReason: string | null;
   banExpires: Date | null;
+  personId: number | null;
 }
 
 /**
