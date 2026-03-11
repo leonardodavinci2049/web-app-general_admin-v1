@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { OrganizationMemberRole, User } from "@/services/db/schema";
+import type { OrganizationMemberRole, User } from "@/lib/cnx-database/schema";
 
 type NotMembersTableProps = {
   users: User[];

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
-import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
+import { getAllOrganizations } from "@/services/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { CreateOrganizationDialog } from "./_components/create-organization-dialog";
 import { OrganizationSearch } from "./_components/organization-search";

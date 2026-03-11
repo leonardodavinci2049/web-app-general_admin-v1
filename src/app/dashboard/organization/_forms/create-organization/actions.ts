@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
-import organizationService from "@/services/db/organization/organization.service";
+import organizationService from "@/services/organization/organization.service";
 import { createOrganizationSchema } from "./schema";
 
 export type CreateOrganizationState = {

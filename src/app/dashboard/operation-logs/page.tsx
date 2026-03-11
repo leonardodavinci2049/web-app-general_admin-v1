@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { getAllOperationLogs } from "@/services/db/log/log-cached-service";
+import { getAllOperationLogs } from "@/services/log/log-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { OperationLogSearch } from "./_components/operation-log-search";
 import { OperationLogTable } from "./_components/operation-log-table";

@@ -1,8 +1,9 @@
 "use server";
 
 import { createLogger } from "@/core/logger";
-import { AuthService } from "@/services/db/auth/auth.service";
-import organizationService from "@/services/db/organization/organization.service";
+import organizationService, {
+  OrganizationAuthService,
+} from "@/services/organization/organization.service";
 import { getCurrentUser } from "./users";
 
 const logger = createLogger("OrganizationActions");
@@ -10,7 +11,7 @@ export async function getOrganizations() {
   const { currentUser } = await getCurrentUser();
 
   // Usando método otimizado que faz JOIN internamente
-  const response = await AuthService.findUserOrganizations({
+  const response = await OrganizationAuthService.findUserOrganizations({
     userId: currentUser.id,
   });
 
@@ -27,7 +28,7 @@ export async function getOrganizations() {
  * Para uso em dashboards de administração global
  * Requer autenticação - redireciona para /sign-in se não houver sessão
  *
- * @deprecated Use getAllOrganizations from '@/services/db/organization/organization-cached-service'
+ * @deprecated Use getAllOrganizations from '@/services/organization/organization-cached-service'
  * Server actions devem ser usadas apenas para mutations (POST, PUT, DELETE).
  * Para data fetching em Server Components, use o cached service diretamente.
  */
@@ -56,7 +57,9 @@ export async function getAllOrganizations() {
 
 export async function getActiveOrganization(userId: string) {
   // Usando método otimizado que faz JOIN internamente
-  const response = await AuthService.findActiveOrganization({ userId });
+  const response = await OrganizationAuthService.findActiveOrganization({
+    userId,
+  });
 
   if (!response.success) {
     console.error(response.error);
@@ -67,9 +70,10 @@ export async function getActiveOrganization(userId: string) {
 }
 
 export async function getOrganizationBySlug(slug: string) {
-  const response = await AuthService.findOrganizationBySlugWithMembers({
-    slug,
-  });
+  const response =
+    await OrganizationAuthService.findOrganizationBySlugWithMembers({
+      slug,
+    });
 
   if (!response.success) {
     console.error(response.error);

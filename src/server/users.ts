@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
-import { AuthService } from "@/services/db/auth/auth.service";
+import { UserAuthService } from "@/services/user/user.service";
 
 export const getCurrentUser = async () => {
   const session = await auth.api.getSession({
@@ -14,7 +14,7 @@ export const getCurrentUser = async () => {
     redirect("/sign-in");
   }
 
-  const response = await AuthService.findUserById({
+  const response = await UserAuthService.findUserById({
     userId: session.user.id,
   });
 
@@ -81,7 +81,7 @@ export const signUp = async (
 
 export const getUsers = async (organizationId: string) => {
   // Usando método otimizado que faz a busca em uma única query
-  const response = await AuthService.findNonMemberUsers({ organizationId });
+  const response = await UserAuthService.findNonMemberUsers({ organizationId });
 
   if (!response.success || !response.data) {
     console.error(response.error);

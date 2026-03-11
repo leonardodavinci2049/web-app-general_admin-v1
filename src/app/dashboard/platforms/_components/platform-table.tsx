@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TblApp } from "@/services/db/schema";
+import type { TblApp } from "@/lib/cnx-database/schema";
 
 interface PlatformTableProps {
   platforms: TblApp[];
