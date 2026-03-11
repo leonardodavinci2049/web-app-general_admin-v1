@@ -65,7 +65,7 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      person_id: {
+      personId: {
         type: "number",
         required: false,
         input: true,

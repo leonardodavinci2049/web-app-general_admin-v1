@@ -38,7 +38,7 @@ export type Organization = {
 
 export type User = {
   id: string;
-  person_id?: number | null;
+  personId?: number | null;
   name: string;
   email: string;
   emailVerified: boolean;
