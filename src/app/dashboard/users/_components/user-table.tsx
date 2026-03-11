@@ -1,4 +1,5 @@
 import type { UserWithRole } from "better-auth/plugins/admin";
+import { Hash } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -12,8 +13,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+type UserWithPersonId = UserWithRole & { personId?: number | null };
+
 interface UserTableProps {
-  users: UserWithRole[];
+  users: UserWithPersonId[];
   selfId: string;
 }
 
@@ -28,6 +31,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
               <TableHead className="w-12">Avatar</TableHead>
               <TableHead>Usuário</TableHead>
               <TableHead>E-mail</TableHead>
+              <TableHead>Person ID</TableHead>
               <TableHead>Função</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Criado em</TableHead>
@@ -66,6 +70,9 @@ export function UserTable({ users, selfId }: UserTableProps) {
                 <TableCell className="text-muted-foreground">
                   {user.email}
                 </TableCell>
+                <TableCell className="font-mono text-sm text-muted-foreground">
+                  {user.personId ?? "—"}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={user.role === "admin" ? "default" : "secondary"}
@@ -103,7 +110,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
             ))}
             {users.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={8} className="h-24 text-center">
                   Nenhum usuário encontrado.
                 </TableCell>
               </TableRow>
@@ -159,6 +166,12 @@ export function UserTable({ users, selfId }: UserTableProps) {
               <Badge variant={user.role === "admin" ? "default" : "secondary"}>
                 {user.role}
               </Badge>
+              {user.personId != null && (
+                <Badge variant="outline" className="font-mono">
+                  <Hash className="mr-1 h-3 w-3" />
+                  {user.personId}
+                </Badge>
+              )}
               {user.banned && <Badge variant="destructive">Banido</Badge>}
               {!user.emailVerified && (
                 <Badge variant="outline">Não verif.</Badge>

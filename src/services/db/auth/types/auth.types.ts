@@ -82,6 +82,7 @@ export interface UserEntity extends RowDataPacket {
   banned: boolean | null;
   banReason: string | null;
   banExpires: Date | null;
+  person_id: number | null;
 }
 
 /**
@@ -112,6 +113,7 @@ export interface MemberWithUserEntity extends MemberEntity {
   user_banned: boolean | null;
   user_banReason: string | null;
   user_banExpires: Date | null;
+  user_person_id: number | null;
 }
 
 /**
@@ -455,6 +457,7 @@ export function mapUserEntityToDto(entity: UserEntity): User {
     banned: entity.banned,
     banReason: entity.banReason,
     banExpires: entity.banExpires ? new Date(entity.banExpires) : null,
+    personId: entity.person_id ?? null,
   };
 }
 
@@ -500,6 +503,7 @@ export function mapMemberWithUserEntityToDto(
       banExpires: entity.user_banExpires
         ? new Date(entity.user_banExpires)
         : null,
+      personId: entity.user_person_id ?? null,
     },
   };
 }
@@ -685,6 +689,7 @@ export function mapTeamMemberWithUserEntityToDto(
       banned: null,
       banReason: null,
       banExpires: null,
+      personId: null,
     },
   };
 }
