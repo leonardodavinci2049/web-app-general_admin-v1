@@ -5,8 +5,6 @@ import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
 } from "@/lib/cnx-database/dbConnection";
-import { processProcedureResultQueryWithoutId } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
 import {
   AUTH_TABLES,
   AuthValidationError,
@@ -19,6 +17,8 @@ import {
   mapMemberWithUserEntityToDto,
   type ServiceResponse,
 } from "@/lib/cnx-database/shared/auth/auth.types";
+import { processProcedureResultQueryWithoutId } from "@/lib/cnx-database/utils/process-procedure-result.query";
+import { ResultModel } from "@/lib/cnx-database/utils/result.model";
 import { validateMemberFindAllDto } from "./dto/member-find-all.dto";
 import { validateMemberNotFindAllDto } from "./dto/member-not-find-all.dto";
 import { validateMemberRoleFindAllDto } from "./dto/member-role-find-all.dto";

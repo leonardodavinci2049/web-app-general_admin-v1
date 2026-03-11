@@ -5,9 +5,6 @@ import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
 } from "@/lib/cnx-database/dbConnection";
-import { processProcedureResultMutation } from "@/lib/cnx-database/utils/process-procedure-result.mutation";
-import { processProcedureResultQuery } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
 import {
   AUTH_TABLES,
   AuthValidationError,
@@ -16,6 +13,9 @@ import {
   type User,
   type UserEntity,
 } from "@/lib/cnx-database/shared/auth/auth.types";
+import { processProcedureResultMutation } from "@/lib/cnx-database/utils/process-procedure-result.mutation";
+import { processProcedureResultQuery } from "@/lib/cnx-database/utils/process-procedure-result.query";
+import { ResultModel } from "@/lib/cnx-database/utils/result.model";
 import { validateUserFindAllDto } from "./dto/user_find_all.dto";
 import { validateUserFindIdDto } from "./dto/user_find_id.dto";
 import { validateUserUpdNameDto } from "./dto/user_upd_name.dto";
