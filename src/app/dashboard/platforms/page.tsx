@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { getAllPlatformApps } from "@/services/db/platform/platform-cached-service";
+import { getAllPlatformApps } from "@/services/platform/platform-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { PlatformTable } from "./_components/platform-table";
 

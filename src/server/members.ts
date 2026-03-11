@@ -1,8 +1,8 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
-import { AuthService } from "@/services/db/auth/auth.service";
-import type { OrganizationMemberRole } from "@/services/db/schema";
+import type { OrganizationMemberRole } from "@/lib/cnx-database/schema";
+import { MemberAuthService } from "@/services/member/member.service";
 import { isAdmin } from "./permissions";
 
 export const addMember = async (
@@ -34,7 +34,7 @@ export const removeMember = async (memberId: string) => {
     };
   }
 
-  const result = await AuthService.deleteMember({ memberId });
+  const result = await MemberAuthService.deleteMember({ memberId });
 
   if (!result.success) {
     console.error(result.error);

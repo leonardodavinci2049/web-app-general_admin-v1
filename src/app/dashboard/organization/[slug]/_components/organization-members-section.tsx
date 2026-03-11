@@ -1,5 +1,5 @@
-import { AuthService } from "@/services/db/auth/auth.service";
-import type { Member } from "@/services/db/schema";
+import type { Member } from "@/lib/cnx-database/schema";
+import { MemberAuthService } from "@/services/member/member.service";
 import MembersTable from "./members-table";
 import { MembersTableSkeleton } from "./skeleton/members-table-skeleton";
 
@@ -10,7 +10,7 @@ type OrganizationMembersSectionProps = {
 async function OrganizationMembersSectionContent({
   organizationId,
 }: OrganizationMembersSectionProps) {
-  const response = await AuthService.findMembersWithUsersByOrganization({
+  const response = await MemberAuthService.findMembersWithUsersByOrganization({
     organizationId,
   });
 

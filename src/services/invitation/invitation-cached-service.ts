@@ -3,7 +3,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { Invitation } from "@/services/db/schema";
+import type { Invitation } from "@/lib/cnx-database/schema";
 import invitationService from "./invitation.service";
 import type { TblInvitationFindAll } from "./types/invitation.type";
 

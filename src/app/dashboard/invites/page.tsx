@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
-import { getAllInvitations } from "@/services/db/invitation/invitation-cached-service";
+import { getAllInvitations } from "@/services/invitation/invitation-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { InviteSearch } from "./_components/invite-search";
 import { InviteTable } from "./_components/invite-table";

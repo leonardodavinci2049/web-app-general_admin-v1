@@ -1,5 +1,5 @@
-import { AuthService } from "@/services/db/auth/auth.service";
-import type { User } from "@/services/db/schema";
+import type { User } from "@/lib/cnx-database/schema";
+import { UserAuthService } from "@/services/user/user.service";
 import NotMembersTable from "./not-members-table";
 import { InviteUsersTableSkeleton } from "./skeleton/invite-users-table-skeleton";
 
@@ -10,7 +10,7 @@ type OrganizationNotMembersSectionProps = {
 async function OrganizationNotMembersSectionContent({
   organizationId,
 }: OrganizationNotMembersSectionProps) {
-  const response = await AuthService.findUsersWithoutAnyOrganization();
+  const response = await UserAuthService.findUsersWithoutAnyOrganization();
 
   const users: User[] = (response.data ?? []).map((u) => ({
     id: u.id,

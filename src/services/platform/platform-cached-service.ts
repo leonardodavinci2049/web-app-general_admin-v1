@@ -3,7 +3,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { TblApp } from "@/services/db/schema";
+import type { TblApp } from "@/lib/cnx-database/schema";
 import platformService from "./platform.service";
 import type { TblPlatformAppFindAll } from "./types/platform.type";
 

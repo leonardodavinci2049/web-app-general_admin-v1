@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type {
   Account,
@@ -19,7 +17,7 @@ import type {
   TwoFactor,
   User,
   Verification,
-} from "../dto/auth.dto";
+} from "./auth.dto";
 
 export type {
   User,

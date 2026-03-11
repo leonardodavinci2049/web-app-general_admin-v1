@@ -1,4 +1,4 @@
-import { getOrganizationById } from "@/services/db/organization/organization-cached-service";
+import { getOrganizationById } from "@/services/organization/organization-cached-service";
 import { OrganizationDetailsCard } from "./organization-details-card";
 import { OrganizationDetailsCardSkeleton } from "./skeleton/organization-details-card-skeleton";
 
