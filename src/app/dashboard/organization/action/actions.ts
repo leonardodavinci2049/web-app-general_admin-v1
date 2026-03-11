@@ -5,8 +5,8 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
 import type { OrganizationMemberRole } from "@/lib/cnx-database/schema";
-import { MemberAuthService } from "@/services/db/member/member.service";
-import organizationService from "@/services/db/organization/organization.service";
+import { MemberAuthService } from "@/services/member/member.service";
+import organizationService from "@/services/organization/organization.service";
 
 export async function addMemberAction(
   userId: string,

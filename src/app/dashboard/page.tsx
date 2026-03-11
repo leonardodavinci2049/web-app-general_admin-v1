@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { auth } from "@/lib/auth/auth";
-import { getAllOrganizations } from "@/services/db/organization/organization-cached-service";
+import { getAllOrganizations } from "@/services/organization/organization-cached-service";
 import { SiteHeaderWithBreadcrumb } from "./_components/header/site-header-with-breadcrumb";
 import { InvitationStatus } from "./_components/invitation-status";
 import { CreateOrganizationDialog } from "./organization/_components/create-organization-dialog";

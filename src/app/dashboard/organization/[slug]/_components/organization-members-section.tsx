@@ -1,5 +1,5 @@
 import type { Member } from "@/lib/cnx-database/schema";
-import { MemberAuthService } from "@/services/db/member/member.service";
+import { MemberAuthService } from "@/services/member/member.service";
 import MembersTable from "./members-table";
 import { MembersTableSkeleton } from "./skeleton/members-table-skeleton";
 

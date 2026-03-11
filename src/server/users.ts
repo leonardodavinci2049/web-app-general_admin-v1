@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
-import { UserAuthService } from "@/services/db/user/user.service";
+import { UserAuthService } from "@/services/user/user.service";
 
 export const getCurrentUser = async () => {
   const session = await auth.api.getSession({

@@ -1,7 +1,7 @@
 # Task: Implementar Query (chamadas) das procedures
 
 ## Objetivos
-com base no arquivo [organization-check-name-exist.query.ts](src/services/db/organization/query/organization-check-name-exist.query.ts) , que é uma chamada de procedure, implementes os arquivos abaixo (que estão na mesma pasta) com os seus respectivos campos 
+com base no arquivo [organization-check-name-exist.query.ts](src/services/organization/query/organization-check-name-exist.query.ts) , que é uma chamada de procedure, implementes os arquivos abaixo (que estão na mesma pasta) com os seus respectivos campos 
 
 persoanalziação conform as informações abaixo
 

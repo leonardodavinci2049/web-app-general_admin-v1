@@ -21,7 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import type { OrganizationDetail } from "@/services/db/organization/organization-cached-service";
+import type { OrganizationDetail } from "@/services/organization/organization-cached-service";
 import {
   updateOrganizationNameAction,
   updateOrganizationSlugAction,

@@ -3,7 +3,7 @@
 import { createLogger } from "@/core/logger";
 import organizationService, {
   OrganizationAuthService,
-} from "@/services/db/organization/organization.service";
+} from "@/services/organization/organization.service";
 import { getCurrentUser } from "./users";
 
 const logger = createLogger("OrganizationActions");
@@ -28,7 +28,7 @@ export async function getOrganizations() {
  * Para uso em dashboards de administração global
  * Requer autenticação - redireciona para /sign-in se não houver sessão
  *
- * @deprecated Use getAllOrganizations from '@/services/db/organization/organization-cached-service'
+ * @deprecated Use getAllOrganizations from '@/services/organization/organization-cached-service'
  * Server actions devem ser usadas apenas para mutations (POST, PUT, DELETE).
  * Para data fetching em Server Components, use o cached service diretamente.
  */

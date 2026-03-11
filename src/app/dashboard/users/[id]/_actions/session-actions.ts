@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { SessionService } from "@/services/db/session/session.service";
+import { SessionService } from "@/services/session/session.service";
 
 export async function revokeUserSession(sessionId: string) {
   const result = await SessionService.deleteSession({ sessionId });

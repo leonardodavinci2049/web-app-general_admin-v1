@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth/auth";
 import type { OrganizationMemberRole } from "@/lib/cnx-database/schema";
-import { MemberAuthService } from "@/services/db/member/member.service";
+import { MemberAuthService } from "@/services/member/member.service";
 import { isAdmin } from "./permissions";
 
 export const addMember = async (

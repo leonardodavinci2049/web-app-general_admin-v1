@@ -1,7 +1,7 @@
 # tas Implementar DTOs
 
 ## Objetivos
-com base no arquivo [organization-check-name-exist.dto.ts](src/services/db/organization/dto/organization-check-name-exist.dto.ts) de dto implementes os arquivos abaixo (que estão na mesma pasta) com os sesus respectivos campos 
+com base no arquivo [organization-check-name-exist.dto.ts](src/services/organization/dto/organization-check-name-exist.dto.ts) de dto implementes os arquivos abaixo (que estão na mesma pasta) com os sesus respectivos campos 
 
 
 

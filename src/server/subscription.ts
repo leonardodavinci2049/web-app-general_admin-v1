@@ -5,7 +5,7 @@ import SubscriptionService, {
   type ModifyResponse,
   type ServiceResponse,
   type Subscription,
-} from "@/services/db/subscription/subscription.service";
+} from "@/services/subscription/subscription.service";
 
 // ============================================================================
 // Types
