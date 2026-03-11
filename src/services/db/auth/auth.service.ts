@@ -179,7 +179,7 @@ async function findUserById(params: {
       SELECT 
         id, name, email, emailVerified, image, 
         createdAt, updatedAt, twoFactorEnabled, 
-        role, banned, banReason, banExpires, person_id
+        role, banned, banReason, banExpires, personId
       FROM ${AUTH_TABLES.USER}
       WHERE id = ?
       LIMIT 1
@@ -231,7 +231,7 @@ async function findUsersExcludingIds(params: {
         SELECT 
           id, name, email, emailVerified, image, 
           createdAt, updatedAt, twoFactorEnabled, 
-          role, banned, banReason, banExpires, person_id
+          role, banned, banReason, banExpires, personId
         FROM ${AUTH_TABLES.USER}
         ORDER BY name ASC
       `;
@@ -251,7 +251,7 @@ async function findUsersExcludingIds(params: {
       SELECT 
         id, name, email, emailVerified, image, 
         createdAt, updatedAt, twoFactorEnabled, 
-        role, banned, banReason, banExpires, person_id
+        role, banned, banReason, banExpires, personId
       FROM ${AUTH_TABLES.USER}
       WHERE id NOT IN (${placeholders})
       ORDER BY name ASC
@@ -1177,7 +1177,7 @@ async function findNonMemberUsers(params: {
       SELECT 
         u.id, u.name, u.email, u.emailVerified, u.image, 
         u.createdAt, u.updatedAt, u.twoFactorEnabled, 
-        u.role, u.banned, u.banReason, u.banExpires, u.person_id
+        u.role, u.banned, u.banReason, u.banExpires, u.personId
       FROM ${AUTH_TABLES.USER} u
       WHERE u.id NOT IN (
         SELECT m.userId 
@@ -1217,7 +1217,7 @@ async function findUsersWithoutAnyOrganization(): Promise<
       SELECT 
         u.id, u.name, u.email, u.emailVerified, u.image, 
         u.createdAt, u.updatedAt, u.twoFactorEnabled, 
-        u.role, u.banned, u.banReason, u.banExpires, u.person_id
+        u.role, u.banned, u.banReason, u.banExpires, u.personId
       FROM ${AUTH_TABLES.USER} u
       WHERE u.id NOT IN (
         SELECT DISTINCT m.userId 

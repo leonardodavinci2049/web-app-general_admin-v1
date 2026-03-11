@@ -82,7 +82,7 @@ export interface UserEntity extends RowDataPacket {
   banned: boolean | null;
   banReason: string | null;
   banExpires: Date | null;
-  person_id: number | null;
+  personId: number | null;
 }
 
 /**
