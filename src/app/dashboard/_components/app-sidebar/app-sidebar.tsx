@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/sidebar";
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
 import { SidebarLogo } from "./sidebar-logo";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "App";

@@ -50,7 +50,7 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("password", data.password);
-      formData.append("role", data.role);
+      formData.append("role", data.role ?? "user");
       if (data.personId) {
         formData.append("personId", data.personId);
       }

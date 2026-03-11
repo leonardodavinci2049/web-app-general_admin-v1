@@ -18,7 +18,7 @@ export async function updatePersonIdAction(
 
   const hasAccess = await auth.api.userHasPermission({
     headers: await headers(),
-    body: { permissions: { user: ["edit"] } },
+    body: { permissions: { user: ["update"] } },
   });
 
   if (!hasAccess.success) {
