@@ -15,7 +15,14 @@ export const CACHE_TAGS = {
   productGallery: (id: string) => `product-gallery-${id}`,
   category: (id: string) => `category-${id}`,
   organization: (id: string) => `organization-${id}`,
+  organizationMeta: (organizationId: string) =>
+    `organization-meta-${organizationId}`,
+  organizationMetaKey: (organizationId: string, metaKey: string) =>
+    `organization-meta-${organizationId}-${metaKey}`,
   user: (id: string) => `user-${id}`,
+  userMeta: (userId: string) => `user-meta-${userId}`,
+  userMetaKey: (userId: string, metaKey: string) =>
+    `user-meta-${userId}-${metaKey}`,
   account: (userId: string) => `account-${userId}`,
   subscription: (id: string) => `subscription-${id}`,
   member: (id: string) => `member-${id}`,
@@ -28,7 +35,9 @@ export const CACHE_TAGS = {
   products: "products",
   categories: "categories",
   organizations: "organizations",
+  organizationMetaCollection: "organization-meta-collection",
   users: "users",
+  userMetaCollection: "user-meta-collection",
   accounts: "accounts",
   subscriptions: "subscriptions",
   invitations: "invitations",
