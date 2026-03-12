@@ -116,7 +116,7 @@ async function deleteAccount(params: {
       WHERE id = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [params.accountId]);
+    const result = await dbService.modifyExecute(query, [params.accountId]);
 
     return {
       success: result.affectedRows > 0,

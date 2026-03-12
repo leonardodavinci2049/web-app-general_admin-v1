@@ -116,7 +116,7 @@ async function deleteSession(params: {
       WHERE id = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [params.sessionId]);
+    const result = await dbService.modifyExecute(query, [params.sessionId]);
 
     return {
       success: result.affectedRows > 0,

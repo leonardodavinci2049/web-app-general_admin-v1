@@ -265,7 +265,7 @@ async function deleteMember(params: {
       WHERE id = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [params.memberId]);
+    const result = await dbService.modifyExecute(query, [params.memberId]);
 
     return {
       success: result.affectedRows > 0,
