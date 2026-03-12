@@ -3,8 +3,9 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import type { TblMemberRole } from "@/database/schema";
+import type { Member, MemberWithUser } from "@/database/shared/auth/auth.types";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import memberService from "./member.service";
+import memberService, { MemberAuthService } from "./member.service";
 import type {
   TblMemberFindAll,
   TblMemberNotFindAll,
@@ -112,6 +113,109 @@ export async function getAllNotMembers(
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     logger.error("Failed to fetch non-members:", error);
+    return [];
+  }
+}
+
+export async function getMembersByOrganization(
+  organizationId: string,
+): Promise<Member[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.member(organizationId), CACHE_TAGS.members);
+
+  try {
+    const response = await MemberAuthService.findMembersByOrganization({
+      organizationId,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading members by organization:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(
+      `Failed to fetch members for organization ${organizationId}:`,
+      error,
+    );
+    return [];
+  }
+}
+
+export async function getMembersWithUsersByOrganization(
+  organizationId: string,
+): Promise<MemberWithUser[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.member(organizationId), CACHE_TAGS.members);
+
+  try {
+    const response = await MemberAuthService.findMembersWithUsersByOrganization(
+      {
+        organizationId,
+      },
+    );
+
+    if (!response.success || !response.data) {
+      logger.error(
+        "Error loading members with users by organization:",
+        response.error,
+      );
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(
+      `Failed to fetch members with users for organization ${organizationId}:`,
+      error,
+    );
+    return [];
+  }
+}
+
+export async function getFirstMemberByUser(
+  userId: string,
+): Promise<Member | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.members);
+
+  try {
+    const response = await MemberAuthService.findFirstMemberByUser({
+      userId,
+    });
+
+    if (!response.success) {
+      logger.error("Error loading first member by user:", response.error);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(`Failed to fetch first member for user ${userId}:`, error);
+    return null;
+  }
+}
+
+export async function getMembersByUser(userId: string): Promise<Member[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.members);
+
+  try {
+    const response = await MemberAuthService.findMembersByUser({ userId });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading members by user:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(`Failed to fetch members for user ${userId}:`, error);
     return [];
   }
 }
