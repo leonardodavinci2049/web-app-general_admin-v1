@@ -64,7 +64,7 @@ export async function createUserAction(
 
     updateParams.push(result.user.id);
 
-    await dbService.ModifyExecute(
+    await dbService.modifyExecute(
       `UPDATE ${AUTH_TABLES.USER} SET ${updateFields.join(", ")} WHERE id = ?`,
       updateParams,
     );

@@ -223,7 +223,7 @@ async function createUserMeta(params: {
       VALUES (?, ?, ?)
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       userId,
       metaKey,
       metaValue,
@@ -255,7 +255,7 @@ async function updateUserMeta(params: {
       WHERE userId = ? AND metaKey = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       metaValue,
       userId,
       metaKey,
@@ -287,7 +287,7 @@ async function deleteUserMeta(params: {
       WHERE userId = ? AND metaKey = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [userId, metaKey]);
+    const result = await dbService.modifyExecute(query, [userId, metaKey]);
 
     return {
       success: result.affectedRows > 0,

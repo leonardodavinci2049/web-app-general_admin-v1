@@ -103,7 +103,7 @@ async function createSubscription(params: {
       VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    await dbService.ModifyExecute(query, [
+    await dbService.modifyExecute(query, [
       id,
       params.userId,
       params.plan,
@@ -243,7 +243,7 @@ async function updateSubscription(params: {
       WHERE id = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, values);
+    const result = await dbService.modifyExecute(query, values);
 
     return {
       success: result.affectedRows > 0,
@@ -269,7 +269,7 @@ async function deleteSubscription(params: {
       WHERE id = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       params.subscriptionId,
     ]);
 

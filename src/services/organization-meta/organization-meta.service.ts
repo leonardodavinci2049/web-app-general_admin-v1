@@ -229,7 +229,7 @@ async function createOrganizationMeta(params: {
       VALUES (?, ?, ?)
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       organizationId,
       metaKey,
       metaValue,
@@ -261,7 +261,7 @@ async function updateOrganizationMeta(params: {
       WHERE organizationId = ? AND metaKey = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       metaValue,
       organizationId,
       metaKey,
@@ -293,7 +293,7 @@ async function deleteOrganizationMeta(params: {
       WHERE organizationId = ? AND metaKey = ?
     `;
 
-    const result = await dbService.ModifyExecute(query, [
+    const result = await dbService.modifyExecute(query, [
       organizationId,
       metaKey,
     ]);

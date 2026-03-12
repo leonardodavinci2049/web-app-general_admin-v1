@@ -12,6 +12,7 @@ import { envs } from "@/core/config/envs";
 import { createLogger } from "@/core/logger";
 
 const logger = createLogger("database-service");
+const DATABASE_SERVICE_GLOBAL_KEY = "__database_service_instance__";
 
 type SqlParam =
   | string
@@ -25,6 +26,14 @@ type SqlParam =
 type QueryParams = SqlParam[];
 
 type OperationType = "connection" | "select" | "modify" | "transaction";
+
+export interface TransactionContext {
+  execute<T extends RowDataPacket>(
+    queryString: string,
+    params?: QueryParams,
+  ): Promise<T[]>;
+  modify(queryString: string, params?: QueryParams): Promise<ResultSetHeader>;
+}
 
 export class ErroConexaoBancoDados extends Error {
   public readonly operationType: OperationType = "connection";
@@ -67,15 +76,19 @@ export class ErroExecucaoConsulta extends Error {
 
 class DatabaseService {
   private poolConnection: Pool | null = null;
-  private static instance: DatabaseService;
 
   private constructor() {}
 
   public static getInstance(): DatabaseService {
-    if (!DatabaseService.instance) {
-      DatabaseService.instance = new DatabaseService();
+    const globalScope = globalThis as typeof globalThis & {
+      [DATABASE_SERVICE_GLOBAL_KEY]?: DatabaseService;
+    };
+
+    if (!globalScope[DATABASE_SERVICE_GLOBAL_KEY]) {
+      globalScope[DATABASE_SERVICE_GLOBAL_KEY] = new DatabaseService();
     }
-    return DatabaseService.instance;
+
+    return globalScope[DATABASE_SERVICE_GLOBAL_KEY];
   }
 
   private createPool(): Pool {
@@ -177,7 +190,7 @@ class DatabaseService {
     }
   }
 
-  async ModifyExecute(
+  async modifyExecute(
     queryString: string,
     params?: QueryParams,
   ): Promise<ResultSetHeader> {
@@ -185,14 +198,14 @@ class DatabaseService {
     try {
       const pool = this.ensureConnection();
       const [results] = await pool.execute(queryString, params);
-      logger.debug("ModifyExecute", {
+      logger.debug("modifyExecute", {
         durationMs: Math.round(performance.now() - start),
         affectedRows: (results as ResultSetHeader).affectedRows,
       });
       return results as ResultSetHeader;
     } catch (error) {
       const durationMs = Math.round(performance.now() - start);
-      logger.error("Falha em ModifyExecute", {
+      logger.error("Falha em modifyExecute", {
         durationMs,
         paramCount: params?.length ?? 0,
       });
@@ -209,7 +222,14 @@ class DatabaseService {
     }
   }
 
-  async ModifyQuery(
+  async ModifyExecute(
+    queryString: string,
+    params?: QueryParams,
+  ): Promise<ResultSetHeader> {
+    return this.modifyExecute(queryString, params);
+  }
+
+  async modifyQuery(
     queryString: string,
     params?: QueryParams,
   ): Promise<ResultSetHeader> {
@@ -217,14 +237,14 @@ class DatabaseService {
     try {
       const pool = this.ensureConnection();
       const [results] = await pool.query(queryString, params);
-      logger.debug("ModifyQuery", {
+      logger.debug("modifyQuery", {
         durationMs: Math.round(performance.now() - start),
         affectedRows: (results as ResultSetHeader).affectedRows,
       });
       return results as ResultSetHeader;
     } catch (error) {
       const durationMs = Math.round(performance.now() - start);
-      logger.error("Falha em ModifyQuery", {
+      logger.error("Falha em modifyQuery", {
         durationMs,
         paramCount: params?.length ?? 0,
       });
@@ -241,15 +261,41 @@ class DatabaseService {
     }
   }
 
+  async ModifyQuery(
+    queryString: string,
+    params?: QueryParams,
+  ): Promise<ResultSetHeader> {
+    return this.modifyQuery(queryString, params);
+  }
+
   async runInTransaction<T>(
-    callback: (connection: PoolConnection) => Promise<T>,
+    callback: (context: TransactionContext) => Promise<T>,
   ): Promise<T> {
     const start = performance.now();
     const connection = await this.getConnection();
+    const transactionContext: TransactionContext = {
+      execute: async <TResult extends RowDataPacket>(
+        queryString: string,
+        params?: QueryParams,
+      ): Promise<TResult[]> => {
+        const [results] = await connection.execute<TResult[]>(
+          queryString,
+          params,
+        );
+        return results;
+      },
+      modify: async (
+        queryString: string,
+        params?: QueryParams,
+      ): Promise<ResultSetHeader> => {
+        const [results] = await connection.execute(queryString, params);
+        return results as ResultSetHeader;
+      },
+    };
 
     try {
       await connection.beginTransaction();
-      const result = await callback(connection);
+      const result = await callback(transactionContext);
       await connection.commit();
       logger.debug("Transação concluída", {
         durationMs: Math.round(performance.now() - start),
