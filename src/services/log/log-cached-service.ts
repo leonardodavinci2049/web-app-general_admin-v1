@@ -2,8 +2,8 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
+import type { LogLogin, LogOperation } from "@/database/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { LogLogin, LogOperation } from "@/lib/cnx-database/schema";
 import logService from "./log.service";
 import type {
   TblLogLoginFindAll,

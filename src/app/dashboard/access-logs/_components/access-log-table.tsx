@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogLogin } from "@/lib/cnx-database/schema";
+import type { LogLogin } from "@/database/schema";
 
 interface AccessLogTableProps {
   logs: LogLogin[];

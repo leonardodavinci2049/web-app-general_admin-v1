@@ -20,7 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Organization } from "@/lib/cnx-database/schema";
+import type { Organization } from "@/database/schema";
 import { UpdateOrganizationForm } from "../../organization/_forms/update-organization/update-organization-form";
 import { deleteOrganizationAction } from "../action/actions";
 

@@ -1,7 +1,7 @@
 "use server";
 
+import type { OrganizationMemberRole } from "@/database/schema";
 import { auth } from "@/lib/auth/auth";
-import type { OrganizationMemberRole } from "@/lib/cnx-database/schema";
 import { MemberAuthService } from "@/services/member/member.service";
 import { isAdmin } from "./permissions";
 

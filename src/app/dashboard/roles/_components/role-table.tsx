@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TblMemberRole } from "@/lib/cnx-database/schema";
+import type { TblMemberRole } from "@/database/schema";
 
 interface RoleTableProps {
   roles: TblMemberRole[];

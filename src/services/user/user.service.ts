@@ -4,7 +4,7 @@ import { MESSAGES } from "@/core/constants/globalConstants";
 import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
-} from "@/lib/cnx-database/dbConnection";
+} from "@/database/dbConnection";
 import {
   AUTH_TABLES,
   AuthValidationError,
@@ -12,10 +12,10 @@ import {
   type ServiceResponse,
   type User,
   type UserEntity,
-} from "@/lib/cnx-database/shared/auth/auth.types";
-import { processProcedureResultMutation } from "@/lib/cnx-database/utils/process-procedure-result.mutation";
-import { processProcedureResultQuery } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
+} from "@/database/shared/auth/auth.types";
+import { processProcedureResultMutation } from "@/database/utils/process-procedure-result.mutation";
+import { processProcedureResultQuery } from "@/database/utils/process-procedure-result.query";
+import { ResultModel } from "@/database/utils/result.model";
 import { validateUserFindAllDto } from "./dto/user_find_all.dto";
 import { validateUserFindIdDto } from "./dto/user_find_id.dto";
 import { validateUserUpdNameDto } from "./dto/user_upd_name.dto";
@@ -339,4 +339,4 @@ export const UserAuthService = {
 export type {
   ServiceResponse,
   User,
-} from "@/lib/cnx-database/shared/auth/auth.types";
+} from "@/database/shared/auth/auth.types";

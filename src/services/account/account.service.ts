@@ -4,7 +4,7 @@ import { z } from "zod";
 import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
-} from "@/lib/cnx-database/dbConnection";
+} from "@/database/dbConnection";
 
 import {
   type Account,
@@ -14,7 +14,7 @@ import {
   type ModifyResponse,
   mapAccountEntityToDto,
   type ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
+} from "@/database/shared/auth/auth.types";
 
 const IdSchema = z
   .string()
@@ -142,4 +142,4 @@ export type {
   Account,
   ModifyResponse,
   ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
+} from "@/database/shared/auth/auth.types";

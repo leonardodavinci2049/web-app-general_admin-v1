@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Organization } from "@/lib/cnx-database/schema";
+import type { Organization } from "@/database/schema";
 
 interface OrganizationTableProps {
   organizations: Organization[];

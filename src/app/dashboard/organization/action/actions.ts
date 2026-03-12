@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import type { OrganizationMemberRole } from "@/database/schema";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
-import type { OrganizationMemberRole } from "@/lib/cnx-database/schema";
 import { MemberAuthService } from "@/services/member/member.service";
 import organizationService from "@/services/organization/organization.service";
 

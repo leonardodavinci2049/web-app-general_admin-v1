@@ -4,7 +4,7 @@ import { MESSAGES } from "@/core/constants/globalConstants";
 import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
-} from "@/lib/cnx-database/dbConnection";
+} from "@/database/dbConnection";
 import {
   AUTH_TABLES,
   AuthValidationError,
@@ -16,9 +16,9 @@ import {
   mapMemberEntityToDto,
   mapMemberWithUserEntityToDto,
   type ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
-import { processProcedureResultQueryWithoutId } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
+} from "@/database/shared/auth/auth.types";
+import { processProcedureResultQueryWithoutId } from "@/database/utils/process-procedure-result.query";
+import { ResultModel } from "@/database/utils/result.model";
 import { validateMemberFindAllDto } from "./dto/member-find-all.dto";
 import { validateMemberNotFindAllDto } from "./dto/member-not-find-all.dto";
 import { validateMemberRoleFindAllDto } from "./dto/member-role-find-all.dto";
@@ -331,4 +331,4 @@ export type {
   MemberWithUser,
   ModifyResponse,
   ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
+} from "@/database/shared/auth/auth.types";

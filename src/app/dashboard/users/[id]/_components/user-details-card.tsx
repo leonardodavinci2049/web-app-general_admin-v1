@@ -25,7 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import type { User as UserType } from "@/lib/cnx-database/shared/auth/auth.types";
+import type { User as UserType } from "@/database/shared/auth/auth.types";
 import { updatePersonIdAction } from "./update-person-id-action";
 
 interface UserDetailsCardProps {

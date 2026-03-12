@@ -2,8 +2,8 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
+import type { TblMemberRole } from "@/database/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { TblMemberRole } from "@/lib/cnx-database/schema";
 import memberService from "./member.service";
 import type {
   TblMemberFindAll,

@@ -1,4 +1,4 @@
-import type { User } from "@/lib/cnx-database/schema";
+import type { User } from "@/database/schema";
 import { UserAuthService } from "@/services/user/user.service";
 import NotMembersTable from "./not-members-table";
 import { InviteUsersTableSkeleton } from "./skeleton/invite-users-table-skeleton";
