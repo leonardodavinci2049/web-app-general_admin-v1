@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogOperation } from "@/lib/cnx-database/schema";
+import type { LogOperation } from "@/database/schema";
 
 interface OperationLogTableProps {
   logs: LogOperation[];

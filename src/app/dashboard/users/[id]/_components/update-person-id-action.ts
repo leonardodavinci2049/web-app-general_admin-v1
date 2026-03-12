@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import dbService from "@/database/dbConnection";
+import { AUTH_TABLES } from "@/database/shared/auth/auth.types";
 import { auth } from "@/lib/auth/auth";
-import dbService from "@/lib/cnx-database/dbConnection";
-import { AUTH_TABLES } from "@/lib/cnx-database/shared/auth/auth.types";
 
 export async function updatePersonIdAction(
   userId: string,

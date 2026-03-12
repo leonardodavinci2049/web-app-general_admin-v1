@@ -13,11 +13,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { Account } from "@/database/shared/auth/auth.types";
 import {
   SUPPORTED_OAUTH_PROVIDER_DETAILS,
   type SupportedOAuthProvider,
 } from "@/lib/auth/o-auth-providers";
-import type { Account } from "@/lib/cnx-database/shared/auth/auth.types";
 import { unlinkUserAccount } from "../../_actions/account-actions";
 
 interface UserAccountsCardProps {

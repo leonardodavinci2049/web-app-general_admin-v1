@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Invitation } from "@/lib/cnx-database/schema";
+import type { Invitation } from "@/database/schema";
 
 interface InviteTableProps {
   invites: Invitation[];

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
-import type { Organization } from "@/lib/cnx-database/schema";
+import type { Organization } from "@/database/schema";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
 import { OrganizationDeletion } from "./_components/organization-deletion";

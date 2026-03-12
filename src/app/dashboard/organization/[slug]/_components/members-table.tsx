@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Member } from "@/lib/cnx-database/schema";
+import type { Member } from "@/database/schema";
 import { MembersActions } from "./members-actions";
 
 type MembersTableProps = {

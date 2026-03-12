@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Member } from "@/lib/cnx-database/schema";
+import type { Member } from "@/database/schema";
 import { removeMember } from "@/server/members";
 
 interface MembersActionsProps {

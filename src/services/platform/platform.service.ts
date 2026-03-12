@@ -1,8 +1,8 @@
 import { MESSAGES } from "@/core/constants/globalConstants";
 
-import dbService from "@/lib/cnx-database/dbConnection";
-import { processProcedureResultQueryWithoutId } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
+import dbService from "@/database/dbConnection";
+import { processProcedureResultQueryWithoutId } from "@/database/utils/process-procedure-result.query";
+import { ResultModel } from "@/database/utils/result.model";
 import { validatePlatformAppFindAllDto } from "./dto/platform-app-find-all.dto";
 import { PlatformAppFindAllQuery } from "./query/platform-app-find-all.query";
 import type {

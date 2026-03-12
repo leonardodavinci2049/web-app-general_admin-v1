@@ -2,8 +2,8 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
+import type { Organization } from "@/database/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import type { Organization } from "@/lib/cnx-database/schema";
 import organizationService from "./organization.service";
 import type {
   TblOrganizationFind,

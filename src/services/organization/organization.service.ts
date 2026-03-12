@@ -4,7 +4,7 @@ import { MESSAGES } from "@/core/constants/globalConstants";
 import dbService, {
   ErroConexaoBancoDados,
   ErroExecucaoConsulta,
-} from "@/lib/cnx-database/dbConnection";
+} from "@/database/dbConnection";
 import {
   AUTH_TABLES,
   AuthValidationError,
@@ -15,10 +15,10 @@ import {
   type OrganizationEntity,
   type OrganizationWithMembers,
   type ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
-import { processProcedureResultMutation } from "@/lib/cnx-database/utils/process-procedure-result.mutation";
-import { processProcedureResultQuery } from "@/lib/cnx-database/utils/process-procedure-result.query";
-import { ResultModel } from "@/lib/cnx-database/utils/result.model";
+} from "@/database/shared/auth/auth.types";
+import { processProcedureResultMutation } from "@/database/utils/process-procedure-result.mutation";
+import { processProcedureResultQuery } from "@/database/utils/process-procedure-result.query";
+import { ResultModel } from "@/database/utils/result.model";
 import { validateOrganizationCheckNameExistDto } from "./dto/organization-check-name-exist.dto";
 import { validateOrganizationCheckSlugExistDto } from "./dto/organization-check-slug-exist.dto";
 import { validateOrganizationCheckSystemIdExistDto } from "./dto/organization-check-systen-id-exist.dto";
@@ -704,4 +704,4 @@ export type {
   Organization,
   OrganizationWithMembers,
   ServiceResponse,
-} from "@/lib/cnx-database/shared/auth/auth.types";
+} from "@/database/shared/auth/auth.types";
