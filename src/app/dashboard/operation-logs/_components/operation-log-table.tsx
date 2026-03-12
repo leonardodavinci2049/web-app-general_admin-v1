@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogOperation } from "@/database/schema";
+import type { LogOperationListItem } from "@/services/log/log-cached-service";
 
 interface OperationLogTableProps {
-  logs: LogOperation[];
+  logs: LogOperationListItem[];
 }
 
 export function OperationLogTable({ logs }: OperationLogTableProps) {

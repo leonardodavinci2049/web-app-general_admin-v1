@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { LogLogin } from "@/database/schema";
+import type { LogLoginListItem } from "@/services/log/log-cached-service";
 
 interface AccessLogTableProps {
-  logs: LogLogin[];
+  logs: LogLoginListItem[];
 }
 
 export function AccessLogTable({ logs }: AccessLogTableProps) {

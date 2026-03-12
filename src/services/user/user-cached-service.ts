@@ -3,9 +3,10 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import type { User } from "@/database/schema";
+import type { User as AuthUser } from "@/database/shared/auth/auth.types";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import type { TblUserFindAll, TblUserFindById } from "./types/user.type";
-import userService from "./user.service";
+import userService, { UserAuthService } from "./user.service";
 
 const logger = createLogger("UserCachedService");
 
@@ -91,6 +92,99 @@ export async function getAllUsers(
     return rawUsers.map(transformUser);
   } catch (error) {
     logger.error("Failed to fetch users:", error);
+    return [];
+  }
+}
+
+export async function getAuthUserById(
+  userId: string,
+): Promise<AuthUser | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.user(userId), CACHE_TAGS.users);
+
+  try {
+    const response = await UserAuthService.findUserById({ userId });
+
+    if (!response.success) {
+      logger.warn(`Auth user not found: ${userId}`);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(`Failed to fetch auth user by ID ${userId}:`, error);
+    return null;
+  }
+}
+
+export async function getNonMemberUsers(
+  organizationId: string,
+): Promise<AuthUser[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.users, CACHE_TAGS.members);
+
+  try {
+    const response = await UserAuthService.findNonMemberUsers({
+      organizationId,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading non-member users:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(
+      `Failed to fetch non-member users for org ${organizationId}:`,
+      error,
+    );
+    return [];
+  }
+}
+
+export async function getUsersExcludingIds(
+  excludeUserIds: string[],
+): Promise<AuthUser[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.users);
+
+  try {
+    const response = await UserAuthService.findUsersExcludingIds({
+      excludeUserIds,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading users excluding IDs:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error("Failed to fetch users excluding IDs:", error);
+    return [];
+  }
+}
+
+export async function getUsersWithoutAnyOrganization(): Promise<AuthUser[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.users, CACHE_TAGS.members);
+
+  try {
+    const response = await UserAuthService.findUsersWithoutAnyOrganization();
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading users without organization:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error("Failed to fetch users without any organization:", error);
     return [];
   }
 }

@@ -3,8 +3,14 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
 import type { Organization } from "@/database/schema";
+import type {
+  Organization as AuthOrganization,
+  OrganizationWithMembers,
+} from "@/database/shared/auth/auth.types";
 import { CACHE_TAGS } from "@/lib/cache-config";
-import organizationService from "./organization.service";
+import organizationService, {
+  OrganizationAuthService,
+} from "./organization.service";
 import type {
   TblOrganizationFind,
   TblOrganizationFindById,
@@ -121,6 +127,134 @@ export async function getOrganizationById(
     return transformOrganization(rawOrganization);
   } catch (error) {
     logger.error(`Failed to fetch organization by ID ${id}:`, error);
+    return null;
+  }
+}
+
+export async function getActiveOrganization(
+  userId: string,
+): Promise<Organization | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.organizations);
+
+  try {
+    const response = await organizationService.execOrganizationFindActiveQuery({
+      PE_USER_ID: userId,
+    });
+
+    if (response.statusCode !== 100200 || !response.data) {
+      logger.warn(`No active organization found for user: ${userId}`);
+      return null;
+    }
+
+    const rawOrganization = Array.isArray(response.data)
+      ? response.data[0]
+      : response.data;
+
+    return transformOrganization(rawOrganization);
+  } catch (error) {
+    logger.error("Failed to fetch active organization:", error);
+    return null;
+  }
+}
+
+export async function getAuthOrganizationById(
+  organizationId: string,
+): Promise<AuthOrganization | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.organization(organizationId), CACHE_TAGS.organizations);
+
+  try {
+    const response = await OrganizationAuthService.findOrganizationById({
+      organizationId,
+    });
+
+    if (!response.success || !response.data) {
+      logger.warn(`Auth organization not found: ${organizationId}`);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(
+      `Failed to fetch auth organization by ID ${organizationId}:`,
+      error,
+    );
+    return null;
+  }
+}
+
+export async function getAuthOrganizationsByIds(
+  organizationIds: string[],
+): Promise<AuthOrganization[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.organizations);
+
+  try {
+    const response = await OrganizationAuthService.findOrganizationsByIds({
+      organizationIds,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading organizations by IDs:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error("Failed to fetch organizations by IDs:", error);
+    return [];
+  }
+}
+
+export async function getUserOrganizations(
+  userId: string,
+): Promise<AuthOrganization[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.organizations);
+
+  try {
+    const response = await OrganizationAuthService.findUserOrganizations({
+      userId,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading user organizations:", response.error);
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(`Failed to fetch organizations for user ${userId}:`, error);
+    return [];
+  }
+}
+
+export async function getOrganizationBySlugWithMembers(
+  slug: string,
+): Promise<OrganizationWithMembers | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.organizations, CACHE_TAGS.members);
+
+  try {
+    const response =
+      await OrganizationAuthService.findOrganizationBySlugWithMembers({
+        slug,
+      });
+
+    if (!response.success || !response.data) {
+      logger.warn(`Organization not found by slug: ${slug}`);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    logger.error(`Failed to fetch organization by slug ${slug}:`, error);
     return null;
   }
 }
