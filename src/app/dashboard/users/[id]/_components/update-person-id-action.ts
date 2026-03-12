@@ -33,7 +33,7 @@ export async function updatePersonIdAction(
   }
 
   try {
-    await dbService.ModifyExecute(
+    await dbService.modifyExecute(
       `UPDATE ${AUTH_TABLES.USER} SET person_id = ? WHERE id = ?`,
       [personId, userId],
     );
