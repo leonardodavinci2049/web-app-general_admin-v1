@@ -90,6 +90,28 @@ const envsSchema = z.object({
   DATABASE_USER: z.string().min(1, "DATABASE_USER is required"),
   DATABASE_PASSWORD: z.string().min(1, "DATABASE_PASSWORD is required"),
 
+  // Database Pool Config
+  DB_POOL_CONNECTION_LIMIT: z
+    .string()
+    .default("5")
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().positive()),
+  DB_POOL_MAX_IDLE: z
+    .string()
+    .default("2")
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().nonnegative()),
+  DB_POOL_IDLE_TIMEOUT: z
+    .string()
+    .default("10000")
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().positive()),
+  DB_POOL_QUEUE_LIMIT: z
+    .string()
+    .default("50")
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().nonnegative()),
+
   // Security - API Key
   API_KEY: z.string().min(1, "API_KEY is required"),
 
@@ -168,6 +190,10 @@ if (typeof window === "undefined") {
     DATABASE_NAME: "",
     DATABASE_USER: "",
     DATABASE_PASSWORD: "",
+    DB_POOL_CONNECTION_LIMIT: 5,
+    DB_POOL_MAX_IDLE: 2,
+    DB_POOL_IDLE_TIMEOUT: 10000,
+    DB_POOL_QUEUE_LIMIT: 50,
     API_KEY: "",
     BETTER_AUTH_URL: "",
     BETTER_AUTH_SECRET: "",
@@ -217,6 +243,10 @@ export const envs = {
   DATABASE_NAME: envVars.DATABASE_NAME,
   DATABASE_USER: envVars.DATABASE_USER,
   DATABASE_PASSWORD: envVars.DATABASE_PASSWORD,
+  DB_POOL_CONNECTION_LIMIT: envVars.DB_POOL_CONNECTION_LIMIT,
+  DB_POOL_MAX_IDLE: envVars.DB_POOL_MAX_IDLE,
+  DB_POOL_IDLE_TIMEOUT: envVars.DB_POOL_IDLE_TIMEOUT,
+  DB_POOL_QUEUE_LIMIT: envVars.DB_POOL_QUEUE_LIMIT,
   API_KEY: envVars.API_KEY,
   BETTER_AUTH_URL: envVars.BETTER_AUTH_URL,
   BETTER_AUTH_SECRET: envVars.BETTER_AUTH_SECRET,
