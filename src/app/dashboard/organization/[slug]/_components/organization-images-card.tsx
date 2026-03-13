@@ -7,6 +7,17 @@ import {
   deleteOrganizationImageAction,
   uploadOrganizationImageAction,
 } from "@/app/dashboard/organization/action/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { envs } from "@/core/config/envs";
 
 const IMAGE_KEYS = ["image1", "image2", "image3", "image4", "image5"] as const;
 
@@ -24,15 +36,34 @@ type OrganizationImagesCardProps = {
   images: Record<string, string>;
 };
 
+function normalizeUrl(url: string): string {
+  if (url.startsWith("http")) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname + urlObj.search;
+    } catch {
+      return url;
+    }
+  }
+  return url;
+}
+
 export function OrganizationImagesCard({
   organizationId,
   images,
 }: OrganizationImagesCardProps) {
-  const [localImages, setLocalImages] =
-    useState<Record<string, string>>(images);
+  const [localImages, setLocalImages] = useState(() => {
+    const normalized: Record<string, string> = {};
+    for (const [key, value] of Object.entries(images)) {
+      normalized[key] = normalizeUrl(value);
+    }
+    return normalized;
+  });
   const [loadingKeys, setLoadingKeys] = useState<Set<string>>(new Set());
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isPending, startTransition] = useTransition();
+
+  const appUrl = envs.NEXT_PUBLIC_APP_URL || window.location.origin;
 
   function handleUploadClick(imageKey: string) {
     fileInputRefs.current[imageKey]?.click();
@@ -126,84 +157,112 @@ export function OrganizationImagesCard({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Imagens</CardTitle>
-        <CardDescription>
-          Gerenciar as imagens da organização. Máximo de 5 imagens.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {IMAGE_KEYS.map((imageKey, index) => {
-          const url = localImages[imageKey];
-          const isLoading = loadingKeys.has(imageKey);
+    <div className="space-y-4">
+      {IMAGE_KEYS.map((imageKey, index) => {
+        const url = localImages[imageKey];
+        const isLoading = loadingKeys.has(imageKey);
 
-          return (
-            <div key={imageKey} className="flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded border bg-muted">
-                {url ? (
-                  // biome-ignore lint/performance/noImgElement: static files served from public/
-                  <img
-                    src={url}
-                    alt={`Imagem ${index + 1}`}
-                    className="h-12 w-12 rounded object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                )}
+        return (
+          <Card key={imageKey}>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Imagem {index + 1}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="flex h-32 w-full sm:w-48 shrink-0 items-center justify-center rounded-lg border bg-muted overflow-hidden">
+                    {url ? (
+                      // biome-ignore lint/performance/noImgElement: static files served from public/
+                      <img
+                        src={normalizeUrl(url)}
+                        alt={`Imagem ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="h-10 w-10 text-muted-foreground opacity-50" />
+                    )}
+                  </div>
+
+                  <div className="flex-1 w-full space-y-3">
+                    <Input
+                      readOnly
+                      value={url ? `${appUrl}${normalizeUrl(url)}` : ""}
+                      placeholder={`Imagem ${index + 1} — nenhuma imagem`}
+                      className="w-full bg-muted/50"
+                    />
+
+                    <div className="flex gap-2 justify-end">
+                      <input
+                        ref={(el) => {
+                          fileInputRefs.current[imageKey] = el;
+                        }}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleFileChange(imageKey, e.target.files?.[0])
+                        }
+                      />
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={isLoading || isPending}
+                        onClick={() => handleUploadClick(imageKey)}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4 mr-1.5" />
+                        )}
+                        <span>{url ? "Substituir" : "Upload"}</span>
+                      </Button>
+
+                      {url && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={isLoading || isPending}
+                            >
+                              {isLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4 mr-1.5" />
+                              )}
+                              <span className="hidden sm:inline">Excluir</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Excluir imagem
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza que deseja excluir esta imagem? Esta
+                                ação não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(imageKey)}
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <Input
-                readOnly
-                value={url || ""}
-                placeholder={`Imagem ${index + 1} — nenhuma imagem`}
-                className="flex-1"
-              />
-
-              <input
-                ref={(el) => {
-                  fileInputRefs.current[imageKey] = el;
-                }}
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                className="hidden"
-                onChange={(e) =>
-                  handleFileChange(imageKey, e.target.files?.[0])
-                }
-              />
-
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isLoading || isPending}
-                onClick={() => handleUploadClick(imageKey)}
-              >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Upload className="h-4 w-4" />
-                )}
-                <span className="ml-1.5 hidden sm:inline">Upload</span>
-              </Button>
-
-              {url && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  disabled={isLoading || isPending}
-                  onClick={() => handleDelete(imageKey)}
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
-              )}
-            </div>
-          );
-        })}
-      </CardContent>
-    </Card>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 }

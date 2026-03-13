@@ -1,5 +1,8 @@
 "use server";
 
+import { existsSync } from "node:fs";
+import { readdir, rm } from "node:fs/promises";
+import { join } from "node:path";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import type { OrganizationMemberRole } from "@/database/schema";
@@ -8,6 +11,29 @@ import { getUserId } from "@/lib/auth/get-user-id";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import { MemberAuthService } from "@/services/member/member.service";
 import organizationService from "@/services/organization/organization.service";
+import OrganizationMetaService from "@/services/organization-meta/organization-meta.service";
+
+const VALID_IMAGE_KEYS = [
+  "image1",
+  "image2",
+  "image3",
+  "image4",
+  "image5",
+] as const;
+
+async function removeExistingFileForKey(
+  dirPath: string,
+  imageKey: string,
+): Promise<void> {
+  if (!existsSync(dirPath)) return;
+
+  const files = await readdir(dirPath);
+  for (const file of files) {
+    if (file.startsWith(`${imageKey}.`)) {
+      await rm(join(dirPath, file));
+    }
+  }
+}
 
 export async function addMemberAction(
   userId: string,
@@ -194,26 +220,26 @@ export async function deleteOrganizationImageAction(
       return { success: false, message: "Não autorizado" };
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/upload/image`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: (await headers()).get("cookie") || "",
-        },
-        body: JSON.stringify({ organizationId, imageKey }),
-      },
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        message: result.error || "Erro ao excluir imagem",
-      };
+    if (
+      !VALID_IMAGE_KEYS.includes(imageKey as (typeof VALID_IMAGE_KEYS)[number])
+    ) {
+      return { success: false, message: "imageKey inválida" };
     }
+
+    const dirPath = join(
+      process.cwd(),
+      "public",
+      "upload",
+      "image",
+      organizationId,
+    );
+    await removeExistingFileForKey(dirPath, imageKey);
+
+    await OrganizationMetaService.updateOrganizationMeta({
+      organizationId,
+      metaKey: imageKey,
+      metaValue: "",
+    });
 
     revalidateTag(CACHE_TAGS.organizationMeta(organizationId), "hours");
     revalidateTag(CACHE_TAGS.organizationMetaCollection, "hours");
