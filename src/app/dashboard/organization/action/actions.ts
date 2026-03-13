@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import type { OrganizationMemberRole } from "@/database/schema";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
+import { CACHE_TAGS } from "@/lib/cache-config";
 import { MemberAuthService } from "@/services/member/member.service";
 import organizationService from "@/services/organization/organization.service";
 
@@ -169,5 +170,58 @@ export async function updateOrganizationSystemIdAction(
       success: false,
       message: error instanceof Error ? error.message : "Erro desconhecido",
     };
+  }
+}
+
+export async function uploadOrganizationImageAction(
+  organizationId: string,
+): Promise<void> {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return;
+
+  revalidateTag(CACHE_TAGS.organizationMeta(organizationId), "hours");
+  revalidateTag(CACHE_TAGS.organizationMetaCollection, "hours");
+  revalidatePath("/dashboard/organization/[slug]", "page");
+}
+
+export async function deleteOrganizationImageAction(
+  organizationId: string,
+  imageKey: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return { success: false, message: "Não autorizado" };
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/upload/image`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          cookie: (await headers()).get("cookie") || "",
+        },
+        body: JSON.stringify({ organizationId, imageKey }),
+      },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: result.error || "Erro ao excluir imagem",
+      };
+    }
+
+    revalidateTag(CACHE_TAGS.organizationMeta(organizationId), "hours");
+    revalidateTag(CACHE_TAGS.organizationMetaCollection, "hours");
+    revalidatePath("/dashboard/organization/[slug]", "page");
+
+    return { success: true, message: "Imagem excluída com sucesso" };
+  } catch (error) {
+    const e = error as Error;
+    return { success: false, message: e.message || "Erro ao excluir imagem" };
   }
 }

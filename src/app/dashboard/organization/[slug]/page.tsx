@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Organization } from "@/database/schema";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
@@ -19,6 +19,10 @@ import {
   OrganizationDetailsSection,
   OrganizationDetailsSectionSkeleton,
 } from "./_components/organization-details-section";
+import {
+  OrganizationImagesSection,
+  OrganizationImagesSectionSkeleton,
+} from "./_components/organization-images-section";
 import {
   OrganizationMembersSection,
   OrganizationMembersSectionSkeleton,
@@ -117,18 +121,15 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           </TabsContent>
 
           <TabsContent value="imagens" className="space-y-4 pt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Imagens</CardTitle>
-                <CardDescription>
-                  Gerenciar as imagens da organização. Recurso em
-                  desenvolvimento.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">Em breve</p>
-              </CardContent>
-            </Card>
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Imagens</h2>
+              <p className="text-muted-foreground">
+                Gerenciar as imagens da organização.
+              </p>
+            </div>
+            <Suspense fallback={<OrganizationImagesSectionSkeleton />}>
+              <OrganizationImagesSection organizationId={organization.id} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="configuracoes" className="space-y-4 pt-4">
