@@ -4,6 +4,14 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { auth } from "@/lib/auth/auth";
 import { AccountService } from "@/services/account/account.service";
 import { SessionService } from "@/services/session/session.service";
@@ -72,15 +80,54 @@ export default async function UserPage({ params }: { params: Params }) {
         <div className="space-y-6">
           <UserDetailsCard user={user} />
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <UserPasswordCard email={user.email} />
-            <UserTwoFactorCard isEnabled={user.twoFactorEnabled ?? false} />
-          </div>
+          <Tabs defaultValue="configuracoes" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto md:h-9">
+              <TabsTrigger value="configuracoes">Configurações</TabsTrigger>
+              <TabsTrigger value="sessoes">Sessões</TabsTrigger>
+              <TabsTrigger value="contas">Contas</TabsTrigger>
+              <TabsTrigger value="senha">Senha</TabsTrigger>
+              <TabsTrigger value="excluir">Excluir</TabsTrigger>
+            </TabsList>
 
-          <UserSessionsCard sessions={sessions} />
-          <UserAccountsCard accounts={accounts} />
+            <TabsContent value="configuracoes" className="space-y-4 pt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configurações</CardTitle>
+                  <CardDescription>
+                    Ajustar as preferências do usuário. Recurso em
+                    desenvolvimento.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Em breve</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          <UserDeletion userId={user.id} userName={user.name || "Usuário"} />
+            <TabsContent value="sessoes" className="space-y-4 pt-4">
+              <UserSessionsCard sessions={sessions} />
+            </TabsContent>
+
+            <TabsContent value="contas" className="pt-4">
+              <div className="grid gap-6 md:grid-cols-2">
+                <UserTwoFactorCard isEnabled={user.twoFactorEnabled ?? false} />
+                <UserAccountsCard accounts={accounts} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="senha" className="space-y-4 pt-4">
+              <div className="md:w-1/2">
+                <UserPasswordCard email={user.email} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="excluir" className="pt-4">
+              <UserDeletion
+                userId={user.id}
+                userName={user.name || "Usuário"}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </>

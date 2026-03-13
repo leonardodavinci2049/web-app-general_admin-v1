@@ -70,7 +70,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
                 <TableCell className="text-right">
                   <Button asChild>
                     <Link href={`/dashboard/organization/${org.slug}`}>
-                      Editar
+                      Ver
                     </Link>
                   </Button>
                 </TableCell>
