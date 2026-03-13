@@ -103,7 +103,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
                 </TableCell>
                 <TableCell className="text-right">
                   <Button asChild variant="outline" size="sm">
-                    <Link href={`/dashboard/users/${user.id}`}>Editar</Link>
+                    <Link href={`/dashboard/users/${user.id}`}>Ver</Link>
                   </Button>
                 </TableCell>
               </TableRow>
@@ -158,7 +158,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
               </div>
 
               <Button asChild variant="outline" size="sm">
-                <Link href={`/dashboard/users/${user.id}`}>Editar</Link>
+                <Link href={`/dashboard/users/${user.id}`}>Ver</Link>
               </Button>
             </div>
 
