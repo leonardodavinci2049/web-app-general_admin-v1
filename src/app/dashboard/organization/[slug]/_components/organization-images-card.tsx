@@ -209,7 +209,7 @@ export function OrganizationImagesCard({
                         className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                       />
 
-                      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:opacity-0 transition-opacity duration-200 sm:group-hover:opacity-100" />
 
                       <Badge
                         variant="secondary"
@@ -224,7 +224,7 @@ export function OrganizationImagesCard({
                         </div>
                       )}
 
-                      <div className="absolute bottom-0 inset-x-0 flex items-center justify-center gap-2 p-3 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
+                      <div className="absolute bottom-0 inset-x-0 flex items-center justify-center gap-2 p-3 sm:opacity-0 sm:translate-y-1 transition-all duration-200 sm:group-hover:opacity-100 sm:group-hover:translate-y-0">
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
