@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Check,
-  Copy,
-  ImageIcon,
-  ImagePlus,
-  Loader2,
-  Replace,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { Check, Copy, ImagePlus, Loader2, Replace, Trash2 } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -35,8 +26,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 import { envs } from "@/core/config/envs";
+import { cn } from "@/lib/utils";
 
 const IMAGE_KEYS = ["image1", "image2", "image3", "image4", "image5"] as const;
 
