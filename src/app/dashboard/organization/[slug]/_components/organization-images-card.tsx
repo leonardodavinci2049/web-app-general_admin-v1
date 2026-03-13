@@ -7,6 +7,17 @@ import {
   deleteOrganizationImageAction,
   uploadOrganizationImageAction,
 } from "@/app/dashboard/organization/action/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { envs } from "@/core/config/envs";
 
 const IMAGE_KEYS = ["image1", "image2", "image3", "image4", "image5"] as const;
 
@@ -24,15 +36,34 @@ type OrganizationImagesCardProps = {
   images: Record<string, string>;
 };
 
+function normalizeUrl(url: string): string {
+  if (url.startsWith("http")) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname + urlObj.search;
+    } catch {
+      return url;
+    }
+  }
+  return url;
+}
+
 export function OrganizationImagesCard({
   organizationId,
   images,
 }: OrganizationImagesCardProps) {
-  const [localImages, setLocalImages] =
-    useState<Record<string, string>>(images);
+  const [localImages, setLocalImages] = useState(() => {
+    const normalized: Record<string, string> = {};
+    for (const [key, value] of Object.entries(images)) {
+      normalized[key] = normalizeUrl(value);
+    }
+    return normalized;
+  });
   const [loadingKeys, setLoadingKeys] = useState<Set<string>>(new Set());
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isPending, startTransition] = useTransition();
+
+  const appUrl = envs.NEXT_PUBLIC_APP_URL || window.location.origin;
 
   function handleUploadClick(imageKey: string) {
     fileInputRefs.current[imageKey]?.click();
@@ -144,7 +175,7 @@ export function OrganizationImagesCard({
                 {url ? (
                   // biome-ignore lint/performance/noImgElement: static files served from public/
                   <img
-                    src={url}
+                    src={normalizeUrl(url)}
                     alt={`Imagem ${index + 1}`}
                     className="h-12 w-12 rounded object-cover"
                   />
@@ -155,7 +186,7 @@ export function OrganizationImagesCard({
 
               <Input
                 readOnly
-                value={url || ""}
+                value={url ? `${appUrl}${normalizeUrl(url)}` : ""}
                 placeholder={`Imagem ${index + 1} — nenhuma imagem`}
                 className="flex-1"
               />
@@ -187,18 +218,36 @@ export function OrganizationImagesCard({
               </Button>
 
               {url && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  disabled={isLoading || isPending}
-                  onClick={() => handleDelete(imageKey)}
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={isLoading || isPending}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Excluir imagem</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir esta imagem? Esta ação
+                        não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(imageKey)}>
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           );

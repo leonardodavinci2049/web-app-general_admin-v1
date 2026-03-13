@@ -1,11 +1,13 @@
 import { existsSync } from "node:fs";
-import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { envs } from "@/core/config/envs";
+import { createLogger } from "@/core/logger";
 import { auth } from "@/lib/auth/auth";
 import OrganizationMetaService from "@/services/organization-meta/organization-meta.service";
+
+const logger = createLogger("upload-image");
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -103,9 +105,43 @@ export async function POST(request: Request) {
     const filePath = join(dirPath, fileName);
 
     const buffer = Buffer.from(await file.arrayBuffer());
+
+    if (buffer.length === 0) {
+      logger.error("Buffer vazio após conversão do arquivo", {
+        organizationId,
+        imageKey,
+        originalSize: file.size,
+      });
+      return NextResponse.json(
+        { error: "Erro ao processar arquivo" },
+        { status: 500 },
+      );
+    }
+
     await writeFile(filePath, buffer);
 
-    const imageUrl = `${envs.NEXT_PUBLIC_APP_URL}/upload/image/${organizationId}/${fileName}`;
+    const fileStats = await stat(filePath);
+    if (!fileStats.isFile() || fileStats.size !== buffer.length) {
+      logger.error("Verificação do arquivo falhou após escrita", {
+        filePath,
+        expectedSize: buffer.length,
+        actualSize: fileStats.size,
+        isFile: fileStats.isFile(),
+      });
+      return NextResponse.json(
+        { error: "Erro ao salvar arquivo" },
+        { status: 500 },
+      );
+    }
+
+    logger.info("Arquivo salvo com sucesso", {
+      organizationId,
+      imageKey,
+      filePath,
+      size: fileStats.size,
+    });
+
+    const imageUrl = `/api/upload/image/${organizationId}/${fileName}`;
 
     const existing = await OrganizationMetaService.findOrganizationMetaByKey({
       organizationId,
@@ -129,6 +165,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, url: imageUrl });
   } catch (error) {
     const e = error as Error;
+    logger.error("Erro no upload de imagem", {
+      error: e.message,
+      stack: e.stack,
+    });
     return NextResponse.json(
       { error: e.message || "Erro ao fazer upload" },
       { status: 500 },
