@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { Organization } from "@/database/schema";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
@@ -73,36 +81,78 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           />
         </Suspense>
 
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Membros</h2>
-            <p className="text-muted-foreground">
-              Gerenciar os membros desta organização.
-            </p>
-          </div>
-          <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
-            <OrganizationMembersSection organizationId={organization.id} />
-          </Suspense>
-        </div>
+        <Tabs defaultValue="membros" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto md:h-9">
+            <TabsTrigger value="membros">Membros</TabsTrigger>
+            <TabsTrigger value="adicionar">Adicionar</TabsTrigger>
+            <TabsTrigger value="imagens">Imagens</TabsTrigger>
+            <TabsTrigger value="configuracoes">Configurações</TabsTrigger>
+            <TabsTrigger value="excluir">Excluir</TabsTrigger>
+          </TabsList>
 
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">
-              Adicionar Membros
-            </h2>
-            <p className="text-muted-foreground">
-              Adicione usuários como membros desta organização.
-            </p>
-          </div>
-          <Suspense fallback={<OrganizationNotMembersSectionSkeleton />}>
-            <OrganizationNotMembersSection organizationId={organization.id} />
-          </Suspense>
-        </div>
+          <TabsContent value="membros" className="space-y-4 pt-4">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Membros</h2>
+              <p className="text-muted-foreground">
+                Gerenciar os membros desta organização.
+              </p>
+            </div>
+            <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
+              <OrganizationMembersSection organizationId={organization.id} />
+            </Suspense>
+          </TabsContent>
 
-        <OrganizationDeletion
-          organizationId={organization.id}
-          organizationName={organization.name}
-        />
+          <TabsContent value="adicionar" className="space-y-4 pt-4">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Adicionar Membros
+              </h2>
+              <p className="text-muted-foreground">
+                Adicione usuários como membros desta organização.
+              </p>
+            </div>
+            <Suspense fallback={<OrganizationNotMembersSectionSkeleton />}>
+              <OrganizationNotMembersSection organizationId={organization.id} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="imagens" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Imagens</CardTitle>
+                <CardDescription>
+                  Gerenciar as imagens da organização. Recurso em
+                  desenvolvimento.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Em breve</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="configuracoes" className="space-y-4 pt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações</CardTitle>
+                <CardDescription>
+                  Ajustar as preferências da organização. Recurso em
+                  desenvolvimento.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Em breve</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="excluir" className="pt-4">
+            <OrganizationDeletion
+              organizationId={organization.id}
+              organizationName={organization.name}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );
