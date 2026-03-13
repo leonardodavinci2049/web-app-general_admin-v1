@@ -157,102 +157,112 @@ export function OrganizationImagesCard({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Imagens</CardTitle>
-        <CardDescription>
-          Gerenciar as imagens da organização. Máximo de 5 imagens.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {IMAGE_KEYS.map((imageKey, index) => {
-          const url = localImages[imageKey];
-          const isLoading = loadingKeys.has(imageKey);
+    <div className="space-y-4">
+      {IMAGE_KEYS.map((imageKey, index) => {
+        const url = localImages[imageKey];
+        const isLoading = loadingKeys.has(imageKey);
 
-          return (
-            <div key={imageKey} className="flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded border bg-muted">
-                {url ? (
-                  // biome-ignore lint/performance/noImgElement: static files served from public/
-                  <img
-                    src={normalizeUrl(url)}
-                    alt={`Imagem ${index + 1}`}
-                    className="h-12 w-12 rounded object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                )}
-              </div>
+        return (
+          <Card key={imageKey}>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Imagem {index + 1}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="flex h-32 w-full sm:w-48 shrink-0 items-center justify-center rounded-lg border bg-muted overflow-hidden">
+                    {url ? (
+                      // biome-ignore lint/performance/noImgElement: static files served from public/
+                      <img
+                        src={normalizeUrl(url)}
+                        alt={`Imagem ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="h-10 w-10 text-muted-foreground opacity-50" />
+                    )}
+                  </div>
 
-              <Input
-                readOnly
-                value={url ? `${appUrl}${normalizeUrl(url)}` : ""}
-                placeholder={`Imagem ${index + 1} — nenhuma imagem`}
-                className="flex-1"
-              />
+                  <div className="flex-1 w-full space-y-3">
+                    <Input
+                      readOnly
+                      value={url ? `${appUrl}${normalizeUrl(url)}` : ""}
+                      placeholder={`Imagem ${index + 1} — nenhuma imagem`}
+                      className="w-full bg-muted/50"
+                    />
 
-              <input
-                ref={(el) => {
-                  fileInputRefs.current[imageKey] = el;
-                }}
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                className="hidden"
-                onChange={(e) =>
-                  handleFileChange(imageKey, e.target.files?.[0])
-                }
-              />
+                    <div className="flex gap-2 justify-end">
+                      <input
+                        ref={(el) => {
+                          fileInputRefs.current[imageKey] = el;
+                        }}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleFileChange(imageKey, e.target.files?.[0])
+                        }
+                      />
 
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isLoading || isPending}
-                onClick={() => handleUploadClick(imageKey)}
-              >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Upload className="h-4 w-4" />
-                )}
-                <span className="ml-1.5 hidden sm:inline">Upload</span>
-              </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={isLoading || isPending}
+                        onClick={() => handleUploadClick(imageKey)}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4 mr-1.5" />
+                        )}
+                        <span>{url ? "Substituir" : "Upload"}</span>
+                      </Button>
 
-              {url && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={isLoading || isPending}
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
+                      {url && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={isLoading || isPending}
+                            >
+                              {isLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4 mr-1.5" />
+                              )}
+                              <span className="hidden sm:inline">Excluir</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Excluir imagem
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza que deseja excluir esta imagem? Esta
+                                ação não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(imageKey)}
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       )}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Excluir imagem</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Tem certeza que deseja excluir esta imagem? Esta ação
-                        não pode ser desfeita.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(imageKey)}>
-                        Excluir
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-            </div>
-          );
-        })}
-      </CardContent>
-    </Card>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 }
