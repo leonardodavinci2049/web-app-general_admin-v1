@@ -1,6 +1,15 @@
 "use client";
 
-import { ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
+import {
+  Check,
+  Copy,
+  ImageIcon,
+  ImagePlus,
+  Loader2,
+  Replace,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -18,15 +27,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { envs } from "@/core/config/envs";
 
 const IMAGE_KEYS = ["image1", "image2", "image3", "image4", "image5"] as const;
@@ -60,13 +69,25 @@ export function OrganizationImagesCard({
     return normalized;
   });
   const [loadingKeys, setLoadingKeys] = useState<Set<string>>(new Set());
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isPending, startTransition] = useTransition();
 
   const appUrl = envs.NEXT_PUBLIC_APP_URL || window.location.origin;
 
+  const uploadedCount = IMAGE_KEYS.filter((k) => localImages[k]).length;
+
   function handleUploadClick(imageKey: string) {
     fileInputRefs.current[imageKey]?.click();
+  }
+
+  function handleCopyUrl(imageKey: string) {
+    const url = localImages[imageKey];
+    if (!url) return;
+    navigator.clipboard.writeText(`${appUrl}${normalizeUrl(url)}`);
+    setCopiedKey(imageKey);
+    toast.success("URL copiada para a área de transferência");
+    setTimeout(() => setCopiedKey(null), 2000);
   }
 
   function handleFileChange(imageKey: string, file: File | undefined) {
@@ -157,83 +178,112 @@ export function OrganizationImagesCard({
   }
 
   return (
-    <div className="space-y-4">
-      {IMAGE_KEYS.map((imageKey, index) => {
-        const url = localImages[imageKey];
-        const isLoading = loadingKeys.has(imageKey);
+    <TooltipProvider delayDuration={300}>
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="text-xs tabular-nums">
+            {uploadedCount} / {IMAGE_KEYS.length}
+          </Badge>
+          <p className="text-sm text-muted-foreground">
+            Formatos aceitos: JPEG, PNG, WebP, GIF — máx. 1 MB por imagem
+          </p>
+        </div>
 
-        return (
-          <Card key={imageKey}>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Imagem {index + 1}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="flex h-32 w-full sm:w-48 shrink-0 items-center justify-center rounded-lg border bg-muted overflow-hidden">
-                    {url ? (
-                      // biome-ignore lint/performance/noImgElement: static files served from public/
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {IMAGE_KEYS.map((imageKey, index) => {
+            const url = localImages[imageKey];
+            const isLoading = loadingKeys.has(imageKey);
+
+            return (
+              <div key={imageKey} className="group relative">
+                <input
+                  ref={(el) => {
+                    fileInputRefs.current[imageKey] = el;
+                  }}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={(e) =>
+                    handleFileChange(imageKey, e.target.files?.[0])
+                  }
+                />
+
+                {url ? (
+                  <div className="relative overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md">
+                    <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">
+                      {/* biome-ignore lint/performance/noImgElement: static files served from public/ */}
                       <img
                         src={normalizeUrl(url)}
                         alt={`Imagem ${index + 1}`}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <ImageIcon className="h-10 w-10 text-muted-foreground opacity-50" />
-                    )}
-                  </div>
-
-                  <div className="flex-1 w-full space-y-3">
-                    <Input
-                      readOnly
-                      value={url ? `${appUrl}${normalizeUrl(url)}` : ""}
-                      placeholder={`Imagem ${index + 1} — nenhuma imagem`}
-                      className="w-full bg-muted/50"
-                    />
-
-                    <div className="flex gap-2 justify-end">
-                      <input
-                        ref={(el) => {
-                          fileInputRefs.current[imageKey] = el;
-                        }}
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        className="hidden"
-                        onChange={(e) =>
-                          handleFileChange(imageKey, e.target.files?.[0])
-                        }
+                        className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                       />
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={isLoading || isPending}
-                        onClick={() => handleUploadClick(imageKey)}
+                      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+
+                      <Badge
+                        variant="secondary"
+                        className="absolute top-2.5 left-2.5 text-xs bg-background/80 backdrop-blur-sm"
                       >
-                        {isLoading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Upload className="h-4 w-4 mr-1.5" />
-                        )}
-                        <span>{url ? "Substituir" : "Upload"}</span>
-                      </Button>
+                        Imagem {index + 1}
+                      </Badge>
 
-                      {url && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
+                      {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+                          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-0 inset-x-0 flex items-center justify-center gap-2 p-3 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
                             <Button
-                              variant="destructive"
-                              size="sm"
+                              variant="secondary"
+                              size="icon"
+                              className="h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background"
                               disabled={isLoading || isPending}
+                              onClick={() => handleCopyUrl(imageKey)}
                             >
-                              {isLoading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                              {copiedKey === imageKey ? (
+                                <Check className="h-4 w-4 text-green-500" />
                               ) : (
-                                <Trash2 className="h-4 w-4 mr-1.5" />
+                                <Copy className="h-4 w-4" />
                               )}
-                              <span className="hidden sm:inline">Excluir</span>
                             </Button>
-                          </AlertDialogTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>Copiar URL</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="secondary"
+                              size="icon"
+                              className="h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background"
+                              disabled={isLoading || isPending}
+                              onClick={() => handleUploadClick(imageKey)}
+                            >
+                              <Replace className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Substituir imagem</TooltipContent>
+                        </Tooltip>
+
+                        <AlertDialog>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="secondary"
+                                  size="icon"
+                                  className="h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:bg-destructive hover:text-white"
+                                  disabled={isLoading || isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>Excluir imagem</TooltipContent>
+                          </Tooltip>
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>
@@ -254,15 +304,46 @@ export function OrganizationImagesCard({
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={isLoading || isPending}
+                    onClick={() => handleUploadClick(imageKey)}
+                    className={cn(
+                      "relative flex aspect-4/3 w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed",
+                      "bg-muted/30 transition-all duration-200",
+                      "hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+                    )}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    ) : (
+                      <>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                          <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-foreground">
+                            Imagem {index + 1}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Clique para enviar
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
+            );
+          })}
+        </div>
+      </div>
+    </TooltipProvider>
   );
 }
