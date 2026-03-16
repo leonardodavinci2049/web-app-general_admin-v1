@@ -5,6 +5,7 @@ import { readdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
+import { z } from "zod";
 import type { OrganizationMemberRole } from "@/database/schema";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
@@ -12,6 +13,10 @@ import { CACHE_TAGS } from "@/lib/cache-config";
 import { MemberAuthService } from "@/services/member/member.service";
 import organizationService from "@/services/organization/organization.service";
 import OrganizationMetaService from "@/services/organization-meta/organization-meta.service";
+import {
+  META_KEY_CONFIG,
+  VALID_SETTINGS_META_KEYS,
+} from "../[slug]/_components/organization-settings-config";
 
 const VALID_IMAGE_KEYS = [
   "image1",
@@ -250,5 +255,79 @@ export async function deleteOrganizationImageAction(
   } catch (error) {
     const e = error as Error;
     return { success: false, message: e.message || "Erro ao excluir imagem" };
+  }
+}
+
+export async function upsertOrganizationMetaAction(
+  organizationId: string,
+  metaKey: string,
+  metaValue: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return { success: false, message: "Não autorizado" };
+    }
+
+    if (!VALID_SETTINGS_META_KEYS.includes(metaKey)) {
+      return { success: false, message: "Chave de configuração inválida" };
+    }
+
+    const config = META_KEY_CONFIG[metaKey];
+    let sanitizedValue = metaValue.trim();
+
+    if (config) {
+      switch (config.type) {
+        case "digits":
+          sanitizedValue = sanitizedValue.replace(/\D/g, "");
+          break;
+        case "email":
+          if (sanitizedValue !== "") {
+            const emailResult = z.string().email().safeParse(sanitizedValue);
+            if (!emailResult.success) {
+              return { success: false, message: "E-mail inválido" };
+            }
+          }
+          break;
+        case "select":
+          if (config.options) {
+            const validValues = config.options.map((o) => o.value);
+            if (!validValues.includes(sanitizedValue)) {
+              return { success: false, message: "Valor selecionado inválido" };
+            }
+          }
+          break;
+      }
+    }
+
+    const updateResult = await OrganizationMetaService.updateOrganizationMeta({
+      organizationId,
+      metaKey,
+      metaValue: sanitizedValue,
+    });
+
+    if (updateResult.affectedRows === 0) {
+      await OrganizationMetaService.createOrganizationMeta({
+        organizationId,
+        metaKey,
+        metaValue: sanitizedValue,
+      });
+    }
+
+    revalidateTag(CACHE_TAGS.organizationMeta(organizationId), "hours");
+    revalidateTag(
+      CACHE_TAGS.organizationMetaKey(organizationId, metaKey),
+      "hours",
+    );
+    revalidateTag(CACHE_TAGS.organizationMetaCollection, "hours");
+    revalidatePath("/dashboard/organization/[slug]", "page");
+
+    return { success: true, message: "Configuração salva com sucesso" };
+  } catch (error) {
+    const e = error as Error;
+    return {
+      success: false,
+      message: e.message || "Erro ao salvar configuração",
+    };
   }
 }
