@@ -13,7 +13,7 @@ async function OrganizationImagesSectionContent({
 
   const images: Record<string, string> = {};
   for (const meta of allMeta) {
-    if (meta.metaKey.startsWith("image") && meta.metaValue) {
+    if (meta.metaKey.startsWith("IMAGE") && meta.metaValue) {
       images[meta.metaKey] = meta.metaValue;
     }
   }
