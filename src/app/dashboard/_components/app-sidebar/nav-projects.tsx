@@ -1,27 +1,13 @@
 "use client";
 
-import {
-  Folder,
-  Forward,
-  type LucideIcon,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { type LucideIcon, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
@@ -36,7 +22,7 @@ export function NavProjects({
     icon: LucideIcon;
   }[];
 }) {
-  const { isMobile } = useSidebar();
+  useSidebar();
   const pathname = usePathname();
 
   return (
@@ -53,7 +39,7 @@ export function NavProjects({
                   <span>{item.name}</span>
                 </Link>
               </SidebarMenuButton>
-              <DropdownMenu>
+              {/*               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuAction showOnHover>
                     <MoreHorizontal />
@@ -79,7 +65,7 @@ export function NavProjects({
                     <span>Delete Project</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
             </SidebarMenuItem>
           );
         })}

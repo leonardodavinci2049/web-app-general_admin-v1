@@ -33,8 +33,9 @@ async function removeExistingFileForKey(
   if (!existsSync(dirPath)) return;
 
   const files = await readdir(dirPath);
+  const lowerKey = imageKey.toLowerCase();
   for (const file of files) {
-    if (file.startsWith(`${imageKey}.`)) {
+    if (file.startsWith(`${imageKey}.`) || file.startsWith(`${lowerKey}.`)) {
       await rm(join(dirPath, file));
     }
   }
