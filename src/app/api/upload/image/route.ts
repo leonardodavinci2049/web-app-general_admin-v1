@@ -94,6 +94,7 @@ export async function POST(request: Request) {
       "public",
       "upload",
       "image",
+      "organization",
       organizationId,
     );
     await mkdir(dirPath, { recursive: true });
@@ -141,7 +142,7 @@ export async function POST(request: Request) {
       size: fileStats.size,
     });
 
-    const imageUrl = `/api/upload/image/${organizationId}/${fileName}`;
+    const imageUrl = `/api/upload/image/organization/${organizationId}/${fileName}`;
 
     const existing = await OrganizationMetaService.findOrganizationMetaByKey({
       organizationId,
@@ -204,6 +205,7 @@ export async function DELETE(request: Request) {
       "public",
       "upload",
       "image",
+      "organization",
       organizationId,
     );
     await removeExistingFileForKey(dirPath, imageKey);
