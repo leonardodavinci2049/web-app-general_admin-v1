@@ -43,8 +43,9 @@ async function removeExistingFileForKey(
   if (!existsSync(dirPath)) return;
 
   const files = await readdir(dirPath);
+  const lowerKey = imageKey.toLowerCase();
   for (const file of files) {
-    if (file.startsWith(`${imageKey}.`)) {
+    if (file.startsWith(`${imageKey}.`) || file.startsWith(`${lowerKey}.`)) {
       await rm(join(dirPath, file));
     }
   }
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
     await removeExistingFileForKey(dirPath, imageKey);
 
     const extension = getExtensionFromMime(file.type);
-    const fileName = `${imageKey}.${extension}`;
+    const fileName = `${imageKey.toLowerCase()}.${extension}`;
     const filePath = join(dirPath, fileName);
 
     const buffer = Buffer.from(await file.arrayBuffer());
