@@ -19,11 +19,11 @@ const ALLOWED_TYPES = [
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
 const VALID_IMAGE_KEYS = [
-  "IMAGE1",
-  "IMAGE2",
-  "IMAGE3",
-  "IMAGE4",
-  "IMAGE5",
+  "image1",
+  "image2",
+  "image3",
+  "image4",
+  "image5",
 ] as const;
 
 function getExtensionFromMime(mime: string): string {
