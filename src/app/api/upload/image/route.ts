@@ -135,13 +135,13 @@ export async function POST(request: Request) {
       );
     }
 
-    logger.info("Arquivo salvo com sucesso", {
+    /*     logger.info("Arquivo salvo com sucesso", {
       organizationId,
       imageKey,
       filePath,
       size: fileStats.size,
     });
-
+ */
     const imageUrl = `/api/upload/image/organization/${organizationId}/${fileName}`;
 
     const existing = await OrganizationMetaService.findOrganizationMetaByKey({
