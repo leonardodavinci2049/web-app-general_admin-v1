@@ -3,13 +3,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Organization } from "@/database/schema";
 import { getOrganizationBySlug } from "@/server/organizations";
@@ -31,6 +24,10 @@ import {
   OrganizationNotMembersSection,
   OrganizationNotMembersSectionSkeleton,
 } from "./_components/organization-not-members-section";
+import {
+  OrganizationSettingsSection,
+  OrganizationSettingsSectionSkeleton,
+} from "./_components/organization-settings-section";
 
 type Params = Promise<{ slug: string }>;
 
@@ -133,18 +130,17 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           </TabsContent>
 
           <TabsContent value="configuracoes" className="space-y-4 pt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações</CardTitle>
-                <CardDescription>
-                  Ajustar as preferências da organização. Recurso em
-                  desenvolvimento.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">Em breve</p>
-              </CardContent>
-            </Card>
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Configurações
+              </h2>
+              <p className="text-muted-foreground">
+                Ajustar as preferências e dados de configuração da organização.
+              </p>
+            </div>
+            <Suspense fallback={<OrganizationSettingsSectionSkeleton />}>
+              <OrganizationSettingsSection organizationId={organization.id} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="excluir" className="pt-4">
