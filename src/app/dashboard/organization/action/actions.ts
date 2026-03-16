@@ -231,6 +231,7 @@ export async function deleteOrganizationImageAction(
       "public",
       "upload",
       "image",
+      "organization",
       organizationId,
     );
     await removeExistingFileForKey(dirPath, imageKey);

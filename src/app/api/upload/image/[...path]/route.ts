@@ -19,7 +19,7 @@ export async function GET(
 ) {
   const segments = (await params).path;
 
-  if (segments.length !== 2) {
+  if (segments.length !== 3 || segments[0] !== "organization") {
     return NextResponse.json(
       { error: "Not found" },
       {
@@ -29,7 +29,7 @@ export async function GET(
     );
   }
 
-  const [organizationId, fileName] = segments;
+  const [, organizationId, fileName] = segments;
 
   const safeOrgId = organizationId.replace(/[^a-zA-Z0-9_-]/g, "");
   const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, "");
@@ -49,6 +49,7 @@ export async function GET(
     "public",
     "upload",
     "image",
+    "organization",
     safeOrgId,
     safeFileName,
   );
