@@ -19,11 +19,11 @@ import {
 } from "../[slug]/_components/organization-settings-config";
 
 const VALID_IMAGE_KEYS = [
-  "image1",
-  "image2",
-  "image3",
-  "image4",
-  "image5",
+  "IMAGE1",
+  "IMAGE2",
+  "IMAGE3",
+  "IMAGE4",
+  "IMAGE5",
 ] as const;
 
 async function removeExistingFileForKey(
