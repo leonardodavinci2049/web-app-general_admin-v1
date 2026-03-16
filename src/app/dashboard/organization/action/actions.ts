@@ -19,11 +19,11 @@ import {
 } from "../[slug]/_components/organization-settings-config";
 
 const VALID_IMAGE_KEYS = [
-  "image1",
-  "image2",
-  "image3",
-  "image4",
-  "image5",
+  "IMAGE1",
+  "IMAGE2",
+  "IMAGE3",
+  "IMAGE4",
+  "IMAGE5",
 ] as const;
 
 async function removeExistingFileForKey(
@@ -116,7 +116,8 @@ export async function updateOrganizationNameAction(
     });
 
     if (result.statusCode === 200 || result.statusCode === 100200) {
-      // Revalidate both the list and the potential details page
+      revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
+      revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
       revalidatePath("/dashboard/organization/[slug]", "layout");
       return {
@@ -150,6 +151,8 @@ export async function updateOrganizationSlugAction(
     });
 
     if (result.statusCode === 200 || result.statusCode === 100200) {
+      revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
+      revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
       revalidatePath("/dashboard/organization/[slug]", "layout");
       return {
@@ -184,6 +187,8 @@ export async function updateOrganizationSystemIdAction(
       });
 
     if (result.statusCode === 200 || result.statusCode === 100200) {
+      revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
+      revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
       revalidatePath("/dashboard/organization/[slug]", "layout");
       return {
