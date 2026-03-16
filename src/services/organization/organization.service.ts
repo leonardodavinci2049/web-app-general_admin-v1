@@ -690,6 +690,137 @@ async function findActiveOrganization(params: {
   }
 }
 
+const NameSchema = z
+  .string()
+  .min(1, "Nome é obrigatório")
+  .max(200, "Nome muito longo");
+
+const SystemIdSchema = z.number().int("ID deve ser um número inteiro");
+
+async function updateOrganizationName(params: {
+  organizationId: string;
+  name: string;
+}): Promise<ServiceResponse<null>> {
+  try {
+    validateId(params.organizationId, "organizationId");
+    const nameResult = NameSchema.safeParse(params.name);
+    if (!nameResult.success) {
+      throw new AuthValidationError(
+        `name: ${nameResult.error.issues[0].message}`,
+        "name",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.ORGANIZATION}
+      SET name = ?, updatedAt = NOW()
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.name.trim(),
+      params.organizationId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return {
+        success: false,
+        data: null,
+        error: "Organização não encontrada",
+      };
+    }
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    return handleError<null>(error, "updateOrganizationName");
+  }
+}
+
+async function updateOrganizationSlug(params: {
+  organizationId: string;
+  slug: string;
+}): Promise<ServiceResponse<null>> {
+  try {
+    validateId(params.organizationId, "organizationId");
+    validateSlug(params.slug, "slug");
+
+    const existing = await dbService.selectExecute<OrganizationEntity>(
+      `SELECT id FROM ${AUTH_TABLES.ORGANIZATION} WHERE slug = ? AND id != ? LIMIT 1`,
+      [params.slug.trim(), params.organizationId],
+    );
+
+    if (existing.length > 0) {
+      return {
+        success: false,
+        data: null,
+        error: "Slug já está em uso por outra organização",
+      };
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.ORGANIZATION}
+      SET slug = ?, updatedAt = NOW()
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.slug.trim(),
+      params.organizationId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return {
+        success: false,
+        data: null,
+        error: "Organização não encontrada",
+      };
+    }
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    return handleError<null>(error, "updateOrganizationSlug");
+  }
+}
+
+async function updateOrganizationSystemId(params: {
+  organizationId: string;
+  systemId: number;
+}): Promise<ServiceResponse<null>> {
+  try {
+    validateId(params.organizationId, "organizationId");
+    const systemIdResult = SystemIdSchema.safeParse(params.systemId);
+    if (!systemIdResult.success) {
+      throw new AuthValidationError(
+        `systemId: ${systemIdResult.error.issues[0].message}`,
+        "systemId",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.ORGANIZATION}
+      SET system_id = ?, updatedAt = NOW()
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.systemId,
+      params.organizationId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return {
+        success: false,
+        data: null,
+        error: "Organização não encontrada",
+      };
+    }
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    return handleError<null>(error, "updateOrganizationSystemId");
+  }
+}
+
 export const OrganizationAuthService = {
   findOrganizationById,
   findOrganizationsByIds,
@@ -698,6 +829,9 @@ export const OrganizationAuthService = {
   findOrganizationBySlugWithMembers,
   findUserOrganizations,
   findActiveOrganization,
+  updateOrganizationName,
+  updateOrganizationSlug,
+  updateOrganizationSystemId,
 } as const;
 
 export type {

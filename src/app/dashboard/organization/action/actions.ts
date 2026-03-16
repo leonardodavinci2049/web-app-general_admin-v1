@@ -11,7 +11,7 @@ import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import { MemberAuthService } from "@/services/member/member.service";
-import organizationService from "@/services/organization/organization.service";
+import { OrganizationAuthService } from "@/services/organization/organization.service";
 import OrganizationMetaService from "@/services/organization-meta/organization-meta.service";
 import {
   META_KEY_CONFIG,
@@ -108,14 +108,13 @@ export async function updateOrganizationNameAction(
   name: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const userId = await getUserId();
-    const result = await organizationService.execOrganizationUpdateNameQuery({
-      PE_USER_ID: userId,
-      PE_ORGANIZATION_ID: organizationId,
-      PE_ORGANIZATION_NAME: name,
+    await getUserId();
+    const result = await OrganizationAuthService.updateOrganizationName({
+      organizationId,
+      name,
     });
 
-    if (result.statusCode === 200 || result.statusCode === 100200) {
+    if (result.success) {
       revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
       revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
@@ -127,7 +126,7 @@ export async function updateOrganizationNameAction(
     } else {
       return {
         success: false,
-        message: result.message || "Erro ao atualizar nome da organização",
+        message: result.error || "Erro ao atualizar nome da organização",
       };
     }
   } catch (error) {
@@ -143,14 +142,13 @@ export async function updateOrganizationSlugAction(
   slug: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const userId = await getUserId();
-    const result = await organizationService.execOrganizationUpdateSlugQuery({
-      PE_USER_ID: userId,
-      PE_ORGANIZATION_ID: organizationId,
-      PE_ORGANIZATION_SLUG: slug,
+    await getUserId();
+    const result = await OrganizationAuthService.updateOrganizationSlug({
+      organizationId,
+      slug,
     });
 
-    if (result.statusCode === 200 || result.statusCode === 100200) {
+    if (result.success) {
       revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
       revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
@@ -162,7 +160,7 @@ export async function updateOrganizationSlugAction(
     } else {
       return {
         success: false,
-        message: result.message || "Erro ao atualizar slug da organização",
+        message: result.error || "Erro ao atualizar slug da organização",
       };
     }
   } catch (error) {
@@ -178,15 +176,13 @@ export async function updateOrganizationSystemIdAction(
   systemId: number,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const userId = await getUserId();
-    const result =
-      await organizationService.execOrganizationUpdateSystemIdQuery({
-        PE_USER_ID: userId,
-        PE_ORGANIZATION_ID: organizationId,
-        PE_SYSTEM_ID: systemId,
-      });
+    await getUserId();
+    const result = await OrganizationAuthService.updateOrganizationSystemId({
+      organizationId,
+      systemId,
+    });
 
-    if (result.statusCode === 200 || result.statusCode === 100200) {
+    if (result.success) {
       revalidateTag(CACHE_TAGS.organization(organizationId), "hours");
       revalidateTag(CACHE_TAGS.organizations, "hours");
       revalidatePath("/dashboard/organization");
@@ -198,7 +194,7 @@ export async function updateOrganizationSystemIdAction(
     } else {
       return {
         success: false,
-        message: result.message || "Erro ao atualizar ID do Sistema",
+        message: result.error || "Erro ao atualizar ID do Sistema",
       };
     }
   } catch (error) {
