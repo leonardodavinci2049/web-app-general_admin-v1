@@ -80,7 +80,9 @@ export function AccessLogTable({ logs }: AccessLogTableProps) {
                     ID: {log.log_id}
                   </p>
                   <p className="font-medium">{log.user_name || "-"}</p>
-                  <p className="text-xs text-muted-foreground">{log.user_email || "-"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {log.user_email || "-"}
+                  </p>
                 </div>
               </div>
 

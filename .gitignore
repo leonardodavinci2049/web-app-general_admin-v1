@@ -49,3 +49,5 @@ ecosystem.config.js
 AGENTS.md
 /scripts
 /upload
+public/upload
+public/upload/images
