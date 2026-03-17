@@ -14,6 +14,8 @@ const logger = createLogger("LogCachedService");
 
 export type LogLoginListItem = TblLogLogin & {
   user_name: string;
+  user_email: string;
+  organization_name: string;
 };
 export type LogOperationListItem = TblLogOperation & {
   app_name: string;
@@ -26,8 +28,10 @@ function transformLogLogin(log: TblLogLoginFindAll): LogLoginListItem {
     log_id: log.log_id,
     app_id: log.app_id,
     organization_Id: log.organization_Id,
+    organization_name: log.organization_name,
     user_id: log.user_id,
     user_name: log.user_name,
+    user_email: log.user_email,
     module_id: Number(log.module_id),
     record_id: log.record_id,
     log: log.log,
@@ -72,6 +76,8 @@ export async function getAllLoginLogs(
       PE_SEARCH_USER: searchTerm,
       PE_LIMIT: limit,
     });
+
+    // console.log("Login logs response:", response);
 
     if (response.statusCode !== 100200 || !response.data) {
       logger.error("Error loading login logs:", response.message);
