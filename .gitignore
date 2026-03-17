@@ -43,7 +43,6 @@ next-env.d.ts
 # others
 .github/
 .agents/
-.vscode/
 .vscode
 .agent/
 /scripts
