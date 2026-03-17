@@ -44,6 +44,7 @@ next-env.d.ts
 .github/
 .agents/
 .vscode/
+.vscode
 .agent/
 /scripts
 /upload
