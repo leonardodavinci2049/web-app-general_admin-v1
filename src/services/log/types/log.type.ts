@@ -22,9 +22,12 @@ export interface SpOperationResult {
 export interface TblLogLoginFindAll extends RowDataPacket {
   log_id: number;
   app_id: number;
+  app_name: string;
   organization_Id: string;
+  organization_name: string;
   user_id: string;
   user_name: string;
+  user_email: string;
   module_id: string;
   record_id: string;
   log: string;
