@@ -43,11 +43,13 @@ next-env.d.ts
 # others
 .github/
 .agents/
+.vscode/
+.agent/
+/scripts
+/upload
 /docs
 tasks-project-next.md
 ecosystem.config.js
 AGENTS.md
-/scripts
-/upload
 public/upload
 public/images
