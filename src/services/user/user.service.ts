@@ -19,11 +19,9 @@ import { ResultModel } from "@/database/utils/result.model";
 import { validateUserFindAllDto } from "./dto/user_find_all.dto";
 import { validateUserFindIdDto } from "./dto/user_find_id.dto";
 import { validateUserUpdNameDto } from "./dto/user_upd_name.dto";
-import { validateUserUpdPersonIdDto } from "./dto/user_upd_person_id.dto";
 import { UserFindAllQuery } from "./query/user_find_all.query";
 import { UserFindIdQuery } from "./query/user_find_id.query";
 import { UserUpdNameQuery } from "./query/user_upd_name.query";
-import { UserUpdPersonIdQuery } from "./query/user_upd_person_id.query";
 import type {
   SpResultRecordFindByIdType,
   SpResultRecordFindType,
@@ -88,27 +86,6 @@ export class UserService {
       return processProcedureResultMutation(
         resultData as unknown[],
         "User name update failed",
-      );
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : MESSAGES.UNKNOWN_ERROR;
-      return new ResultModel(100404, errorMessage, "", []);
-    }
-  }
-
-  async execUserUpdPersonIdQuery(dataJsonDto: unknown): Promise<ResultModel> {
-    try {
-      const validatedDto = validateUserUpdPersonIdDto(dataJsonDto);
-
-      const queryString = await UserUpdPersonIdQuery(validatedDto);
-
-      const resultData = (await dbService.selectExecute(
-        queryString,
-      )) as unknown as SpResultRecordUpdateType;
-
-      return processProcedureResultMutation(
-        resultData as unknown[],
-        "User person ID update failed",
       );
     } catch (err) {
       const errorMessage =
@@ -191,7 +168,7 @@ async function findUserById(params: {
       SELECT 
         id, name, email, emailVerified, image, 
         createdAt, updatedAt, twoFactorEnabled, 
-        role, banned, banReason, banExpires, personId
+        role, banned, banReason, banExpires
       FROM ${AUTH_TABLES.USER}
       WHERE id = ?
       LIMIT 1
@@ -226,7 +203,7 @@ async function findUsersExcludingIds(params: {
         SELECT 
           id, name, email, emailVerified, image, 
           createdAt, updatedAt, twoFactorEnabled, 
-          role, banned, banReason, banExpires, personId
+          role, banned, banReason, banExpires
         FROM ${AUTH_TABLES.USER}
         ORDER BY name ASC
       `;
@@ -245,7 +222,7 @@ async function findUsersExcludingIds(params: {
       SELECT 
         id, name, email, emailVerified, image, 
         createdAt, updatedAt, twoFactorEnabled, 
-        role, banned, banReason, banExpires, personId
+        role, banned, banReason, banExpires
       FROM ${AUTH_TABLES.USER}
       WHERE id NOT IN (${placeholders})
       ORDER BY name ASC
@@ -276,7 +253,7 @@ async function findNonMemberUsers(params: {
       SELECT 
         u.id, u.name, u.email, u.emailVerified, u.image, 
         u.createdAt, u.updatedAt, u.twoFactorEnabled, 
-        u.role, u.banned, u.banReason, u.banExpires, u.personId
+        u.role, u.banned, u.banReason, u.banExpires
       FROM ${AUTH_TABLES.USER} u
       WHERE u.id NOT IN (
         SELECT m.userId 
@@ -308,7 +285,7 @@ async function findUsersWithoutAnyOrganization(): Promise<
       SELECT 
         u.id, u.name, u.email, u.emailVerified, u.image, 
         u.createdAt, u.updatedAt, u.twoFactorEnabled, 
-        u.role, u.banned, u.banReason, u.banExpires, u.personId
+        u.role, u.banned, u.banReason, u.banExpires
       FROM ${AUTH_TABLES.USER} u
       WHERE u.id NOT IN (
         SELECT DISTINCT m.userId 
@@ -336,7 +313,4 @@ export const UserAuthService = {
   findUsersWithoutAnyOrganization,
 } as const;
 
-export type {
-  ServiceResponse,
-  User,
-} from "@/database/shared/auth/auth.types";
+export type { ServiceResponse, User } from "@/database/shared/auth/auth.types";

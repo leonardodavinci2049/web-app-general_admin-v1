@@ -6,7 +6,9 @@ import { join } from "node:path";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
+import dbService from "@/database/dbConnection";
 import type { OrganizationMemberRole } from "@/database/schema";
+import { AUTH_TABLES } from "@/database/shared/auth/auth.types";
 import { auth } from "@/lib/auth/auth";
 import { getUserId } from "@/lib/auth/get-user-id";
 import { CACHE_TAGS } from "@/lib/cache-config";
@@ -45,6 +47,7 @@ export async function addMemberAction(
   userId: string,
   role: OrganizationMemberRole,
   organizationId: string,
+  personId?: number | null,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const memberships = await MemberAuthService.findMembersByUser({ userId });
@@ -70,6 +73,12 @@ export async function addMemberAction(
     });
 
     if (result) {
+      if (personId != null) {
+        await dbService.modifyExecute(
+          `UPDATE ${AUTH_TABLES.MEMBER} SET personId = ? WHERE userId = ? AND organizationId = ?`,
+          [personId, userId, organizationId],
+        );
+      }
       revalidatePath("/dashboard/organization/[slug]", "page");
       return { success: true, message: "Member added successfully" };
     } else {

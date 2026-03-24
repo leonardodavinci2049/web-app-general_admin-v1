@@ -21,7 +21,6 @@ export interface SpOperationResult {
 
 export interface TblUserFindById extends RowDataPacket {
   id: string;
-  personId: number;
   name: string;
   email: string;
   emailVerified: number;
@@ -38,7 +37,6 @@ export interface TblUserFindById extends RowDataPacket {
 
 export interface TblUserFindAll extends RowDataPacket {
   id: string;
-  personId: number;
   name: string;
   email: string;
   image: string;

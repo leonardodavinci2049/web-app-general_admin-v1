@@ -16,7 +16,6 @@ export type UserDetail = User;
 function transformUser(user: TblUserFindById | TblUserFindAll): User {
   return {
     id: user.id,
-    personId: user.personId,
     name: user.name,
     email: user.email,
     emailVerified: "emailVerified" in user ? user.emailVerified === 1 : false,

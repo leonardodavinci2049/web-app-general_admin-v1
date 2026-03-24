@@ -17,18 +17,22 @@ import {
   mapMemberWithUserEntityToDto,
   type ServiceResponse,
 } from "@/database/shared/auth/auth.types";
+import { processProcedureResultMutation } from "@/database/utils/process-procedure-result.mutation";
 import { processProcedureResultQueryWithoutId } from "@/database/utils/process-procedure-result.query";
 import { ResultModel } from "@/database/utils/result.model";
 import { validateMemberFindAllDto } from "./dto/member-find-all.dto";
 import { validateMemberNotFindAllDto } from "./dto/member-not-find-all.dto";
 import { validateMemberRoleFindAllDto } from "./dto/member-role-find-all.dto";
+import { validateMemberUpdPersonIdDto } from "./dto/member-upd-person-id.dto";
 import { MemberRoleFindAllQuery } from "./query/member_role_find_all.query";
 import { MemberFindAllQuery } from "./query/member-find-all.query";
 import { MemberNotFindAllQuery } from "./query/member-not-find-all.query";
+import { MemberUpdPersonIdQuery } from "./query/member-upd-person-id.query";
 import type {
   SpResultRecordMemberFindAllType,
   SpResultRecordMemberNotFindAllType,
   SpResultRecordMemberRoleFindAllType,
+  SpResultRecordMemberUpdateType,
   TblMemberFindAll,
   TblMemberNotFindAll,
   TblMemberRoleFindAll,
@@ -90,6 +94,27 @@ export class MemberService {
       return processProcedureResultQueryWithoutId<TblMemberNotFindAll>(
         resultData as unknown[],
         "Member not found",
+      );
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : MESSAGES.UNKNOWN_ERROR;
+      return new ResultModel(100404, errorMessage, "", []);
+    }
+  }
+
+  async execMemberUpdPersonIdQuery(dataJsonDto: unknown): Promise<ResultModel> {
+    try {
+      const validatedDto = validateMemberUpdPersonIdDto(dataJsonDto);
+
+      const queryString = await MemberUpdPersonIdQuery(validatedDto);
+
+      const resultData = (await dbService.selectExecute(
+        queryString,
+      )) as unknown as SpResultRecordMemberUpdateType;
+
+      return processProcedureResultMutation(
+        resultData as unknown[],
+        "Member person ID update failed",
       );
     } catch (err) {
       const errorMessage =
@@ -173,7 +198,7 @@ async function findMembersByOrganization(params: {
 
     const query = `
       SELECT 
-        id, organizationId, userId, role, createdAt, updatedAt
+        id, organizationId, userId, role, personId, createdAt, updatedAt
       FROM ${AUTH_TABLES.MEMBER}
       WHERE organizationId = ?
       ORDER BY createdAt ASC
@@ -201,7 +226,7 @@ async function findFirstMemberByUser(params: {
 
     const query = `
       SELECT 
-        id, organizationId, userId, role, createdAt, updatedAt
+        id, organizationId, userId, role, personId, createdAt, updatedAt
       FROM ${AUTH_TABLES.MEMBER}
       WHERE userId = ?
       ORDER BY createdAt ASC
@@ -234,7 +259,7 @@ async function findMembersByUser(params: {
 
     const query = `
       SELECT 
-        id, organizationId, userId, role, createdAt, updatedAt
+        id, organizationId, userId, role, personId, createdAt, updatedAt
       FROM ${AUTH_TABLES.MEMBER}
       WHERE userId = ?
       ORDER BY createdAt ASC
@@ -288,7 +313,7 @@ async function findMembersWithUsersByOrganization(params: {
 
     const query = `
       SELECT 
-        m.id, m.organizationId, m.userId, m.role, m.createdAt, m.updatedAt,
+        m.id, m.organizationId, m.userId, m.role, m.personId, m.createdAt, m.updatedAt,
         u.id as user_id, u.name as user_name, u.email as user_email,
         u.emailVerified as user_emailVerified, u.image as user_image,
         u.createdAt as user_createdAt, u.updatedAt as user_updatedAt,
@@ -318,12 +343,48 @@ async function findMembersWithUsersByOrganization(params: {
   }
 }
 
+async function updateMemberPersonId(params: {
+  memberId: string;
+  personId: number;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.memberId, "memberId");
+
+    if (!Number.isInteger(params.personId) || params.personId <= 0) {
+      throw new AuthValidationError(
+        "personId deve ser um inteiro positivo",
+        "personId",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.MEMBER}
+      SET personId = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.personId,
+      params.memberId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Membro não encontrado" : null,
+    };
+  } catch (error) {
+    return handleModifyError(error, "updateMemberPersonId");
+  }
+}
+
 export const MemberAuthService = {
   findMembersByOrganization,
   findFirstMemberByUser,
   findMembersByUser,
   deleteMember,
   findMembersWithUsersByOrganization,
+  updateMemberPersonId,
 } as const;
 
 export type {
