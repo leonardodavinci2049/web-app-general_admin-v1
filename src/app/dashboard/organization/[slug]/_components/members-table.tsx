@@ -26,6 +26,7 @@ export default function MembersTable({ members }: MembersTableProps) {
               <TableHead className="w-[80px]">Avatar</TableHead>
               <TableHead>Nome</TableHead>
               <TableHead>E-mail</TableHead>
+              <TableHead>Person ID</TableHead>
               <TableHead>Cargo</TableHead>
               <TableHead>Entrou em</TableHead>
               <TableHead className="text-right">Ações</TableHead>
@@ -49,6 +50,7 @@ export default function MembersTable({ members }: MembersTableProps) {
                   {member.user?.name}
                 </TableCell>
                 <TableCell>{member.user?.email}</TableCell>
+                <TableCell>{member.personId ?? "-"}</TableCell>
                 <TableCell>
                   <Badge variant="secondary">{member.role}</Badge>
                 </TableCell>
@@ -66,7 +68,7 @@ export default function MembersTable({ members }: MembersTableProps) {
             ))}
             {members.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
+                <TableCell colSpan={7} className="h-24 text-center">
                   Nenhum membro encontrado.
                 </TableCell>
               </TableRow>
@@ -96,6 +98,9 @@ export default function MembersTable({ members }: MembersTableProps) {
                 <p className="font-medium truncate">{member.user?.name}</p>
                 <p className="text-sm text-muted-foreground truncate">
                   {member.user?.email}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Person ID: {member.personId ?? "-"}
                 </p>
               </div>
             </div>

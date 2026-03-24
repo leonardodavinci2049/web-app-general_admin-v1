@@ -289,7 +289,6 @@ export type TwoFactor = {
 
 export type User = {
   id: string;
-  personId?: number | null;
   name: string;
   email: string;
   emailVerified: boolean;
