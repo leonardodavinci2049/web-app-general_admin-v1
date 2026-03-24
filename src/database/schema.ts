@@ -24,6 +24,120 @@ export type Account = {
   updatedAt: Date;
 };
 
+export type AgendaEntry = {
+  id: string;
+  organizationId?: string | null;
+  userId: string;
+  entryType: string;
+  title: string;
+  notes?: string | null;
+  status: string;
+  priority: string;
+  scheduledAt: Date;
+  completedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type AgendaNotification = {
+  id: string;
+  agendaEntryId: string;
+  organizationId?: string | null;
+  userId: string;
+  title: string;
+  message?: string | null;
+  notifyAt: Date;
+  readAt?: Date | null;
+  deliveredAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CrmActivity = {
+  id: string;
+  lead_id: string;
+  organization_id: string;
+  activity_type: string;
+  description: string;
+  metadata_json?: string | null;
+  created_by: string;
+  created_at: Date;
+};
+
+export type CrmDeal = {
+  id: string;
+  lead_id: string;
+  organization_id: string;
+  budget_id?: string | null;
+  order_id?: string | null;
+  amount: number;
+  status: string;
+  closed_at?: Date | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type CrmLead = {
+  id: string;
+  organization_id: string;
+  customer_id?: string | null;
+  assigned_user_id: string;
+  assigned_user_name: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  source: string;
+  status: string;
+  current_stage_key: string;
+  score: number;
+  estimated_value?: number | null;
+  last_contact_at?: Date | null;
+  next_follow_up_at?: Date | null;
+  lost_reason?: string | null;
+  notes?: string | null;
+  created_by: string;
+  updated_by: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type CrmLeadStageHistory = {
+  id: string;
+  lead_id: string;
+  from_stage_key?: string | null;
+  to_stage_key: string;
+  changed_by: string;
+  changed_at: Date;
+  notes?: string | null;
+};
+
+export type CrmStage = {
+  id: string;
+  stage_key: string;
+  name: string;
+  sort_order: number;
+  probability: number;
+  is_active: boolean;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type CrmTask = {
+  id: string;
+  lead_id: string;
+  organization_id: string;
+  assigned_user_id: string;
+  title: string;
+  description?: string | null;
+  due_date: Date;
+  status: string;
+  priority: string;
+  completed_at?: Date | null;
+  created_by: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export type Invitation = {
   id: string;
   organizationId: string;
@@ -41,6 +155,7 @@ export type Member = {
   id: string;
   organizationId: string;
   userId: string;
+  personId?: number | null;
   role: string;
   createdAt: Date;
   updatedAt: Date;
