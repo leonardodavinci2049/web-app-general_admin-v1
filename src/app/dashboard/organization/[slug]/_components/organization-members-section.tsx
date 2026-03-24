@@ -19,6 +19,7 @@ async function OrganizationMembersSectionContent({
     organizationId: m.organizationId,
     userId: m.userId,
     role: m.role,
+    personId: m.personId,
     createdAt: m.createdAt,
     updatedAt: m.updatedAt,
     user: {

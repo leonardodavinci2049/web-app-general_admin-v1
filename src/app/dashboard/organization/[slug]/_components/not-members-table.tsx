@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -56,6 +57,7 @@ export default function NotMembersTable({
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedRole, setSelectedRole] =
     useState<OrganizationMemberRole>("customer");
+  const [personIdInput, setPersonIdInput] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
@@ -65,10 +67,18 @@ export default function NotMembersTable({
     try {
       setLoadingId(selectedUser.id);
 
+      const personId = Number(personIdInput);
+
+      if (!Number.isInteger(personId) || personId <= 0) {
+        toast.error("Person ID must be a positive integer");
+        return;
+      }
+
       const result = await addMemberAction(
         selectedUser.id,
         selectedRole,
         organizationId,
+        personId,
       );
 
       if (!result.success) {
@@ -80,6 +90,7 @@ export default function NotMembersTable({
       setIsDialogOpen(false);
       setSelectedUser(null);
       setSelectedRole("customer");
+      setPersonIdInput("");
       router.refresh();
     } catch (error) {
       toast.error("Failed to add member to organization");
@@ -224,6 +235,28 @@ export default function NotMembersTable({
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <label htmlFor="person-id-input" className="text-sm font-medium">
+                Person ID <span className="text-destructive">*</span>
+              </label>
+              <Input
+                id="person-id-input"
+                type="number"
+                min={1}
+                step={1}
+                required
+                placeholder="Ex: 12345"
+                value={personIdInput}
+                onChange={(e) => setPersonIdInput(e.target.value)}
+              />
+              {personIdInput !== "" &&
+                (!Number.isInteger(Number(personIdInput)) ||
+                  Number(personIdInput) <= 0) && (
+                  <p className="text-sm text-destructive">
+                    Person ID must be a positive integer.
+                  </p>
+                )}
+            </div>
           </div>
           <DialogFooter>
             <Button
@@ -232,11 +265,20 @@ export default function NotMembersTable({
                 setIsDialogOpen(false);
                 setSelectedUser(null);
                 setSelectedRole("customer");
+                setPersonIdInput("");
               }}
             >
               Cancel
             </Button>
-            <Button onClick={handleAddMember} disabled={loadingId !== null}>
+            <Button
+              onClick={handleAddMember}
+              disabled={
+                loadingId !== null ||
+                personIdInput.trim() === "" ||
+                !Number.isInteger(Number(personIdInput)) ||
+                Number(personIdInput) <= 0
+              }
+            >
               {loadingId ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />

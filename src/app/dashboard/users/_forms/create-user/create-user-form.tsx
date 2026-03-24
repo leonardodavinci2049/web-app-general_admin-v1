@@ -40,7 +40,6 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       email: "",
       password: "",
       role: "user",
-      personId: "",
     },
   });
 
@@ -51,9 +50,6 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
       formData.append("email", data.email);
       formData.append("password", data.password);
       formData.append("role", data.role ?? "user");
-      if (data.personId) {
-        formData.append("personId", data.personId);
-      }
 
       const result = await createUserAction(
         { success: false, message: "" },
@@ -77,9 +73,6 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
           }
           if (result.errors.role) {
             form.setError("role", { message: result.errors.role[0] });
-          }
-          if (result.errors.personId) {
-            form.setError("personId", { message: result.errors.personId[0] });
           }
         }
         toast.error(result.message);
@@ -168,28 +161,6 @@ export function CreateUserForm({ onSuccess }: CreateUserFormProps) {
               </Select>
               <FormDescription>
                 A função define as permissões do sistema.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="personId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Person ID</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Ex: 12345"
-                  {...field}
-                  value={field.value || ""}
-                />
-              </FormControl>
-              <FormDescription>
-                ID da pessoa no sistema externo (opcional).
               </FormDescription>
               <FormMessage />
             </FormItem>

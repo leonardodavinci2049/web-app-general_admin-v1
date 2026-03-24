@@ -67,7 +67,12 @@ export type SpResultRecordMemberFindAllType = [
 ];
 
 export type SpResultRecordMemberNotFindAllType = [
-  TblMemberNotFindAll[], // Primeiro item: array de usuários
-  SpDefaultFeedback[], // Terceiro item: resultado SQL
-  SpOperationResult, // Segundo item: array de feedbacks
+  TblMemberNotFindAll[],
+  SpDefaultFeedback[],
+  SpOperationResult,
+];
+
+export type SpResultRecordMemberUpdateType = [
+  SpDefaultFeedback[],
+  SpOperationResult,
 ];

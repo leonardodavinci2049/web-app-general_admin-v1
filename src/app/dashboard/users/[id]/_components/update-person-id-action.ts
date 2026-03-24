@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth/auth";
 
 export async function updatePersonIdAction(
   userId: string,
+  organizationId: string,
   personId: number | null,
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -34,8 +35,8 @@ export async function updatePersonIdAction(
 
   try {
     await dbService.modifyExecute(
-      `UPDATE ${AUTH_TABLES.USER} SET person_id = ? WHERE id = ?`,
-      [personId, userId],
+      `UPDATE ${AUTH_TABLES.MEMBER} SET personId = ? WHERE userId = ? AND organizationId = ?`,
+      [personId, userId, organizationId],
     );
 
     revalidatePath(`/dashboard/users/${userId}`);

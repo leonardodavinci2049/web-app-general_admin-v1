@@ -49,3 +49,42 @@ export const removeMember = async (memberId: string) => {
     error: null,
   };
 };
+
+export const updateMemberPersonId = async (
+  memberId: string,
+  personId: number,
+) => {
+  const admin = await isAdmin();
+
+  if (!admin) {
+    return {
+      success: false,
+      error: "You are not authorized to update members.",
+    };
+  }
+
+  if (!Number.isInteger(personId) || personId <= 0) {
+    return {
+      success: false,
+      error: "Person ID must be a positive integer.",
+    };
+  }
+
+  const result = await MemberAuthService.updateMemberPersonId({
+    memberId,
+    personId,
+  });
+
+  if (!result.success) {
+    console.error(result.error);
+    return {
+      success: false,
+      error: result.error || "Failed to update Person ID.",
+    };
+  }
+
+  return {
+    success: true,
+    error: null,
+  };
+};
