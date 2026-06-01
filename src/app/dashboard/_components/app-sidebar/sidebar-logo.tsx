@@ -20,7 +20,9 @@ export function SidebarLogo() {
               alt="Logo da Empresa"
               width={140}
               height={40}
+              loading="eager"
               className="h-10 w-auto object-contain"
+              style={{ width: 'auto', height: 'auto' }}
             />
             <span className="text-sidebar-foreground/70 truncate text-xs">
               Panel Administrativo
