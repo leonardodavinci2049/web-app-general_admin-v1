@@ -54,7 +54,7 @@ export function OperationLogTable({ logs }: OperationLogTableProps) {
                   {log.log}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {log.note || "-"}
+                  {log.NOTE || "-"}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {log.createdAt &&
@@ -120,10 +120,10 @@ export function OperationLogTable({ logs }: OperationLogTableProps) {
                     {log.log}
                   </p>
                 </div>
-                {log.note && (
+                {log.NOTE && (
                   <div className="flex flex-col gap-1">
                     <span className="text-muted-foreground text-xs">Nota</span>
-                    <span className="text-muted-foreground">{log.note}</span>
+                    <span className="text-muted-foreground">{log.NOTE}</span>
                   </div>
                 )}
               </div>

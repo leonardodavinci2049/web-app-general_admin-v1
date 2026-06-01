@@ -232,7 +232,7 @@ export type TblLogLogin = {
   module_id?: number | null;
   record_id?: string | null;
   log?: string | null;
-  note?: string | null;
+  NOTE?: string | null;
   createdAt?: Date | null;
 };
 
@@ -244,7 +244,7 @@ export type TblLogOperation = {
   module_id?: number | null;
   record_id?: string | null;
   log?: string | null;
-  note?: string | null;
+  NOTE?: string | null;
   createdAt?: Date | null;
 };
 
@@ -263,6 +263,54 @@ export type TblModule = {
   module?: string | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
+};
+
+export type TblSystemConfiguration = {
+  ID_CONFIGURATION: number;
+  UUID?: string | null;
+  APP_ID?: number | null;
+  SYSTEM_CLIENT_ID?: number | null;
+  STORE_ID?: number | null;
+  ORGANIZATION_ID?: string | null;
+  MEMBER_ID?: string | null;
+  USER_ID?: string | null;
+  COMPANY_NAME?: string | null;
+  COMPANY_TITLE?: string | null;
+  COMPANY_CNPJ?: string | null;
+  COMPANY_PHONE?: string | null;
+  COMPANY_WHATSAPP?: string | null;
+  COMPANY_EMAIL?: string | null;
+  COMPANY_ABOUT_SHORT1?: string | null;
+  COMPANY_ABOUT_SHORT2?: string | null;
+  COMPANY_OPENING_HOURS?: string | null;
+  COMPANY_ADDRESS1?: string | null;
+  COMPANY_ADDRESS2?: string | null;
+  COMPANY_ADDRESS3?: string | null;
+  COMPANY_MAPS?: string | null;
+  COMPANY_INTERNE1?: string | null;
+  COMPANY_INTERNE2?: string | null;
+  COMPANY_INTERNE3?: string | null;
+  COMPANY_INTERNE4?: string | null;
+  COMPANY_INTERNE5?: string | null;
+  SLOGAN1?: string | null;
+  SLOGAN2?: string | null;
+  SLOGAN3?: string | null;
+  SLOGAN4?: string | null;
+  SLOGAN5?: string | null;
+  CALLTO_ACTION1?: string | null;
+  CALLTO_ACTION2?: string | null;
+  CALLTO_ACTION3?: string | null;
+  CALLTO_ACTION4?: string | null;
+  CALLTO_ACTION5?: string | null;
+  DEVELOPER_LOGO_DARK?: string | null;
+  DEVELOPER_LOGO_WHITE?: string | null;
+  DEVELOPER_NAME?: string | null;
+  DEVELOPER_URL?: string | null;
+  CONFIGURATION_KEY?: string | null;
+  CONFIGURATION_VALUE?: string | null;
+  CONFIGURATION_NOTES?: string | null;
+  CREATEDAT?: Date | null;
+  UPDATEDAT?: Date | null;
 };
 
 export type Team = {
@@ -289,6 +337,7 @@ export type TwoFactor = {
 
 export type User = {
   id: string;
+  personId?: number | null;
   name: string;
   email: string;
   emailVerified: boolean;

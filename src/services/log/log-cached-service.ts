@@ -35,7 +35,7 @@ function transformLogLogin(log: TblLogLoginFindAll): LogLoginListItem {
     module_id: Number(log.module_id),
     record_id: log.record_id,
     log: log.log,
-    note: log.note,
+    NOTE: log.NOTE,
     createdAt: log.createdAt,
   };
 }
@@ -54,7 +54,7 @@ function transformLogOperation(
     module_id: Number(log.module_id),
     record_id: log.record_id,
     log: log.log,
-    note: log.note,
+    NOTE: log.NOTE,
     createdAt: log.createdAt,
   };
 }
