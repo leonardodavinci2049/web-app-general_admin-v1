@@ -62,8 +62,21 @@ export const auth = betterAuth({
       },
     },
   },
-
   user: {
+     additionalFields: {
+      appId: {
+        type: "number",
+        required: false,
+        input: false,
+        fieldName: "appId",
+      },
+      notes: {
+        type: "string",
+        required: false,
+        input: false,
+        fieldName: "notes",
+      },
+    },   
     changeEmail: {
       enabled: true,
       sendChangeEmailVerification: async ({
