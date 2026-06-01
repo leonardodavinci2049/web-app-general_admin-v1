@@ -63,7 +63,7 @@ export const auth = betterAuth({
     },
   },
   user: {
-     additionalFields: {
+    additionalFields: {
       appId: {
         type: "number",
         required: false,
@@ -76,7 +76,7 @@ export const auth = betterAuth({
         input: false,
         fieldName: "notes",
       },
-    },   
+    },
     changeEmail: {
       enabled: true,
       sendChangeEmailVerification: async ({

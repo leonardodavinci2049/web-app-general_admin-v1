@@ -98,9 +98,40 @@ export default async function OrganizationPage({ params }: { params: Params }) {
                 Gerenciar os membros desta organização.
               </p>
             </div>
-            <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
-              <OrganizationMembersSection organizationId={organization.id} />
-            </Suspense>
+            <Tabs defaultValue="gestor" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto sm:h-9">
+                <TabsTrigger value="gestor">Gestor</TabsTrigger>
+                <TabsTrigger value="pdv">PDV</TabsTrigger>
+                <TabsTrigger value="expedicao">Expedição</TabsTrigger>
+                <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="gestor" className="space-y-4 pt-4">
+                <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
+                  <OrganizationMembersSection
+                    organizationId={organization.id}
+                  />
+                </Suspense>
+              </TabsContent>
+
+              <TabsContent value="pdv" className="space-y-4 pt-4">
+                <p className="text-muted-foreground text-sm">
+                  Funcionalidade em desenvolvimento.
+                </p>
+              </TabsContent>
+
+              <TabsContent value="expedicao" className="space-y-4 pt-4">
+                <p className="text-muted-foreground text-sm">
+                  Funcionalidade em desenvolvimento.
+                </p>
+              </TabsContent>
+
+              <TabsContent value="financeiro" className="space-y-4 pt-4">
+                <p className="text-muted-foreground text-sm">
+                  Funcionalidade em desenvolvimento.
+                </p>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="adicionar" className="space-y-4 pt-4">
