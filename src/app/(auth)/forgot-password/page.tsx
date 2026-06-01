@@ -24,6 +24,7 @@ export default function ForgotPasswordPage() {
             src="/images/auth/logo-winerp-banner-auth.png"
             alt="Dashboard Background"
             fill
+            sizes="50vw"
             className="object-contain object-center"
             priority
           />
