@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 
 export type DeleteUserActionState = {
@@ -14,7 +15,6 @@ export type DeleteUserActionState = {
 };
 
 export async function deleteUserAction(
-  _prevState: DeleteUserActionState,
   formData: FormData,
 ): Promise<DeleteUserActionState> {
   const userId = formData.get("userId");
@@ -42,10 +42,7 @@ export async function deleteUserAction(
 
     revalidatePath("/dashboard/users");
 
-    return {
-      success: true,
-      message: "Usuário excluído com sucesso.",
-    };
+    redirect("/dashboard/users");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

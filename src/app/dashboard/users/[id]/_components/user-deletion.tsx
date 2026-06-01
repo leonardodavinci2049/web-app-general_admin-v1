@@ -1,8 +1,7 @@
 "use client";
 
 import { AlertCircle, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { LoadingSwap } from "@/components/auth/loading-swap";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -35,18 +34,10 @@ interface UserDeletionProps {
 export function UserDeletion({ userId, userName }: UserDeletionProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  const [state, formAction] = useActionState<DeleteUserActionState, FormData>(
-    deleteUserAction,
-    { success: false, message: "" },
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      router.push("/dashboard/users");
-    }
-  }, [state.success, router]);
+  const [state, setState] = useState<DeleteUserActionState>({
+    success: false,
+    message: "",
+  });
 
   return (
     <Card className="border border-destructive">
@@ -86,8 +77,11 @@ export function UserDeletion({ userId, userName }: UserDeletionProps) {
               <form
                 action={(formData) => {
                   formData.set("userId", userId);
-                  startTransition(() => {
-                    formAction(formData);
+                  startTransition(async () => {
+                    const result = await deleteUserAction(formData);
+                    if (!result.success) {
+                      setState(result);
+                    }
                   });
                 }}
               >
