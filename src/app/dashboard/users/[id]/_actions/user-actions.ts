@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 
@@ -40,13 +41,15 @@ export async function deleteUserAction(
     }
 
     revalidatePath("/dashboard/users");
-    revalidatePath(`/dashboard/users/${userId}`);
 
     return {
       success: true,
-      message: "User deleted successfully",
+      message: "Usuário excluído com sucesso.",
     };
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     const e = error as Error;
     return {
       success: false,

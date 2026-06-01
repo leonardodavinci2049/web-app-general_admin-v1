@@ -2,7 +2,7 @@
 
 import { AlertCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { LoadingSwap } from "@/components/auth/loading-swap";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -33,37 +33,20 @@ interface UserDeletionProps {
 }
 
 export function UserDeletion({ userId, userName }: UserDeletionProps) {
-  const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const [state, formAction] = useActionState<DeleteUserActionState, FormData>(
     deleteUserAction,
     { success: false, message: "" },
   );
 
-  async function handleSubmit(formData: FormData) {
-    setIsDeleting(true);
-    formData.set("userId", userId);
-
-    const form = document.createElement("form");
-    form.action = "/dashboard/users/[id]/_actions/user-actions";
-    form.method = "POST";
-
-    const result = await fetch("/dashboard/users/[id]/_actions/user-actions", {
-      method: "POST",
-      body: formData,
-    });
-
-    const response = await result.json();
-    setIsDeleting(false);
-
-    if (response.success) {
-      setIsDialogOpen(false);
+  useEffect(() => {
+    if (state.success) {
       router.push("/dashboard/users");
-      router.refresh();
     }
-  }
+  }, [state.success, router]);
 
   return (
     <Card className="border border-destructive">
@@ -85,53 +68,51 @@ export function UserDeletion({ userId, userName }: UserDeletionProps) {
             </AlertDescription>
           </Alert>
 
-          <form action={formAction}>
-            <input type="hidden" name="userId" value={userId} />
-
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Excluir Usuário Permanentemente
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Confirmar Exclusão</DialogTitle>
-                  <DialogDescription>
-                    Tem certeza que deseja excluir o usuário{" "}
-                    <strong>{userName}</strong>? Esta ação não pode ser
-                    desfeita.
-                  </DialogDescription>
-                </DialogHeader>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="w-full">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Excluir Usuário Permanentemente
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirmar Exclusão</DialogTitle>
+                <DialogDescription>
+                  Tem certeza que deseja excluir o usuário{" "}
+                  <strong>{userName}</strong>? Esta ação não pode ser desfeita.
+                </DialogDescription>
+              </DialogHeader>
+              <form
+                action={(formData) => {
+                  formData.set("userId", userId);
+                  startTransition(() => {
+                    formAction(formData);
+                  });
+                }}
+              >
                 <DialogFooter>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsDialogOpen(false)}
-                    disabled={isDeleting}
+                    disabled={isPending}
                   >
                     Cancelar
                   </Button>
                   <Button
                     type="submit"
                     variant="destructive"
-                    disabled={isDeleting}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const formData = new FormData();
-                      formData.set("userId", userId);
-                      handleSubmit(formData);
-                    }}
+                    disabled={isPending}
                   >
-                    <LoadingSwap isLoading={isDeleting}>
+                    <LoadingSwap isLoading={isPending}>
                       Confirmar Exclusão
                     </LoadingSwap>
                   </Button>
                 </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </form>
+              </form>
+            </DialogContent>
+          </Dialog>
 
           {state.message && !state.success && (
             <Alert variant="destructive">

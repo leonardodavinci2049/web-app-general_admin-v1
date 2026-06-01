@@ -338,10 +338,12 @@ export type TwoFactor = {
 export type User = {
   id: string;
   personId?: number | null;
+  appId?: number | null;
   name: string;
   email: string;
   emailVerified: boolean;
   image?: string | null;
+  notes?: string | null;
   createdAt: Date;
   updatedAt: Date;
   twoFactorEnabled: boolean;
