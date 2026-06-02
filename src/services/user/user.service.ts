@@ -354,6 +354,103 @@ async function updateUserName(params: {
   }
 }
 
+async function updateUserEmail(params: {
+  userId: string;
+  email: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.userId, "userId");
+
+    if (!params.email || typeof params.email !== "string") {
+      throw new AuthValidationError(
+        "email é obrigatório e deve ser uma string",
+        "email",
+      );
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(params.email.trim())) {
+      throw new AuthValidationError("email inválido", "email");
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.USER}
+      SET email = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.email.trim(),
+      params.userId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Usuário não encontrado" : null,
+    };
+  } catch (error) {
+    console.error(`[UserAuthService] Erro em updateUserEmail:`, error);
+
+    if (error instanceof AuthValidationError) {
+      return { success: false, affectedRows: 0, error: error.message };
+    }
+
+    return {
+      success: false,
+      affectedRows: 0,
+      error: "Erro ao atualizar email do usuário",
+    };
+  }
+}
+
+async function updateUserRole(params: {
+  userId: string;
+  role: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.userId, "userId");
+
+    const validRoles = ["user", "admin"];
+    if (
+      !params.role ||
+      typeof params.role !== "string" ||
+      !validRoles.includes(params.role)
+    ) {
+      throw new AuthValidationError("role deve ser 'user' ou 'admin'", "role");
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.USER}
+      SET role = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.role,
+      params.userId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Usuário não encontrado" : null,
+    };
+  } catch (error) {
+    console.error(`[UserAuthService] Erro em updateUserRole:`, error);
+
+    if (error instanceof AuthValidationError) {
+      return { success: false, affectedRows: 0, error: error.message };
+    }
+
+    return {
+      success: false,
+      affectedRows: 0,
+      error: "Erro ao atualizar função do usuário",
+    };
+  }
+}
+
 function escapeLikePattern(str: string): string {
   return str.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
 }
@@ -401,6 +498,8 @@ export const UserAuthService = {
   findNonMemberUsers,
   findUsersWithoutAnyOrganization,
   updateUserName,
+  updateUserEmail,
+  updateUserRole,
   findUsersWithOrganizations,
 } as const;
 

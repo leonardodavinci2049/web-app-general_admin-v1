@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import type { Member } from "@/database/schema";
 import {
-  removeMemberAndUser,
+  removeMember,
   updateMemberPersonId,
   updateMemberRole,
   updateUserName,
@@ -50,14 +50,9 @@ export function MembersActions({ member }: MembersActionsProps) {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const { success, error } = await removeMemberAndUser(
-        member.id,
-        member.userId,
-      );
+      const { success, error } = await removeMember(member.id);
       if (success) {
-        toast.success(
-          "Membro removido e cadastro do usuário excluído com sucesso",
-        );
+        toast.success("Membro removido da organização com sucesso");
         setShowDeleteDialog(false);
         router.refresh();
       } else {
@@ -256,8 +251,8 @@ export function MembersActions({ member }: MembersActionsProps) {
             <DialogTitle>Remover Membro</DialogTitle>
             <DialogDescription>
               Tem certeza que deseja remover{" "}
-              <strong>{member.user?.name}</strong> da organização e excluir seu
-              cadastro? Esta ação não pode ser desfeita.
+              <strong>{member.user?.name}</strong> da organização? O cadastro do
+              usuário será mantido. Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
