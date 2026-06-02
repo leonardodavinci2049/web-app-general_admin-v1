@@ -61,3 +61,20 @@ export type SpResultRecordFindType = [
   SpDefaultFeedback[], // Terceiro item: resultado SQL
   SpOperationResult, // Segundo item: array de feedbacks
 ];
+
+export interface TblUserFindWithOrg extends RowDataPacket {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean | number;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  twoFactorEnabled: boolean | number;
+  banned: boolean | number | null;
+  banReason: string | null;
+  banExpires: Date | null;
+  organizationId: string | null;
+  memberRole: string | null;
+  organizationName: string | null;
+}

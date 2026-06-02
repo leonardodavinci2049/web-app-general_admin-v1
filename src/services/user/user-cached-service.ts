@@ -13,6 +13,23 @@ const logger = createLogger("UserCachedService");
 export type UserListItem = User;
 export type UserDetail = User;
 
+export interface UserWithOrganizationListItem {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean | number;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  twoFactorEnabled: boolean | number;
+  banned: boolean | number | null;
+  banReason: string | null;
+  banExpires: Date | null;
+  organizationId: string | null;
+  organizationName: string | null;
+  memberRole: string | null;
+}
+
 function transformUser(user: TblUserFindById | TblUserFindAll): User {
   return {
     id: user.id,
@@ -184,6 +201,45 @@ export async function getUsersWithoutAnyOrganization(): Promise<AuthUser[]> {
     return response.data;
   } catch (error) {
     logger.error("Failed to fetch users without any organization:", error);
+    return [];
+  }
+}
+
+export async function getUsersWithOrganizations(
+  searchTerm?: string,
+): Promise<UserWithOrganizationListItem[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.users, CACHE_TAGS.members);
+
+  try {
+    const response = await UserAuthService.findUsersWithOrganizations({
+      searchTerm,
+    });
+
+    if (!response.success || !response.data) {
+      logger.error("Error loading users with organizations:", response.error);
+      return [];
+    }
+
+    return response.data.map((row) => ({
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      emailVerified: row.emailVerified,
+      image: row.image,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      twoFactorEnabled: row.twoFactorEnabled,
+      banned: row.banned,
+      banReason: row.banReason,
+      banExpires: row.banExpires,
+      organizationId: row.organizationId,
+      organizationName: row.organizationName,
+      memberRole: row.memberRole,
+    }));
+  } catch (error) {
+    logger.error("Failed to fetch users with organizations:", error);
     return [];
   }
 }
