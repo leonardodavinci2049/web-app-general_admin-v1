@@ -6,6 +6,7 @@ import { getUsersWithOrganizations } from "@/services/user/user-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { UserSearch } from "./_components/user-search";
 import { UserTable } from "./_components/user-table";
+import { CreateUserDialog } from "./_components/create-user-dialog";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -46,7 +47,7 @@ export default async function UsersPage(props: { searchParams: SearchParams }) {
               Gerencie contas de usuário, funções e permissões.
             </p>
           </div>
-          {/* <CreateUserDialog /> */}
+          <CreateUserDialog />
         </div>
 
         <UserSearch />
