@@ -378,6 +378,65 @@ async function updateMemberPersonId(params: {
   }
 }
 
+async function updateMemberRole(params: {
+  memberId: string;
+  role: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.memberId, "memberId");
+
+    if (!params.role || typeof params.role !== "string") {
+      throw new AuthValidationError(
+        "role é obrigatório e deve ser uma string",
+        "role",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.MEMBER}
+      SET role = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.role,
+      params.memberId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Membro não encontrado" : null,
+    };
+  } catch (error) {
+    return handleModifyError(error, "updateMemberRole");
+  }
+}
+
+async function deleteUser(params: { userId: string }): Promise<ModifyResponse> {
+  try {
+    validateId(params.userId, "userId");
+
+    const query = `
+      DELETE FROM ${AUTH_TABLES.USER}
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [params.userId]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error:
+        result.affectedRows === 0
+          ? "Usuário não encontrado ou já deletado"
+          : null,
+    };
+  } catch (error) {
+    return handleModifyError(error, "deleteUser");
+  }
+}
+
 export const MemberAuthService = {
   findMembersByOrganization,
   findFirstMemberByUser,
@@ -385,6 +444,8 @@ export const MemberAuthService = {
   deleteMember,
   findMembersWithUsersByOrganization,
   updateMemberPersonId,
+  updateMemberRole,
+  deleteUser,
 } as const;
 
 export type {

@@ -15,6 +15,11 @@ export const createOrganizationMemberUserSchema = z.object({
     .string()
     .min(1, "A senha é obrigatória")
     .min(8, "A senha deve ter pelo menos 8 caracteres")
+    .regex(/[0-9]/, "A senha deve conter pelo menos um número")
+    .regex(
+      /[^a-zA-Z0-9]/,
+      "A senha deve conter pelo menos um caractere especial",
+    )
     .max(100, "A senha deve ter no máximo 100 caracteres"),
   memberRole: z.enum([
     "owner",

@@ -1,11 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { useCallback, useRef, useState, useTransition } from "react";
 import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createUserAndAddMemberAction } from "@/app/dashboard/organization/action/actions";
+import {
+  checkEmailExistsAction,
+  createUserAndAddMemberAction,
+} from "@/app/dashboard/organization/action/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,6 +33,8 @@ import {
 } from "./create-organization-member-user-schema";
 import { MEMBER_ROLE_LABELS, MEMBER_ROLES } from "./member-roles";
 
+type EmailCheckStatus = "idle" | "checking" | "available" | "taken";
+
 interface CreateOrganizationMemberUserFormProps {
   organizationId: string;
   onSuccess?: () => void;
@@ -39,6 +45,9 @@ export function CreateOrganizationMemberUserForm({
   onSuccess,
 }: CreateOrganizationMemberUserFormProps) {
   const [isPending, startTransition] = useTransition();
+  const [emailCheckStatus, setEmailCheckStatus] =
+    useState<EmailCheckStatus>("idle");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const form = useForm<CreateOrganizationMemberUserInput>({
     resolver: zodResolver(
@@ -53,7 +62,47 @@ export function CreateOrganizationMemberUserForm({
     },
   });
 
+  const checkEmailAvailability = useCallback(
+    (email: string) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      const trimmed = email.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!trimmed || !emailRegex.test(trimmed)) {
+        setEmailCheckStatus("idle");
+        return;
+      }
+
+      setEmailCheckStatus("checking");
+
+      debounceRef.current = setTimeout(() => {
+        startTransition(async () => {
+          const result = await checkEmailExistsAction(trimmed);
+          if (result.exists) {
+            setEmailCheckStatus("taken");
+            form.setError("email", {
+              message: "Já existe um usuário cadastrado com este e-mail.",
+            });
+          } else {
+            setEmailCheckStatus("available");
+            form.clearErrors("email");
+          }
+        });
+      }, 500);
+    },
+    [form],
+  );
+
   function onSubmit(data: CreateOrganizationMemberUserInput) {
+    if (emailCheckStatus === "taken") {
+      form.setError("email", {
+        message: "Já existe um usuário cadastrado com este e-mail.",
+      });
+      return;
+    }
+
     startTransition(async () => {
       const formData = new FormData();
       formData.append("name", data.name);
@@ -70,6 +119,7 @@ export function CreateOrganizationMemberUserForm({
 
       if (result.success) {
         toast.success(result.message);
+        setEmailCheckStatus("idle");
         form.reset();
         onSuccess?.();
       } else {
@@ -126,14 +176,38 @@ export function CreateOrganizationMemberUserForm({
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Ex: joao@exemplo.com"
-                  autoComplete="email"
-                  {...field}
-                  value={field.value || ""}
-                />
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Ex: joao@exemplo.com"
+                    autoComplete="email"
+                    {...field}
+                    value={field.value || ""}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      checkEmailAvailability(e.target.value);
+                    }}
+                    onBlur={() => {
+                      if (field.value?.trim()) {
+                        checkEmailAvailability(field.value);
+                      }
+                    }}
+                  />
+                  {emailCheckStatus === "checking" && (
+                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                  )}
+                  {emailCheckStatus === "available" && (
+                    <CheckCircle2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-green-600" />
+                  )}
+                  {emailCheckStatus === "taken" && (
+                    <XCircle className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-destructive" />
+                  )}
+                </div>
               </FormControl>
+              {emailCheckStatus === "available" &&
+                !form.formState.errors.email && (
+                  <p className="text-sm text-green-600">E-mail disponível</p>
+                )}
               <FormMessage />
             </FormItem>
           )}
@@ -148,7 +222,7 @@ export function CreateOrganizationMemberUserForm({
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Mínimo 8 caracteres, 1 número e 1 especial"
                   autoComplete="new-password"
                   {...field}
                   value={field.value || ""}
@@ -212,7 +286,7 @@ export function CreateOrganizationMemberUserForm({
         <div className="flex justify-end pt-4">
           <Button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || emailCheckStatus === "taken"}
             className="w-full sm:w-auto"
           >
             {isPending ? "Criando..." : "Criar Usuário e Adicionar"}

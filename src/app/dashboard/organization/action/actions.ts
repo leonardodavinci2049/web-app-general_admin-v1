@@ -344,6 +344,26 @@ export async function upsertOrganizationMetaAction(
   }
 }
 
+export async function checkEmailExistsAction(
+  email: string,
+): Promise<{ exists: boolean }> {
+  try {
+    await getUserId();
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail) return { exists: false };
+
+    const existingUsers = await dbService.selectQuery(
+      `SELECT id FROM ${AUTH_TABLES.USER} WHERE email = ?`,
+      [trimmedEmail],
+    );
+    return {
+      exists: Array.isArray(existingUsers) && existingUsers.length > 0,
+    };
+  } catch {
+    return { exists: false };
+  }
+}
+
 export type CreateUserAndAddMemberState = {
   success: boolean;
   message: string;
