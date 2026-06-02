@@ -1,8 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
+import { CACHE_TAGS } from "@/lib/cache-config";
 import organizationService from "@/services/organization/organization.service";
 import { createOrganizationSchema } from "./schema";
 
@@ -81,6 +82,8 @@ export async function createOrganizationAction(
       },
     });
 
+    revalidateTag(CACHE_TAGS.organizations, "hours");
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/organization");
 
     return {
