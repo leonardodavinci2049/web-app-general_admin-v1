@@ -5,13 +5,16 @@ import { MembersTableSkeleton } from "./skeleton/members-table-skeleton";
 
 type OrganizationMembersSectionProps = {
   organizationId: string;
+  appId?: number;
 };
 
 async function OrganizationMembersSectionContent({
   organizationId,
+  appId,
 }: OrganizationMembersSectionProps) {
   const response = await MemberAuthService.findMembersWithUsersByOrganization({
     organizationId,
+    appId,
   });
 
   const members: Member[] = (response.data ?? []).map((m) => ({

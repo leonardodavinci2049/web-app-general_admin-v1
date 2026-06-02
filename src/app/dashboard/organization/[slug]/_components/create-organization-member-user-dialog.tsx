@@ -17,10 +17,12 @@ import { CreateOrganizationMemberUserForm } from "./create-organization-member-u
 
 interface CreateOrganizationMemberUserDialogProps {
   organizationId: string;
+  appId: number;
 }
 
 export function CreateOrganizationMemberUserDialog({
   organizationId,
+  appId,
 }: CreateOrganizationMemberUserDialogProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -43,6 +45,7 @@ export function CreateOrganizationMemberUserDialog({
         </DialogHeader>
         <CreateOrganizationMemberUserForm
           organizationId={organizationId}
+          appId={appId}
           onSuccess={() => {
             setOpen(false);
             router.refresh();

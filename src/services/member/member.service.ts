@@ -307,9 +307,17 @@ async function deleteMember(params: {
 
 async function findMembersWithUsersByOrganization(params: {
   organizationId: string;
+  appId?: number;
 }): Promise<ServiceResponse<MemberWithUser[]>> {
   try {
     validateId(params.organizationId, "organizationId");
+
+    const queryParams: (string | number)[] = [params.organizationId];
+    let appIdFilter = "";
+    if (params.appId !== undefined) {
+      appIdFilter = " AND u.appId = ?";
+      queryParams.push(params.appId);
+    }
 
     const query = `
       SELECT 
@@ -322,13 +330,14 @@ async function findMembersWithUsersByOrganization(params: {
         u.banExpires as user_banExpires
       FROM ${AUTH_TABLES.MEMBER} m
       INNER JOIN ${AUTH_TABLES.USER} u ON m.userId = u.id
-      WHERE m.organizationId = ?
+      WHERE m.organizationId = ?${appIdFilter}
       ORDER BY m.createdAt ASC
     `;
 
-    const results = await dbService.selectExecute<MemberWithUserEntity>(query, [
-      params.organizationId,
-    ]);
+    const results = await dbService.selectExecute<MemberWithUserEntity>(
+      query,
+      queryParams,
+    );
 
     return {
       success: true,
