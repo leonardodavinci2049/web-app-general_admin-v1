@@ -8,6 +8,7 @@ import dbService, {
 import {
   AUTH_TABLES,
   AuthValidationError,
+  type ModifyResponse,
   mapUserEntityToDto,
   type ServiceResponse,
   type User,
@@ -306,11 +307,57 @@ async function findUsersWithoutAnyOrganization(): Promise<
   }
 }
 
+async function updateUserName(params: {
+  userId: string;
+  name: string;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.userId, "userId");
+
+    if (!params.name || typeof params.name !== "string") {
+      throw new AuthValidationError(
+        "name é obrigatório e deve ser uma string",
+        "name",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.USER}
+      SET name = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.name.trim(),
+      params.userId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Usuário não encontrado" : null,
+    };
+  } catch (error) {
+    console.error(`[UserAuthService] Erro em updateUserName:`, error);
+
+    if (error instanceof AuthValidationError) {
+      return { success: false, affectedRows: 0, error: error.message };
+    }
+
+    return {
+      success: false,
+      affectedRows: 0,
+      error: "Erro ao atualizar nome do usuário",
+    };
+  }
+}
+
 export const UserAuthService = {
   findUserById,
   findUsersExcludingIds,
   findNonMemberUsers,
   findUsersWithoutAnyOrganization,
+  updateUserName,
 } as const;
 
 export type { ServiceResponse, User } from "@/database/shared/auth/auth.types";
