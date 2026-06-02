@@ -373,6 +373,7 @@ export type CreateUserAndAddMemberState = {
     password?: string[];
     memberRole?: string[];
     personId?: string[];
+    appId?: string[];
   };
 };
 
@@ -386,6 +387,7 @@ export async function createUserAndAddMemberAction(
     password: formData.get("password"),
     memberRole: formData.get("memberRole"),
     personId: formData.get("personId"),
+    appId: formData.get("appId"),
   };
 
   const validatedFields = createOrganizationMemberUserSchema.safeParse(rawData);
@@ -398,7 +400,8 @@ export async function createUserAndAddMemberAction(
     };
   }
 
-  const { name, email, password, memberRole, personId } = validatedFields.data;
+  const { name, email, password, memberRole, personId, appId } =
+    validatedFields.data;
 
   try {
     await getUserId();
@@ -427,8 +430,8 @@ export async function createUserAndAddMemberAction(
     });
 
     await dbService.modifyExecute(
-      `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1, appId = 2 WHERE id = ?`,
-      [result.user.id],
+      `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1, appId = ? WHERE id = ?`,
+      [appId, result.user.id],
     );
 
     try {

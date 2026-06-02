@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const VALID_APP_IDS = [2, 3, 6, 7] as const;
+
+export type ValidAppId = (typeof VALID_APP_IDS)[number];
+
 export const createOrganizationMemberUserSchema = z.object({
   name: z
     .string()
@@ -35,6 +39,15 @@ export const createOrganizationMemberUserSchema = z.object({
     .number({ error: "PersonId é obrigatório" })
     .int("PersonId deve ser um número inteiro")
     .positive("PersonId deve ser um número positivo"),
+  appId: z.coerce
+    .number()
+    .int()
+    .refine(
+      (val): val is ValidAppId => VALID_APP_IDS.includes(val as ValidAppId),
+      {
+        message: "appId inválido",
+      },
+    ),
 });
 
 export type CreateOrganizationMemberUserInput = z.input<

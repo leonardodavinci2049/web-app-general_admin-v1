@@ -37,11 +37,13 @@ type EmailCheckStatus = "idle" | "checking" | "available" | "taken";
 
 interface CreateOrganizationMemberUserFormProps {
   organizationId: string;
+  appId: number;
   onSuccess?: () => void;
 }
 
 export function CreateOrganizationMemberUserForm({
   organizationId,
+  appId,
   onSuccess,
 }: CreateOrganizationMemberUserFormProps) {
   const [isPending, startTransition] = useTransition();
@@ -111,6 +113,7 @@ export function CreateOrganizationMemberUserForm({
       formData.append("memberRole", data.memberRole);
       formData.append("personId", String(data.personId));
       formData.append("organizationId", organizationId);
+      formData.append("appId", String(appId));
 
       const result = await createUserAndAddMemberAction(
         { success: false, message: "" },
