@@ -15,6 +15,7 @@ import { CACHE_TAGS } from "@/lib/cache-config";
 import { MemberAuthService } from "@/services/member/member.service";
 import { OrganizationAuthService } from "@/services/organization/organization.service";
 import OrganizationMetaService from "@/services/organization-meta/organization-meta.service";
+import { createOrganizationMemberUserSchema } from "../[slug]/_components/create-organization-member-user-schema";
 import {
   META_KEY_CONFIG,
   VALID_SETTINGS_META_KEYS,
@@ -339,6 +340,111 @@ export async function upsertOrganizationMetaAction(
     return {
       success: false,
       message: e.message || "Erro ao salvar configuração",
+    };
+  }
+}
+
+export type CreateUserAndAddMemberState = {
+  success: boolean;
+  message: string;
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+    memberRole?: string[];
+    personId?: string[];
+  };
+};
+
+export async function createUserAndAddMemberAction(
+  _prevState: CreateUserAndAddMemberState,
+  formData: FormData,
+): Promise<CreateUserAndAddMemberState> {
+  const rawData = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+    memberRole: formData.get("memberRole"),
+    personId: formData.get("personId"),
+  };
+
+  const validatedFields = createOrganizationMemberUserSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message: "Falha na validação",
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { name, email, password, memberRole, personId } = validatedFields.data;
+
+  try {
+    await getUserId();
+
+    const existingUsers = await dbService.selectQuery(
+      `SELECT id FROM ${AUTH_TABLES.USER} WHERE email = ?`,
+      [email],
+    );
+
+    if (Array.isArray(existingUsers) && existingUsers.length > 0) {
+      return {
+        success: false,
+        message: "Já existe um usuário cadastrado com este email.",
+        errors: { email: ["Já existe um usuário cadastrado com este email."] },
+      };
+    }
+
+    const result = await auth.api.createUser({
+      headers: await headers(),
+      body: {
+        name,
+        email,
+        password,
+        role: "user",
+      },
+    });
+
+    await dbService.modifyExecute(
+      `UPDATE ${AUTH_TABLES.USER} SET emailVerified = 1, appId = 2 WHERE id = ?`,
+      [result.user.id],
+    );
+
+    try {
+      await auth.api.addMember({
+        headers: await headers(),
+        body: {
+          userId: result.user.id,
+          role: memberRole,
+          organizationId: formData.get("organizationId") as string,
+        },
+      });
+    } catch (memberError) {
+      await dbService.modifyExecute(
+        `DELETE FROM ${AUTH_TABLES.USER} WHERE id = ?`,
+        [result.user.id],
+      );
+      throw memberError;
+    }
+
+    await dbService.modifyExecute(
+      `UPDATE ${AUTH_TABLES.MEMBER} SET personId = ? WHERE userId = ? AND organizationId = ?`,
+      [personId, result.user.id, formData.get("organizationId") as string],
+    );
+
+    revalidatePath("/dashboard/organization/[slug]", "page");
+    revalidateTag(CACHE_TAGS.members, "hours");
+
+    return {
+      success: true,
+      message: "Usuário criado e adicionado como membro com sucesso",
+    };
+  } catch (error) {
+    const e = error as Error;
+    return {
+      success: false,
+      message: e.message || "Falha ao criar usuário e adicionar como membro",
     };
   }
 }

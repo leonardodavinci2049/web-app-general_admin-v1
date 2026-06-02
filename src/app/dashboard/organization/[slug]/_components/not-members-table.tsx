@@ -32,22 +32,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { OrganizationMemberRole, User } from "@/database/schema";
+import { MEMBER_ROLES } from "./member-roles";
 
 type NotMembersTableProps = {
   users: User[];
   organizationId: string;
 };
-
-const MEMBER_ROLES: OrganizationMemberRole[] = [
-  "owner",
-  "manager",
-  "salesperson",
-  "operator",
-  "cashier",
-  "finance",
-  "shipping",
-  "customer",
-];
 
 export default function NotMembersTable({
   users,

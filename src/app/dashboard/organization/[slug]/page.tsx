@@ -3,31 +3,14 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SiteHeaderWithBreadcrumb } from "@/app/dashboard/_components/header/site-header-with-breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Organization } from "@/database/schema";
 import { getOrganizationBySlug } from "@/server/organizations";
 import { getCurrentUser } from "@/server/users";
-import { OrganizationDeletion } from "./_components/organization-deletion";
 import {
   OrganizationDetailsSection,
   OrganizationDetailsSectionSkeleton,
 } from "./_components/organization-details-section";
-import {
-  OrganizationImagesSection,
-  OrganizationImagesSectionSkeleton,
-} from "./_components/organization-images-section";
-import {
-  OrganizationMembersSection,
-  OrganizationMembersSectionSkeleton,
-} from "./_components/organization-members-section";
-import {
-  OrganizationNotMembersSection,
-  OrganizationNotMembersSectionSkeleton,
-} from "./_components/organization-not-members-section";
-import {
-  OrganizationSettingsSection,
-  OrganizationSettingsSectionSkeleton,
-} from "./_components/organization-settings-section";
+import { TabsMainSection } from "./_components/tabs-section/tabs-main-section";
 
 type Params = Promise<{ slug: string }>;
 
@@ -82,105 +65,10 @@ export default async function OrganizationPage({ params }: { params: Params }) {
           />
         </Suspense>
 
-        <Tabs defaultValue="membros" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto md:h-9">
-            <TabsTrigger value="membros">Membros</TabsTrigger>
-            <TabsTrigger value="adicionar">Adicionar</TabsTrigger>
-            <TabsTrigger value="imagens">Imagens</TabsTrigger>
-            <TabsTrigger value="configuracoes">Configurações</TabsTrigger>
-            <TabsTrigger value="excluir">Excluir</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="membros" className="space-y-4 pt-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">Membros</h2>
-              <p className="text-muted-foreground">
-                Gerenciar os membros desta organização.
-              </p>
-            </div>
-            <Tabs defaultValue="gestor" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto sm:h-9">
-                <TabsTrigger value="gestor">Gestor</TabsTrigger>
-                <TabsTrigger value="pdv">PDV</TabsTrigger>
-                <TabsTrigger value="expedicao">Expedição</TabsTrigger>
-                <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="gestor" className="space-y-4 pt-4">
-                <Suspense fallback={<OrganizationMembersSectionSkeleton />}>
-                  <OrganizationMembersSection
-                    organizationId={organization.id}
-                  />
-                </Suspense>
-              </TabsContent>
-
-              <TabsContent value="pdv" className="space-y-4 pt-4">
-                <p className="text-muted-foreground text-sm">
-                  Funcionalidade em desenvolvimento.
-                </p>
-              </TabsContent>
-
-              <TabsContent value="expedicao" className="space-y-4 pt-4">
-                <p className="text-muted-foreground text-sm">
-                  Funcionalidade em desenvolvimento.
-                </p>
-              </TabsContent>
-
-              <TabsContent value="financeiro" className="space-y-4 pt-4">
-                <p className="text-muted-foreground text-sm">
-                  Funcionalidade em desenvolvimento.
-                </p>
-              </TabsContent>
-            </Tabs>
-          </TabsContent>
-
-          <TabsContent value="adicionar" className="space-y-4 pt-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                Adicionar Membros
-              </h2>
-              <p className="text-muted-foreground">
-                Adicione usuários como membros desta organização.
-              </p>
-            </div>
-            <Suspense fallback={<OrganizationNotMembersSectionSkeleton />}>
-              <OrganizationNotMembersSection organizationId={organization.id} />
-            </Suspense>
-          </TabsContent>
-
-          <TabsContent value="imagens" className="space-y-4 pt-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">Imagens</h2>
-              <p className="text-muted-foreground">
-                Gerenciar as imagens da organização.
-              </p>
-            </div>
-            <Suspense fallback={<OrganizationImagesSectionSkeleton />}>
-              <OrganizationImagesSection organizationId={organization.id} />
-            </Suspense>
-          </TabsContent>
-
-          <TabsContent value="configuracoes" className="space-y-4 pt-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                Configurações
-              </h2>
-              <p className="text-muted-foreground">
-                Ajustar as preferências e dados de configuração da organização.
-              </p>
-            </div>
-            <Suspense fallback={<OrganizationSettingsSectionSkeleton />}>
-              <OrganizationSettingsSection organizationId={organization.id} />
-            </Suspense>
-          </TabsContent>
-
-          <TabsContent value="excluir" className="pt-4">
-            <OrganizationDeletion
-              organizationId={organization.id}
-              organizationName={organization.name}
-            />
-          </TabsContent>
-        </Tabs>
+        <TabsMainSection
+          organizationId={organization.id}
+          organizationName={organization.name}
+        />
       </div>
     </>
   );
