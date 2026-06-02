@@ -4,7 +4,6 @@ import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { getUsersWithOrganizations } from "@/services/user/user-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
-import { CreateUserDialog } from "./_components/create-user-dialog";
 import { UserSearch } from "./_components/user-search";
 import { UserTable } from "./_components/user-table";
 

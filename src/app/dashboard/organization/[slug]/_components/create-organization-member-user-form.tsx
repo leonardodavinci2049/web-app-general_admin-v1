@@ -5,6 +5,7 @@ import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
 
 import {
   checkEmailExistsAction,
@@ -27,11 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  type CreateOrganizationMemberUserInput,
-  createOrganizationMemberUserSchema,
-} from "./create-organization-member-user-schema";
+import { createOrganizationMemberUserSchema } from "./create-organization-member-user-schema";
 import { MEMBER_ROLE_LABELS, MEMBER_ROLES } from "./member-roles";
+
+const formSchema = createOrganizationMemberUserSchema.omit({ appId: true });
+type FormInput = z.input<typeof formSchema>;
 
 type EmailCheckStatus = "idle" | "checking" | "available" | "taken";
 
@@ -51,10 +52,8 @@ export function CreateOrganizationMemberUserForm({
     useState<EmailCheckStatus>("idle");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const form = useForm<CreateOrganizationMemberUserInput>({
-    resolver: zodResolver(
-      createOrganizationMemberUserSchema,
-    ) as Resolver<CreateOrganizationMemberUserInput>,
+  const form = useForm<FormInput>({
+    resolver: zodResolver(formSchema) as Resolver<FormInput>,
     defaultValues: {
       name: "",
       email: "",
@@ -97,7 +96,7 @@ export function CreateOrganizationMemberUserForm({
     [form],
   );
 
-  function onSubmit(data: CreateOrganizationMemberUserInput) {
+  function onSubmit(data: FormInput) {
     if (emailCheckStatus === "taken") {
       form.setError("email", {
         message: "Já existe um usuário cadastrado com este e-mail.",
