@@ -22,6 +22,7 @@ import { validateUserFindIdDto } from "./dto/user_find_id.dto";
 import { validateUserUpdNameDto } from "./dto/user_upd_name.dto";
 import { UserFindAllQuery } from "./query/user_find_all.query";
 import { UserFindIdQuery } from "./query/user_find_id.query";
+import { UserFindWithOrgQuery } from "./query/user_find_with_org.query";
 import { UserUpdNameQuery } from "./query/user_upd_name.query";
 import type {
   SpResultRecordFindByIdType,
@@ -29,6 +30,7 @@ import type {
   SpResultRecordUpdateType,
   TblUserFindAll,
   TblUserFindById,
+  TblUserFindWithOrg,
 } from "./types/user.type";
 
 export class UserService {
@@ -352,12 +354,54 @@ async function updateUserName(params: {
   }
 }
 
+function escapeLikePattern(str: string): string {
+  return str.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
+}
+
+async function findUsersWithOrganizations(params: {
+  searchTerm?: string;
+}): Promise<ServiceResponse<TblUserFindWithOrg[]>> {
+  try {
+    const hasSearch = !!(
+      params.searchTerm && params.searchTerm.trim().length > 0
+    );
+    const trimmedTerm = hasSearch ? (params.searchTerm?.trim() ?? null) : null;
+    const escapedTerm = trimmedTerm ? escapeLikePattern(trimmedTerm) : null;
+    const searchPattern = escapedTerm ? `%${escapedTerm}%` : null;
+    const isEmailSearch =
+      !!trimmedTerm && trimmedTerm.includes("@") && trimmedTerm.includes(".");
+
+    const { query, queryParams } = UserFindWithOrgQuery({
+      hasSearch,
+      searchPattern,
+      exactEmail: isEmailSearch ? trimmedTerm : null,
+    });
+
+    const results = await dbService.selectExecute<TblUserFindWithOrg>(
+      query,
+      queryParams,
+    );
+
+    return {
+      success: true,
+      data: results,
+      error: null,
+    };
+  } catch (error) {
+    return handleError<TblUserFindWithOrg[]>(
+      error,
+      "findUsersWithOrganizations",
+    );
+  }
+}
+
 export const UserAuthService = {
   findUserById,
   findUsersExcludingIds,
   findNonMemberUsers,
   findUsersWithoutAnyOrganization,
   updateUserName,
+  findUsersWithOrganizations,
 } as const;
 
 export type { ServiceResponse, User } from "@/database/shared/auth/auth.types";

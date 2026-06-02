@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/lib/auth/auth";
+import { getUsersWithOrganizations } from "@/services/user/user-cached-service";
 import { SiteHeaderWithBreadcrumb } from "../_components/header/site-header-with-breadcrumb";
 import { CreateUserDialog } from "./_components/create-user-dialog";
 import { UserSearch } from "./_components/user-search";
@@ -26,21 +27,7 @@ export default async function UsersPage(props: { searchParams: SearchParams }) {
   const searchTerm =
     typeof searchParams.search === "string" ? searchParams.search : undefined;
 
-  const users = await auth.api.listUsers({
-    headers: await headers(),
-    query: {
-      limit: 100,
-      sortBy: "createdAt",
-      sortDirection: "desc",
-      ...(searchTerm
-        ? {
-            filterField: "name",
-            filterValue: searchTerm,
-            filterOperator: "contains",
-          }
-        : {}),
-    },
-  });
+  const users = await getUsersWithOrganizations(searchTerm);
 
   return (
     <>
@@ -60,11 +47,11 @@ export default async function UsersPage(props: { searchParams: SearchParams }) {
               Gerencie contas de usuário, funções e permissões.
             </p>
           </div>
-          <CreateUserDialog />
+          {/* <CreateUserDialog /> */}
         </div>
 
         <UserSearch />
-        <UserTable users={users.users} selfId={session.user.id} />
+        <UserTable users={users} selfId={session.user.id} />
       </div>
     </>
   );
