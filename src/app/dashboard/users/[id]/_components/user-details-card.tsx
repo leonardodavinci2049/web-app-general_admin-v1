@@ -243,7 +243,7 @@ function EditableRoleField({
       <TooltipProvider>
         <div className="flex flex-col space-y-1.5 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors min-h-[80px] justify-center group">
           <span className="text-xs font-medium text-muted-foreground flex items-center gap-2 uppercase tracking-wider mb-auto">
-            <Shield className="h-3.5 w-3.5" /> Função
+            <Shield className="h-3.5 w-3.5" /> Nível
           </span>
           <div className="flex items-center gap-2">
             <Badge variant="outline">{currentValue}</Badge>
@@ -271,7 +271,7 @@ function EditableRoleField({
   return (
     <div className="flex flex-col space-y-2 p-3 rounded-lg bg-muted/50 border border-primary/20 min-h-[80px]">
       <span className="text-xs font-medium text-muted-foreground flex items-center gap-2 uppercase tracking-wider">
-        <Shield className="h-3.5 w-3.5" /> Função
+        <Shield className="h-3.5 w-3.5" /> Nível
       </span>
       <div className="flex items-center gap-2">
         <Select

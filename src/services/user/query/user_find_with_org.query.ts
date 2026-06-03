@@ -45,6 +45,7 @@ export function UserFindWithOrgQuery(params: UserFindWithOrgParams): {
       u.banned,
       u.banReason,
       u.banExpires,
+      u.role,
       m.organizationId,
       m.role AS memberRole,
       o.name AS organizationName

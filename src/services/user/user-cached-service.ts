@@ -25,6 +25,7 @@ export interface UserWithOrganizationListItem {
   banned: boolean | number | null;
   banReason: string | null;
   banExpires: Date | null;
+  role: string | null;
   organizationId: string | null;
   organizationName: string | null;
   memberRole: string | null;
@@ -234,6 +235,7 @@ export async function getUsersWithOrganizations(
       banned: row.banned,
       banReason: row.banReason,
       banExpires: row.banExpires,
+      role: row.role,
       organizationId: row.organizationId,
       organizationName: row.organizationName,
       memberRole: row.memberRole,

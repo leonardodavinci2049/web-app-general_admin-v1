@@ -29,6 +29,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
               <TableHead>Usuário</TableHead>
               <TableHead>E-mail</TableHead>
               <TableHead>Organização</TableHead>
+              <TableHead>Nível</TableHead>
               <TableHead>Função</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Criado em</TableHead>
@@ -84,6 +85,13 @@ export function UserTable({ users, selfId }: UserTableProps) {
                   </TableCell>
                   <TableCell>
                     <Badge
+                      variant={user.role === "admin" ? "default" : "secondary"}
+                    >
+                      {user.role || "Sem nível"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
                       variant={
                         user.memberRole === "admin" ? "default" : "secondary"
                       }
@@ -122,7 +130,7 @@ export function UserTable({ users, selfId }: UserTableProps) {
             })}
             {users.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center">
+                <TableCell colSpan={9} className="h-24 text-center">
                   Nenhum usuário encontrado.
                 </TableCell>
               </TableRow>
@@ -185,6 +193,11 @@ export function UserTable({ users, selfId }: UserTableProps) {
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
+                <Badge
+                  variant={user.role === "admin" ? "default" : "secondary"}
+                >
+                  {user.role || "Sem nível"}
+                </Badge>
                 <Badge
                   variant={
                     user.memberRole === "admin" ? "default" : "secondary"
