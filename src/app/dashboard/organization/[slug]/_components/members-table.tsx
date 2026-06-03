@@ -18,7 +18,6 @@ type MembersTableProps = {
 export default function MembersTable({ members }: MembersTableProps) {
   return (
     <>
-      {/* Desktop Table */}
       <div className="hidden md:block rounded-md border">
         <Table>
           <TableHeader>
@@ -28,6 +27,7 @@ export default function MembersTable({ members }: MembersTableProps) {
               <TableHead>E-mail</TableHead>
               <TableHead>Person ID</TableHead>
               <TableHead>Cargo</TableHead>
+              <TableHead>App ID</TableHead>
               <TableHead>Entrou em</TableHead>
               <TableHead className="text-right">Ações</TableHead>
             </TableRow>
@@ -54,6 +54,7 @@ export default function MembersTable({ members }: MembersTableProps) {
                 <TableCell>
                   <Badge variant="secondary">{member.role}</Badge>
                 </TableCell>
+                <TableCell>{member.user?.appId ?? "-"}</TableCell>
                 <TableCell>
                   {member.createdAt
                     ? new Intl.DateTimeFormat("pt-BR", {
@@ -68,7 +69,7 @@ export default function MembersTable({ members }: MembersTableProps) {
             ))}
             {members.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={8} className="h-24 text-center">
                   Nenhum membro encontrado.
                 </TableCell>
               </TableRow>
@@ -101,6 +102,9 @@ export default function MembersTable({ members }: MembersTableProps) {
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Person ID: {member.personId ?? "-"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  App ID: {member.user?.appId ?? "-"}
                 </p>
               </div>
             </div>

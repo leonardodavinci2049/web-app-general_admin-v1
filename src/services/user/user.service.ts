@@ -451,6 +451,51 @@ async function updateUserRole(params: {
   }
 }
 
+async function updateUserAppId(params: {
+  userId: string;
+  appId: number;
+}): Promise<ModifyResponse> {
+  try {
+    validateId(params.userId, "userId");
+
+    if (params.appId === undefined || typeof params.appId !== "number") {
+      throw new AuthValidationError(
+        "appId é obrigatório e deve ser um número",
+        "appId",
+      );
+    }
+
+    const query = `
+      UPDATE ${AUTH_TABLES.USER}
+      SET appId = ?
+      WHERE id = ?
+    `;
+
+    const result = await dbService.modifyExecute(query, [
+      params.appId,
+      params.userId,
+    ]);
+
+    return {
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      error: result.affectedRows === 0 ? "Usuário não encontrado" : null,
+    };
+  } catch (error) {
+    console.error(`[UserAuthService] Erro em updateUserAppId:`, error);
+
+    if (error instanceof AuthValidationError) {
+      return { success: false, affectedRows: 0, error: error.message };
+    }
+
+    return {
+      success: false,
+      affectedRows: 0,
+      error: "Erro ao atualizar appId do usuário",
+    };
+  }
+}
+
 function escapeLikePattern(str: string): string {
   return str.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
 }
@@ -500,6 +545,7 @@ export const UserAuthService = {
   updateUserName,
   updateUserEmail,
   updateUserRole,
+  updateUserAppId,
   findUsersWithOrganizations,
 } as const;
 

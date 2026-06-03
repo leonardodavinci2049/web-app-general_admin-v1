@@ -1,10 +1,18 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogClose,
@@ -16,6 +24,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -23,13 +36,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Member } from "@/database/schema";
+import { cn } from "@/lib/utils";
 import {
   removeMember,
   updateMemberPersonId,
   updateMemberRole,
+  updateUserAppId,
   updateUserName,
 } from "@/server/members";
 import { MEMBER_ROLE_LABELS, MEMBER_ROLES } from "./member-roles";
+
+const APP_OPTIONS = [
+  { value: 2, label: "Gestor" },
+  { value: 3, label: "PDV" },
+  { value: 6, label: "Expedição" },
+  { value: 7, label: "Financeiro" },
+] as const;
 
 interface MembersActionsProps {
   member: Member;
@@ -45,6 +67,10 @@ export function MembersActions({ member }: MembersActionsProps) {
     member.personId != null ? String(member.personId) : "",
   );
   const [roleInput, setRoleInput] = useState(member.role);
+  const [appIdInput, setAppIdInput] = useState<number | null>(
+    member.user?.appId ?? null,
+  );
+  const [openCombobox, setOpenCombobox] = useState(false);
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -77,7 +103,8 @@ export function MembersActions({ member }: MembersActionsProps) {
     nameInput.trim() !== (member.user?.name ?? "") ||
     personIdInput !==
       (member.personId != null ? String(member.personId) : "") ||
-    roleInput !== member.role;
+    roleInput !== member.role ||
+    appIdInput !== (member.user?.appId ?? null);
 
   const handleSave = async () => {
     if (!isFormValid || !hasChanges) return;
@@ -122,6 +149,16 @@ export function MembersActions({ member }: MembersActionsProps) {
         }
       }
 
+      if (appIdInput !== (member.user?.appId ?? null)) {
+        if (appIdInput !== null) {
+          const appIdResult = await updateUserAppId(member.userId, appIdInput);
+          if (!appIdResult.success) {
+            toast.error(appIdResult.error || "Falha ao atualizar App ID");
+            return;
+          }
+        }
+      }
+
       toast.success("Membro atualizado com sucesso");
       setShowEditDialog(false);
       router.refresh();
@@ -136,6 +173,7 @@ export function MembersActions({ member }: MembersActionsProps) {
     setNameInput(member.user?.name ?? "");
     setPersonIdInput(member.personId != null ? String(member.personId) : "");
     setRoleInput(member.role);
+    setAppIdInput(member.user?.appId ?? null);
     setShowEditDialog(true);
   };
 
@@ -222,6 +260,63 @@ export function MembersActions({ member }: MembersActionsProps) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2 flex flex-col">
+              <label htmlFor="edit-appid" className="text-sm font-medium">
+                App ID
+              </label>
+              <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="edit-appid"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={openCombobox}
+                    className="w-full justify-between font-normal text-left"
+                  >
+                    {appIdInput !== null
+                      ? APP_OPTIONS.find(
+                          (option) => option.value === appIdInput,
+                        )?.label
+                      : "Selecione um App"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-(--radix-popover-trigger-width) p-0"
+                  align="start"
+                >
+                  <Command>
+                    <CommandInput placeholder="Buscar app..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhum app encontrado.</CommandEmpty>
+                      <CommandGroup>
+                        {APP_OPTIONS.map((option) => (
+                          <CommandItem
+                            key={option.value}
+                            value={option.label}
+                            onSelect={() => {
+                              setAppIdInput(option.value);
+                              setOpenCombobox(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                appIdInput === option.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                            {option.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <DialogFooter>

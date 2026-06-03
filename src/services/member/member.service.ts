@@ -327,7 +327,7 @@ async function findMembersWithUsersByOrganization(params: {
         u.createdAt as user_createdAt, u.updatedAt as user_updatedAt,
         u.twoFactorEnabled as user_twoFactorEnabled, u.role as user_role,
         u.banned as user_banned, u.banReason as user_banReason,
-        u.banExpires as user_banExpires
+        u.banExpires as user_banExpires, u.appId as user_appId
       FROM ${AUTH_TABLES.MEMBER} m
       INNER JOIN ${AUTH_TABLES.USER} u ON m.userId = u.id
       WHERE m.organizationId = ?${appIdFilter}
