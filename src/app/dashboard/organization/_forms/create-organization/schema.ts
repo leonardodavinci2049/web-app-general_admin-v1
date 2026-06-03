@@ -21,4 +21,10 @@ export const createOrganizationSchema = z.object({
     .min(1, "O ID SYSTEM é obrigatório"),
 });
 
-export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
+export const createOrganizationFormSchema = createOrganizationSchema.omit({
+  slug: true,
+});
+
+export type CreateOrganizationInput = z.infer<
+  typeof createOrganizationFormSchema
+>;

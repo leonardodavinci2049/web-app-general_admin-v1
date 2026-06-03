@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { createOrganizationAction } from "./actions";
 import {
   type CreateOrganizationInput,
-  createOrganizationSchema,
+  createOrganizationFormSchema,
 } from "./schema";
 
 interface CreateOrganizationFormProps {
@@ -33,11 +33,10 @@ export function CreateOrganizationForm({
 
   const form = useForm<CreateOrganizationInput>({
     resolver: zodResolver(
-      createOrganizationSchema,
+      createOrganizationFormSchema,
     ) as Resolver<CreateOrganizationInput>,
     defaultValues: {
       name: "",
-      slug: "",
       system_id: undefined,
     },
   });
@@ -46,7 +45,6 @@ export function CreateOrganizationForm({
     startTransition(async () => {
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("slug", data.slug);
       formData.append("system_id", String(data.system_id));
 
       const result = await createOrganizationAction(
@@ -65,7 +63,7 @@ export function CreateOrganizationForm({
             form.setError("name", { message: result.errors.name[0] });
           }
           if (result.errors.slug) {
-            form.setError("slug", { message: result.errors.slug[0] });
+            form.setError("name", { message: result.errors.slug[0] });
           }
           if (result.errors.system_id) {
             form.setError("system_id", { message: result.errors.system_id[0] });
@@ -114,28 +112,6 @@ export function CreateOrganizationForm({
               </FormControl>
               <FormDescription>
                 Identificador numérico único do sistema legado.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ex: acme-corp"
-                  {...field}
-                  value={field.value || ""}
-                />
-              </FormControl>
-              <FormDescription>
-                Identificador único para URLs (apenas letras minúsculas, números
-                e hifens).
               </FormDescription>
               <FormMessage />
             </FormItem>
