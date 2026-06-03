@@ -111,6 +111,7 @@ export interface MemberWithUserEntity extends MemberEntity {
   user_banned: boolean | null;
   user_banReason: string | null;
   user_banExpires: Date | null;
+  user_appId?: number | null;
 }
 
 /**
@@ -501,6 +502,7 @@ export function mapMemberWithUserEntityToDto(
       banExpires: entity.user_banExpires
         ? new Date(entity.user_banExpires)
         : null,
+      appId: entity.user_appId ?? null,
     },
   };
 }
