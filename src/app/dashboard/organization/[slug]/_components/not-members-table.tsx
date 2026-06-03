@@ -1,12 +1,20 @@
 "use client";
 
-import { Loader2, UserPlus } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { addMemberAction } from "@/app/dashboard/organization/action/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +24,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -32,7 +45,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { OrganizationMemberRole, User } from "@/database/schema";
+import { cn } from "@/lib/utils";
+import { updateUserAppId } from "@/server/members";
 import { MEMBER_ROLES } from "./member-roles";
+
+const APP_OPTIONS = [
+  { value: 2, label: "Gestor" },
+  { value: 3, label: "PDV" },
+  { value: 6, label: "Expedição" },
+  { value: 7, label: "Financeiro" },
+] as const;
 
 type NotMembersTableProps = {
   users: User[];
@@ -48,11 +70,18 @@ export default function NotMembersTable({
   const [selectedRole, setSelectedRole] =
     useState<OrganizationMemberRole>("customer");
   const [personIdInput, setPersonIdInput] = useState("");
+  const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
+  const [openCombobox, setOpenCombobox] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
   const handleAddMember = async () => {
     if (!selectedUser) return;
+
+    if (selectedAppId === null) {
+      toast.error("Selecione um App ID");
+      return;
+    }
 
     try {
       setLoadingId(selectedUser.id);
@@ -76,11 +105,18 @@ export default function NotMembersTable({
         return;
       }
 
+      const appIdResult = await updateUserAppId(selectedUser.id, selectedAppId);
+      if (!appIdResult.success) {
+        toast.error(appIdResult.error || "Falha ao atualizar App ID");
+        return;
+      }
+
       toast.success("Member added to organization");
       setIsDialogOpen(false);
       setSelectedUser(null);
       setSelectedRole("customer");
       setPersonIdInput("");
+      setSelectedAppId(null);
       router.refresh();
     } catch (error) {
       toast.error("Failed to add member to organization");
@@ -247,6 +283,62 @@ export default function NotMembersTable({
                   </p>
                 )}
             </div>
+            <div className="space-y-2 flex flex-col">
+              <label htmlFor="appid-select" className="text-sm font-medium">
+                App ID <span className="text-destructive">*</span>
+              </label>
+              <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="appid-select"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={openCombobox}
+                    className="w-full justify-between font-normal text-left"
+                  >
+                    {selectedAppId !== null
+                      ? APP_OPTIONS.find(
+                          (option) => option.value === selectedAppId,
+                        )?.label
+                      : "Selecione um App"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-(--radix-popover-trigger-width) p-0"
+                  align="start"
+                >
+                  <Command>
+                    <CommandInput placeholder="Buscar app..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhum app encontrado.</CommandEmpty>
+                      <CommandGroup>
+                        {APP_OPTIONS.map((option) => (
+                          <CommandItem
+                            key={option.value}
+                            value={option.label}
+                            onSelect={() => {
+                              setSelectedAppId(option.value);
+                              setOpenCombobox(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                selectedAppId === option.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                            {option.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
           <DialogFooter>
             <Button
@@ -256,6 +348,7 @@ export default function NotMembersTable({
                 setSelectedUser(null);
                 setSelectedRole("customer");
                 setPersonIdInput("");
+                setSelectedAppId(null);
               }}
             >
               Cancel
@@ -266,7 +359,8 @@ export default function NotMembersTable({
                 loadingId !== null ||
                 personIdInput.trim() === "" ||
                 !Number.isInteger(Number(personIdInput)) ||
-                Number(personIdInput) <= 0
+                Number(personIdInput) <= 0 ||
+                selectedAppId === null
               }
             >
               {loadingId ? (

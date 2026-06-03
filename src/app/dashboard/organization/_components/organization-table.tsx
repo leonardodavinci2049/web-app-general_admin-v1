@@ -25,12 +25,12 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
           <TableHeader>
             <TableRow className="bg-secondary hover:bg-secondary">
               <TableHead className="w-20">Logo</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>ID System</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>ID do Sistema</TableHead>
               <TableHead>Slug</TableHead>
 
-              <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Criado em</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,7 +62,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
 
                 <TableCell>
                   {org.createdAt
-                    ? new Intl.DateTimeFormat("en-US", {
+                    ? new Intl.DateTimeFormat("pt-BR", {
                         dateStyle: "medium",
                       }).format(new Date(org.createdAt))
                     : "-"}
@@ -79,7 +79,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
             {organizations.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center">
-                  No organizations found.
+                  Nenhuma organização encontrada.
                 </TableCell>
               </TableRow>
             )}
@@ -119,8 +119,8 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
               <p className="font-mono text-xs truncate">ID: {org.id}</p>
               {org.createdAt && (
                 <p className="text-xs">
-                  Created{" "}
-                  {new Intl.DateTimeFormat("en-US", {
+                  Criado em{" "}
+                  {new Intl.DateTimeFormat("pt-BR", {
                     dateStyle: "medium",
                   }).format(new Date(org.createdAt))}
                 </p>
@@ -130,7 +130,7 @@ export function OrganizationTable({ organizations }: OrganizationTableProps) {
         ))}
         {organizations.length === 0 && (
           <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-            No organizations found.
+            Nenhuma organização encontrada.
           </div>
         )}
       </div>
