@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { CACHE_TAGS } from "@/lib/cache-config";
+import { slugify } from "@/lib/slugify";
 import organizationService from "@/services/organization/organization.service";
 import { createOrganizationSchema } from "./schema";
 
@@ -21,10 +22,13 @@ export async function createOrganizationAction(
   _prevState: CreateOrganizationState,
   formData: FormData,
 ): Promise<CreateOrganizationState> {
+  const inputName = formData.get("name")?.toString() || "";
+  const generatedSlug = slugify(inputName);
+
   const rawData = {
-    name: formData.get("name"),
+    name: inputName,
     system_id: formData.get("system_id"),
-    slug: formData.get("slug"),
+    slug: generatedSlug,
   };
 
   // Validate with Zod
