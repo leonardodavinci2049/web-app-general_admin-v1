@@ -34,6 +34,7 @@ async function OrganizationMembersSectionContent({
       createdAt: m.user.createdAt,
       updatedAt: m.user.updatedAt,
       twoFactorEnabled: m.user.twoFactorEnabled,
+      appId: m.user.appId,
     },
   }));
 

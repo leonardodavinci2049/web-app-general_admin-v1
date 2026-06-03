@@ -8,7 +8,7 @@ export async function OrganizationFindAllQuery(
   const PE_USER_ID = dataJsonDto.PE_USER_ID;
   const PE_ORGANIZATION_ID = dataJsonDto.PE_ORGANIZATION_ID;
   const PE_ORGANIZATION = dataJsonDto.PE_ORGANIZATION;
-  const PE_LIMIT = dataJsonDto.PE_LIMIT ?? 50;
+  const PE_LIMIT = dataJsonDto.PE_LIMIT ?? 100;
 
   const queryString = ` call sp_organization_find_all_v1(
          ${PE_APP_ID},

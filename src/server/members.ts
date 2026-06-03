@@ -194,3 +194,39 @@ export const updateUserName = async (userId: string, name: string) => {
     error: null,
   };
 };
+
+export const updateUserAppId = async (userId: string, appId: number) => {
+  const admin = await isAdmin();
+
+  if (!admin) {
+    return {
+      success: false,
+      error: "Você não tem permissão para atualizar usuários.",
+    };
+  }
+
+  if (appId === undefined || typeof appId !== "number") {
+    return {
+      success: false,
+      error: "App ID inválido.",
+    };
+  }
+
+  const result = await UserAuthService.updateUserAppId({
+    userId,
+    appId,
+  });
+
+  if (!result.success) {
+    console.error(result.error);
+    return {
+      success: false,
+      error: result.error || "Falha ao atualizar appId do usuário.",
+    };
+  }
+
+  return {
+    success: true,
+    error: null,
+  };
+};
