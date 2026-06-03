@@ -1,6 +1,11 @@
 "use server";
 
+import crypto from "node:crypto";
+import { hashPassword } from "better-auth/crypto";
+import type { RowDataPacket } from "mysql2/promise";
+import dbService from "@/database/dbConnection";
 import type { OrganizationMemberRole } from "@/database/schema";
+import { AUTH_TABLES } from "@/database/shared/auth/auth.types";
 import { auth } from "@/lib/auth/auth";
 import { MemberAuthService } from "@/services/member/member.service";
 import { UserAuthService } from "@/services/user/user.service";
@@ -229,4 +234,69 @@ export const updateUserAppId = async (userId: string, appId: number) => {
     success: true,
     error: null,
   };
+};
+
+export const generateUserPassword = async (userId: string) => {
+  const admin = await isAdmin();
+
+  if (!admin) {
+    return {
+      success: false,
+      error: "Você não tem permissão para gerar senhas.",
+      password: null,
+    };
+  }
+
+  if (!userId || typeof userId !== "string") {
+    return {
+      success: false,
+      error: "ID do usuário inválido.",
+      password: null,
+    };
+  }
+
+  try {
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const randomBytes = crypto.randomBytes(10);
+    const plainPassword = Array.from(randomBytes)
+      .map((byte) => chars[byte % chars.length])
+      .join("");
+    const hashedPassword = await hashPassword(plainPassword);
+
+    const existingAccount = await dbService.selectExecute<
+      {
+        id: string;
+      } & RowDataPacket
+    >(
+      `SELECT id FROM ${AUTH_TABLES.ACCOUNT} WHERE userId = ? AND providerId = 'credential'`,
+      [userId],
+    );
+
+    if (existingAccount.length > 0) {
+      await dbService.modifyExecute(
+        `UPDATE ${AUTH_TABLES.ACCOUNT} SET password = ?, updatedAt = NOW() WHERE userId = ? AND providerId = 'credential'`,
+        [hashedPassword, userId],
+      );
+    } else {
+      const accountId = crypto.randomUUID();
+      await dbService.modifyExecute(
+        `INSERT INTO ${AUTH_TABLES.ACCOUNT} (id, accountId, providerId, userId, password, createdAt, updatedAt) VALUES (?, ?, 'credential', ?, ?, NOW(), NOW())`,
+        [accountId, userId, userId, hashedPassword],
+      );
+    }
+
+    return {
+      success: true,
+      error: null,
+      password: plainPassword,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: "Falha ao gerar senha.",
+      password: null,
+    };
+  }
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Copy, KeyRound, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -35,9 +35,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { Member } from "@/database/schema";
 import { cn } from "@/lib/utils";
 import {
+  generateUserPassword,
   removeMember,
   updateMemberPersonId,
   updateMemberRole,
@@ -60,8 +62,12 @@ interface MembersActionsProps {
 export function MembersActions({ member }: MembersActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingPassword, setIsGeneratingPassword] = useState(false);
+  const [_generatedPassword, setGeneratedPassword] = useState("");
+  const [passwordTextareaContent, setPasswordTextareaContent] = useState("");
   const [nameInput, setNameInput] = useState(member.user?.name ?? "");
   const [personIdInput, setPersonIdInput] = useState(
     member.personId != null ? String(member.personId) : "",
@@ -177,9 +183,47 @@ export function MembersActions({ member }: MembersActionsProps) {
     setShowEditDialog(true);
   };
 
+  const handleGeneratePassword = async () => {
+    setIsGeneratingPassword(true);
+    try {
+      const result = await generateUserPassword(member.userId);
+      if (result.success && result.password) {
+        setGeneratedPassword(result.password);
+        const content = [
+          "Segue os dados de acesso ao sistema",
+          `Email: ${member.user?.email}`,
+          `Senha: ${result.password}`,
+        ].join("\n");
+        setPasswordTextareaContent(content);
+        toast.success("Senha gerada com sucesso");
+      } else {
+        toast.error(result.error || "Falha ao gerar senha");
+      }
+    } catch (_error) {
+      toast.error("Ocorreu um erro ao gerar a senha");
+    } finally {
+      setIsGeneratingPassword(false);
+    }
+  };
+
+  const handleCopyPasswordContent = async () => {
+    try {
+      await navigator.clipboard.writeText(passwordTextareaContent);
+      toast.success("Conteúdo copiado para a área de transferência");
+    } catch (_error) {
+      toast.error("Falha ao copiar conteúdo");
+    }
+  };
+
+  const handleOpenPasswordDialog = () => {
+    setGeneratedPassword("");
+    setPasswordTextareaContent("");
+    setShowPasswordDialog(true);
+  };
+
   return (
     <>
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex items-center gap-2 justify-end flex-wrap">
         <Button
           variant="outline"
           size="sm"
@@ -187,6 +231,15 @@ export function MembersActions({ member }: MembersActionsProps) {
           className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 h-8"
         >
           Editar
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleOpenPasswordDialog}
+          className="border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700 h-8"
+        >
+          <KeyRound className="size-4 mr-1" />
+          Senha
         </Button>
         <Button
           variant="outline"
@@ -368,6 +421,54 @@ export function MembersActions({ member }: MembersActionsProps) {
                 "Remover"
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Gerar Senha</DialogTitle>
+            <DialogDescription>
+              Gere uma nova senha para <strong>{member.user?.name}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Textarea
+              readOnly
+              rows={3}
+              value={passwordTextareaContent}
+              placeholder="Clique em 'Gerar Senha' para criar uma nova senha"
+              className="resize-none"
+            />
+          </div>
+          <DialogFooter className="flex-col gap-2 sm:flex-row">
+            <DialogClose asChild>
+              <Button variant="outline">Fechar</Button>
+            </DialogClose>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                onClick={handleCopyPasswordContent}
+                disabled={!passwordTextareaContent}
+              >
+                <Copy className="size-4 mr-1" />
+                Copiar
+              </Button>
+              <Button
+                onClick={handleGeneratePassword}
+                disabled={isGeneratingPassword}
+              >
+                {isGeneratingPassword ? (
+                  <>
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Gerando...
+                  </>
+                ) : (
+                  "Gerar Senha"
+                )}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
