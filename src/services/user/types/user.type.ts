@@ -74,6 +74,7 @@ export interface TblUserFindWithOrg extends RowDataPacket {
   banned: boolean | number | null;
   banReason: string | null;
   banExpires: Date | null;
+  role: string | null;
   organizationId: string | null;
   memberRole: string | null;
   organizationName: string | null;
