@@ -1,5 +1,10 @@
 packages:
   - .
+allowBuilds:
+  sharp: true
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+overrides:
+  kysely: 0.28.12
